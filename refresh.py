@@ -12,7 +12,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 DATASET = 'lmarena-ai/leaderboard-dataset'
 API = 'https://datasets-server.huggingface.co/'
 OUT = pathlib.Path(__file__).parent / 'data' / 'latest.json'
-SUBSETS = {s: ('overall',) for s in ('search_style_control', 'vision_style_control',
+SUBSETS = {s: ('overall',) for s in ('search', 'search_style_control', 'vision_style_control',
     'document_style_control', 'webdev', 'text_to_image', 'image_edit', 'text_to_video', 'agent')}
 SUBSETS['text_style_control'] = ('overall', 'hard_6', 'hard_prompts', 'creative_writing')
 
@@ -80,7 +80,7 @@ def fetch(subset, old, observed):
     while total is None or offset < total:
         result = get('filter',config=subset,split='latest',where=where,offset=offset,length=100)
         count, batch = result['num_rows_total'], result['rows']
-        if not isinstance(count,int) or count < 1 or count > 20000 or not batch or (total is not None and count != total):
+        if result.get('partial') is True or not isinstance(count,int) or count < 1 or count > 20000 or not batch or (total is not None and count != total):
             raise ValueError('Unexpected or incomplete category response')
         total = count
         rows.extend(x['row'] for x in batch)
