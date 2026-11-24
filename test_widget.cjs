@@ -14,11 +14,11 @@ class Stack{
   addSpacer(){}setPadding(){}centerAlignContent(){}layoutVertically(){}
 }
 const group={date:today,observed:today,models:[{id:'B',rank:2},{id:'A',rank:1},{id:'C',rank:3}],history:{[past]:{a:2,b:2,c:1}}};
-const fixture={subsets:{search_style_control:{checked:today,groups:{overall:group}},text_style_control:{checked:today,groups:{hard_6:group}}}};
+const fixture={subsets:{search:{checked:today,groups:{overall:group}},text_style_control:{checked:today,groups:{hard_6:group}}}};
 const flat=w=>[w,...(w.children||[]).flatMap(flat)];
-async function run({family='small',param='search',feed=fixture,stored={},app=false}={}){
+async function run({family='small',param='search',feed=fixture,direct=null,stored={},app=false}={}){
   let result=null,requests=0,completed=false;const logs=[],files={...stored};
-  const env={FileManager:{local:()=>({documentsDirectory:()=>'/d',joinPath:(a,b)=>a+'/'+b,fileExists:p=>p in files,createDirectory(){},readString:p=>{if(!(p in files))throw Error('missing');return files[p]},writeString:(p,v)=>{files[p]=v}})},Request:class{constructor(){requests++;this.response={statusCode:200}}async loadJSON(){if(feed===null)throw Error('offline');return feed}},ListWidget:Stack,Color:class{},Size:class{},Font:{systemFont:n=>n,semiboldSystemFont:n=>n},Script:{name:()=>'AI Radar',setWidget:w=>{result=w},complete:()=>{completed=true}},config:{runsInWidget:!app,widgetFamily:family},args:{widgetParameter:param,queryParameters:{}},console:{log:v=>logs.push(v)},Alert:class{addAction(){}addCancelAction(){}async presentSheet(){return -1}async presentAlert(){return 0}}};
+  const env={FileManager:{local:()=>({documentsDirectory:()=>'/d',joinPath:(a,b)=>a+'/'+b,fileExists:p=>p in files,createDirectory(){},readString:p=>{if(!(p in files))throw Error('missing');return files[p]},writeString:(p,v)=>{files[p]=v}})},Request:class{constructor(url){this.url=url;requests++;this.response={statusCode:200}}async loadJSON(){const v=this.url.includes('raw.githubusercontent')?feed:direct;if(v===null)throw Error('offline');return v}},ListWidget:Stack,Color:class{},Size:class{},Font:{systemFont:n=>n,semiboldSystemFont:n=>n},Script:{name:()=>'AI Radar',setWidget:w=>{result=w},complete:()=>{completed=true}},config:{runsInWidget:!app,widgetFamily:family},args:{widgetParameter:param,queryParameters:{}},console:{log:v=>logs.push(v)},Alert:class{addAction(){}addCancelAction(){}async presentSheet(){return -1}async presentAlert(){return 0}}};
   await new AsyncFunction(...Object.keys(env),source)(...Object.values(env));return {result,requests,completed,logs,files};
 }
 (async()=>{
@@ -31,12 +31,13 @@ async function run({family='small',param='search',feed=fixture,stored={},app=fal
     check(family==='small'||cells.some(x=>x.url==='https://example.com/b'),'direct link');
     check(family==='large'?['↑','−','↓'].every(v=>cells.some(x=>x.value===v)):!cells.some(x=>['↑','−','↓'].includes(x.value)),'weekly trend');
   }
-  const cold=await run({feed:null});check(cold.completed&&flat(cold.result).some(x=>x.value==='Data unavailable · open settings'),'cold offline');check(cold.requests===1,'cold request limit');
+  const cold=await run({feed:null});check(cold.completed&&flat(cold.result).some(x=>x.value==='Data unavailable · open settings'),'cold offline');check(cold.requests<=3,'cold request limit');
   const good=await run();const offline=await run({feed:null,stored:good.files});check(flat(offline.result).some(x=>x.value==='A'),'offline cache');
   const broken=await run({feed:{subsets:null},stored:{'/d/AI-Radar/settings.json':'null','/d/AI-Radar/cache.json':'[]'}});check(broken.completed&&broken.result,'corrupt settings');
   const reason=await run({param:'reasoning'});check(flat(reason.result).some(x=>x.value==='A'),'hard_6 resolves');
   const app=await run({app:true});check(app.completed,'first app launch');
   const invalid=await run({param:'coding,math'});check(flat(invalid.result).some(x=>x.value==='Search'),'excluded categories fallback');
   const unconfirmed=await run();check(flat(unconfirmed.result).filter(x=>x.value==='No confirmed match').length===2,'no invented access');
+  const live=await run({feed:null,direct:{num_rows_total:1,partial:false,rows:[{row:{model_name:'Live Model',rank:1,category:'overall',leaderboard_publish_date:today}}]}});check(flat(live.result).some(x=>x.value==='Live Model'),'direct Arena without GitHub');check(live.requests===2,'direct request budget');
   console.log(count+' assertions passed');
 })().catch(e=>{console.error(e);process.exitCode=1});
