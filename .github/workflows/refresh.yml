@@ -1,6 +1,14 @@
 name: Refresh Arena data
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'AI-Radar.js'
+      - 'refresh.py'
+      - 'test_logic.py'
+      - 'test_widget.cjs'
+      - '.github/workflows/refresh.yml'
   schedule:
     - cron: '0 5 * * *'
 permissions:
@@ -11,12 +19,17 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python -m unittest test_logic.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: python -m unittest -v test_logic.py
+      - run: node test_widget.cjs
       - run: python refresh.py
       - name: Commit public ranks only
         run: |
