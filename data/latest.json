@@ -1,0 +1,159 @@
+{
+  "source": "Arena official leaderboard, dated starter snapshot; not a complete feed",
+  "generatedAt": "2026-11-25T00:00:00Z",
+  "subsets": {
+    "search": {
+      "checked": "2026-11-20",
+      "groups": {
+        "overall": {
+          "date": "2026-11-20",
+          "observed": "2026-11-25",
+          "models": [
+            {
+              "id": "Amazon-Web-Search-Agent",
+              "rank": 1
+            },
+            {
+              "id": "Qwen3.8-Max",
+              "rank": 2
+            },
+            {
+              "id": "GPT-5.6 Sol (xHigh)",
+              "rank": 3
+            },
+            {
+              "id": "Claude Opus 4.6 (Search)",
+              "rank": 4
+            },
+            {
+              "id": "GPT-5.5 (Search)",
+              "rank": 5
+            },
+            {
+              "id": "Claude Opus 5 (High)",
+              "rank": 6
+            },
+            {
+              "id": "Claude Fable 5.1 (High)",
+              "rank": 7
+            },
+            {
+              "id": "GPT-6 Astra (Max)",
+              "rank": 8
+            },
+            {
+              "id": "Claude Opus 4.7",
+              "rank": 9
+            },
+            {
+              "id": "GPT-6.1 Sol (Max)",
+              "rank": 10
+            },
+            {
+              "id": "Claude Fable 5 (High)",
+              "rank": 11
+            },
+            {
+              "id": "ERNIE 5.1",
+              "rank": 12
+            },
+            {
+              "id": "Claude Sonnet 4.6 (Search)",
+              "rank": 13
+            },
+            {
+              "id": "Grok 4.5",
+              "rank": 14
+            },
+            {
+              "id": "Claude Opus 5.5 (Medium)",
+              "rank": 15
+            }
+          ],
+          "history": {},
+          "partial": true,
+          "totalModels": 45,
+          "source": "https://arena.ai/leaderboard/chat/search?rankBy=models"
+        }
+      }
+    },
+    "search_style_control": {
+      "checked": "2026-11-20",
+      "groups": {
+        "overall": {
+          "date": "2026-11-20",
+          "observed": "2026-11-25",
+          "models": [
+            {
+              "id": "GPT-5.6 Sol (xHigh)",
+              "rank": 1
+            },
+            {
+              "id": "GPT-6.1 Sol (Max)",
+              "rank": 2
+            },
+            {
+              "id": "GPT-6.2 Astra (Max)",
+              "rank": 3
+            },
+            {
+              "id": "GPT-6 Astra (Max)",
+              "rank": 4
+            },
+            {
+              "id": "GPT-6 Sol (Max)",
+              "rank": 5
+            },
+            {
+              "id": "Claude Fable 5 (High)",
+              "rank": 6
+            },
+            {
+              "id": "GPT-6.2 Sol (Max)",
+              "rank": 7
+            },
+            {
+              "id": "Claude Fable 5.1 (High)",
+              "rank": 8
+            },
+            {
+              "id": "GPT-5.5 (Search)",
+              "rank": 9
+            },
+            {
+              "id": "Qwen3.8-Max",
+              "rank": 10
+            },
+            {
+              "id": "Claude Opus 4.6 (Search)",
+              "rank": 11
+            },
+            {
+              "id": "Claude Opus 5.5 (Medium)",
+              "rank": 12
+            },
+            {
+              "id": "Claude Opus 5 (High)",
+              "rank": 13
+            },
+            {
+              "id": "Claude Opus 4.7",
+              "rank": 14
+            },
+            {
+              "id": "Gemini 3.1 Pro (Grounding)",
+              "rank": 15
+            }
+          ],
+          "history": {},
+          "partial": true,
+          "totalModels": 45,
+          "source": "https://arena.ai/leaderboard/chat/search?scoring=style-control"
+        }
+      }
+    }
+  },
+  "errors": {
+    "bootstrap": "Only the verified top 15 Search models in each view are included. Automatic collection must replace these partial snapshots."
+  }
+}
