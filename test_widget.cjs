@@ -37,7 +37,7 @@ async function run({family='small',param='search',feed=fixture,direct=null,store
   const reason=await run({param:'reasoning'});check(flat(reason.result).some(x=>x.value==='A'),'hard_6 resolves');
   const app=await run({app:true});check(app.completed,'first app launch');
   const invalid=await run({param:'coding,math'});check(flat(invalid.result).some(x=>x.value==='Search'),'excluded categories fallback');
-  const unconfirmed=await run();check(flat(unconfirmed.result).filter(x=>x.value==='No confirmed match').length===2,'no invented access');
+  const unconfirmed=await run();check(flat(unconfirmed.result).filter(x=>x.value==='Set access').length===2,'no invented access');
   const live=await run({feed:null,direct:{num_rows_total:1,partial:false,rows:[{row:{model_name:'Live Model',rank:1,category:'overall',leaderboard_publish_date:today}}]}});check(flat(live.result).some(x=>x.value==='Live Model'),'direct Arena without GitHub');check(live.requests===2,'direct request budget');
   const names=['GPT-6.2 Sol','Claude Opus 5','Gemini 4 Carbon','Qwen3.8-Max','DeepSeek V4','Grok 4.5','Mistral Large','Kimi K3','GLM-5.1','Amazon-Web-Search-Agent'];
   const expected=['https://chatgpt.com/','https://claude.ai/new','https://gemini.google.com/','https://chat.qwen.ai/','https://chat.deepseek.com/','https://grok.com/','https://chat.mistral.ai/','https://www.kimi.com/','https://z.ai/chat','https://arena.ai/'];
