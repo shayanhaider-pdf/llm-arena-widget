@@ -129,17 +129,33 @@ def collect_parquet(subset, paths, revision, old, observed):
             g['totalModels'] = len(g['models'])
     return {'checked':observed,'groups':{**old.get('groups',{}),**groups}},errors
 
-def valid_group(g):
-    if not isinstance(g,dict) or not isinstance(g.get('models'),list) or not g['models']:
+def canonical_date(value):
+    if not isinstance(value,str) or not re.fullmatch(r'\d{4}-\d{2}-\d{2}',value):
+        raise ValueError('Noncanonical date')
+    return dt.date.fromisoformat(value)
+
+def valid_group(g, checked=None):
+    """Match the Scriptable client's accepted snapshot contract."""
+    if not isinstance(g,dict) or not isinstance(g.get('models'),list) or not 0 < len(g['models']) <= 10000:
+        return False
+    if 'partial' in g and type(g['partial']) is not bool:
         return False
     try:
-        date = dt.date.fromisoformat(g['date'])
-        observed = dt.date.fromisoformat(g.get('observed',g['date']))
-        if date > observed or observed > dt.datetime.now(dt.timezone.utc).date():
+        date = canonical_date(g['date'])
+        observed = canonical_date(g.get('observed',g['date']))
+        today = dt.datetime.now(dt.timezone.utc).date()
+        if not date <= observed <= today:
+            return False
+        if checked is not None and not observed <= canonical_date(checked) <= today:
             return False
         ids = [m['id'].strip().lower() for m in g['models']]
         ranks = [m['rank'] for m in g['models']]
-        return len(ids)==len(set(ids)) and all(ids) and all(type(r) is int and r>0 for r in ranks) and 1 in ranks
+        return (
+            len(ids)==len(set(ids))
+            and all(i and i not in {'__proto__','constructor','prototype'} for i in ids)
+            and all(type(r) is int and r>0 for r in ranks)
+            and 1 in ranks
+        )
     except (KeyError,TypeError,ValueError,AttributeError):
         return False
 
@@ -164,7 +180,7 @@ def widget_feed(data):
         groups = {}
         for k in categories:
             g = current.get('groups',{}).get(k)
-            if not valid_group(g):
+            if not current.get('checked') or not valid_group(g,current['checked']):
                 raise ValueError('Missing or invalid required widget group: '+subset+'/'+k)
             groups[k] = g
         compact['subsets'][subset] = {'checked':current['checked'],'groups':groups}
