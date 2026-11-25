@@ -124,6 +124,105 @@ def collect_parquet(subset, old, observed):
             g['totalModels'] = len(g['models'])
     return {'checked':observed,'groups':{**old.get('groups',{}),**groups}}
 
+INDEX_PAGES = {
+    'work': 'https://arena.ai/leaderboard/agent/work',
+    'agent_index': 'https://arena.ai/leaderboard/agent',
+}
+INDEX_NAMES = {
+    'work': 'Work Index',
+    'agent_index': 'Agent Arena',
+}
+
+def parse_index_rows(raw_rows, publication, source):
+    """Normalize explicit rank/model/score cells from an Arena model table."""
+    out = {}
+    for rank_text, name, score_text in raw_rows:
+        rank_text = rank_text.strip().lstrip('#')
+        if not re.fullmatch(r'\d+', rank_text):
+            continue
+        rank = int(rank_text)
+        name = name.strip()
+        if rank < 1 or not name or not re.search(r'[A-Za-z]',name):
+            continue
+        if rank in out and out[rank]['model_name'] != name:
+            raise ValueError('Conflicting rank '+str(rank))
+        m = {'model_name':name, 'rank':rank, 'category':'overall', 'leaderboard_publish_date':publication}
+        score = re.match(r'\s*([\d,]+(?:\.\d+)?)',score_text)
+        if score:
+            m['rating'] = float(score.group(1).replace(',',''))
+        out[rank] = m
+    if not set(range(1,21)).issubset(out):
+        raise ValueError('Official index did not expose a complete top 20')
+    if len({m['model_name'].lower() for m in out.values()}) != len(out):
+        raise ValueError('Duplicate model rows')
+    return [out[k] for k in sorted(out)]
+
+def collect_web_index(key, old, observed):
+    """Work/new Agent Index are different from the historical agent subset."""
+    from playwright.sync_api import sync_playwright
+    source = INDEX_PAGES[key]
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        try:
+            page = browser.new_page(viewport={'width':1440,'height':1000})
+            response = page.goto(source,wait_until='domcontentloaded',timeout=45000)
+            if not response or response.status >= 400:
+                raise ValueError('Arena page unavailable')
+            heading = page.get_by_text(INDEX_NAMES[key],exact=False).first
+            heading.wait_for(timeout=20000)
+            body = page.locator('body').inner_text(timeout=15000)
+            if INDEX_NAMES[key].lower() not in body.lower():
+                raise ValueError('Wrong Arena index')
+            date_match = re.search(r'\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{1,2}, 20\d{2}\b',body)
+            if not date_match:
+                raise ValueError('Publication date not visible')
+            publication = dt.datetime.strptime(date_match.group(),'%b %d, %Y').date().isoformat()
+            # Explicitly request the expanded rankings if the chart limits the preview.
+            button = page.get_by_role('button',name='View all',exact=False).first
+            if button.count() and button.is_visible():
+                button.click(timeout=5000)
+                page.wait_for_timeout(1500)
+            tables = page.locator('table,[role=table],[role=grid]')
+            found = []
+            for i in range(tables.count()):
+                table = tables.nth(i)
+                if not table.is_visible():
+                    continue
+                headings = table.locator('thead th,[role=columnheader]').all_inner_texts()
+                h = [x.strip().lower() for x in headings]
+                if 'rank' not in h or not any(x == 'model' or x.startswith('model ') for x in h):
+                    continue
+                ri = h.index('rank')
+                mi = next(i for i,x in enumerate(h) if x=='model' or x.startswith('model '))
+                si = next((i for i,x in enumerate(h) if x in ('score','index','rating')),None)
+                rows = []
+                tr = table.locator('tbody tr,[role=row]')
+                for n in range(tr.count()):
+                    cells = tr.nth(n).locator('td,[role=cell],[role=gridcell]')
+                    if cells.count() <= max(ri,mi):
+                        continue
+                    model = cells.nth(mi)
+                    # Model cell's first visible line is the public model label.
+                    name = model.inner_text().splitlines()[0].strip()
+                    rows.append((cells.nth(ri).inner_text(),name,cells.nth(si).inner_text() if si is not None and cells.count()>si else ''))
+                try:
+                    found.append(parse_index_rows(rows,publication,source))
+                except ValueError:
+                    continue
+            if not found:
+                raise ValueError('No validated top-20 model table after expansion')
+            rows = max(found,key=len)
+            g = group(rows,old.get('groups',{}),observed)['overall']
+            if g['date'] == publication:
+                g['source'] = source
+                # UI may paginate; the first 20 are validated, not necessarily all rows.
+                g['partial'] = True
+                g['top20Complete'] = True
+                g['totalModels'] = len(g['models'])
+            return {'checked':observed,'groups':{'overall':g}}
+        finally:
+            browser.close()
+
 def main():
     previous = json.loads(OUT.read_text()) if OUT.exists() else {'subsets':{}}
     subsets = dict(previous.get('subsets',{}))
@@ -133,11 +232,15 @@ def main():
     successes = 0
     # Discover official subsets through the repository itself, not the viewer.
     from huggingface_hub import HfApi
-    files = HfApi().list_repo_files(DATASET, repo_type='dataset')
+    try:
+        files = HfApi().list_repo_files(DATASET, repo_type='dataset')
+    except Exception as exc:
+        files = []
+        errors['dataset'] = str(exc)
     available = {p.split('/')[0] for p in files if '/latest-' in p and p.endswith('.parquet')}
     selected = sorted(s for s in available if s in SUBSETS or s.startswith('agent_'))
     if not selected:
-        raise RuntimeError('No official latest splits')
+        print('No official latest splits; attempting index pages')
     with ThreadPoolExecutor(max_workers=4) as pool:
         jobs = {pool.submit(collect_parquet,s,subsets.get(s,{}),observed):s for s in selected}
         for job in as_completed(jobs):
@@ -148,9 +251,21 @@ def main():
             except Exception as exc:
                 errors[s] = str(exc)
                 print(s, exc)
-    for required in ('search','text_style_control','vision_style_control','document_style_control','work'):
+    # Use the new official index pages when no matching downloadable split is available.
+    for key in INDEX_PAGES:
+        existing = subsets.get(key,{}).get('groups',{}).get('overall',{})
+        if key in selected and not existing.get('partial') and existing.get('observed') == observed:
+            continue
+        try:
+            subsets[key] = collect_web_index(key,subsets.get(key,{}),observed)
+            successes += 1
+            errors.pop(key,None)
+        except Exception as exc:
+            errors[key] = str(exc)
+            print(key, exc)
+    for required in ('search','text_style_control','vision_style_control','document_style_control'):
         if required not in selected:
-            errors[required] = 'No matching official Parquet split; any earlier snapshot retained'
+            errors[required] = 'No matching official Parquet split; earlier snapshot retained'
     if not successes:
         raise RuntimeError('All official file requests failed; prior feed unchanged')
     data = {'source':DATASET,'generatedAt':now.isoformat(),'subsets':subsets,'errors':errors}
