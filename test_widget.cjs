@@ -13,15 +13,16 @@ class Stack{
   addText(value){assert.equal(typeof value,'string');const t={value};this.children.push(t);return t}
   addStack(){const s=new Stack;this.children.push(s);return s}
   addImage(image){const i={image};this.children.push(i);return i}
+  async presentSmall(){this.presented='small'}async presentMedium(){this.presented='medium'}async presentLarge(){this.presented='large'}
   addSpacer(n){this.children.push({spacer:n??0})}setPadding(...p){this.padding=p}centerAlignContent(){}layoutVertically(){this.vertical=true}
 }
 const group={date:today,observed:today,models:[{id:'B',rank:2},{id:'A',rank:1},{id:'C',rank:3}],history:{[past]:{a:2,b:2,c:1},[today]:{a:1,b:2,c:3}}};
 const fixture={subsets:{search:{checked:today,groups:{overall:group}},text_style_control:{checked:today,groups:{hard_6:group}}}};
 const flat=w=>[w,...(w.children||[]).flatMap(flat)];
 async function run({family='small',param='search',feed=fixture,registry=reg,stored={},app=false,query={},selection=-1,choices=[],screen={width:393,height:852}}={}){
-  let result=null,requests=0,completed=false,tableRows=[],opened=[],alerts=[];const logs=[],files={...stored};
-  const env={FileManager:{local:()=>({documentsDirectory:()=>'/d',joinPath:(a,b)=>a+'/'+b,fileExists:p=>p in files,createDirectory(){},readString:p=>{if(!(p in files))throw Error('missing');return files[p]},writeString:(p,v)=>{files[p]=v}})},Request:class{constructor(url){this.url=url;requests++;this.response={statusCode:200}}async loadJSON(){const v=this.url.includes('/access.json')?registry:feed;if(v===null)throw Error('offline');return v}},ListWidget:Stack,Color:class{},Size:class{constructor(width,height){this.width=width;this.height=height}},SFSymbol:{named:name=>({image:{symbol:name}})},Device:{screenSize:()=>screen},DrawContext:class{addPath(){}setStrokeColor(){}setLineWidth(){}strokePath(){}getImage(){return {chart:true}}},Path:class{move(){}addLine(){}},Point:class{},Font:{systemFont:n=>n,semiboldSystemFont:n=>n},Script:{name:()=>'AI Radar',setWidget:w=>{result=w},complete:()=>{completed=true}},config:{runsInWidget:!app,widgetFamily:family},args:{widgetParameter:param,queryParameters:query},console:{log:v=>logs.push(v)},UITable:class{addRow(r){tableRows.push(r)}async present(){if(selection>=0)tableRows[selection]?.onSelect?.()}},UITableRow:class{addText(title,subtitle){this.title=title;this.subtitle=subtitle}},Safari:{open:url=>opened.push(url)},Alert:class{addAction(){}addCancelAction(){}addTextField(){}textFieldValue(){return ''}async presentSheet(){alerts.push(this.title);return choices.length?choices.shift():-1}async presentAlert(){alerts.push(this.title);return 0}}};
-  await new AsyncFunction(...Object.keys(env),source)(...Object.values(env));return {result,requests,completed,logs,files,tableRows,opened,alerts};
+  let result=null,requests=0,completed=false,tableRows=[],opened=[],alerts=[],menus=[],previews=[];const logs=[],files={...stored};
+  const env={FileManager:{local:()=>({documentsDirectory:()=>'/d',joinPath:(a,b)=>a+'/'+b,fileExists:p=>p in files,createDirectory(){},readString:p=>{if(!(p in files))throw Error('missing');return files[p]},writeString:(p,v)=>{files[p]=v}})},Request:class{constructor(url){this.url=url;requests++;this.response={statusCode:200}}async loadJSON(){const v=this.url.includes('/access.json')?registry:feed;if(v===null)throw Error('offline');return v}},ListWidget:class extends Stack{constructor(){super();this.vertical=true;previews.push(this)}},Color:class{},Size:class{constructor(width,height){this.width=width;this.height=height}},SFSymbol:{named:name=>({image:{symbol:name}})},Device:{screenSize:()=>screen},DrawContext:class{addPath(){}setStrokeColor(){}setLineWidth(){}strokePath(){}getImage(){return {chart:true}}},Path:class{move(){}addLine(){}},Point:class{},Font:{systemFont:n=>n,semiboldSystemFont:n=>n},Script:{name:()=>'AI Radar',setWidget:w=>{result=w},complete:()=>{completed=true}},config:{runsInWidget:!app,widgetFamily:family},args:{widgetParameter:param,queryParameters:query},console:{log:v=>logs.push(v)},UITable:class{addRow(r){tableRows.push(r)}async present(){if(selection>=0)tableRows[selection]?.onSelect?.()}},UITableRow:class{addText(title,subtitle){this.title=title;this.subtitle=subtitle}},Safari:{open:url=>opened.push(url)},Alert:class{constructor(){this.options=[]}addAction(x){this.options.push(x)}addCancelAction(){}addTextField(){}textFieldValue(){return ''}async presentSheet(){alerts.push(this.title);menus.push({title:this.title,options:this.options.slice()});return choices.length?choices.shift():-1}async presentAlert(){alerts.push(this.title);return 0}}};
+  await new AsyncFunction(...Object.keys(env),source)(...Object.values(env));return {result,requests,completed,logs,files,tableRows,opened,alerts,menus,previews};
 }
 (async()=>{
   for(const family of ['small','medium','large']){
@@ -100,7 +101,7 @@ async function run({family='small',param='search',feed=fixture,registry=reg,stor
   const reordered=await run({app:true,choices:[2,0,1,7]});
   const custom=JSON.parse(reordered.files['/d/AI-Radar/settings.json']);
   check(custom.largeCustomized&&custom.large.join(',')==='text,work,documents,search,image','row editor moves and saves');
-  const replaced=await run({app:true,choices:[2,4,2,0,7]});
+  const replaced=await run({app:true,choices:[2,4,2,0,0,7]});
   const replacedSettings=JSON.parse(replaced.files['/d/AI-Radar/settings.json']);
   check(replacedSettings.large.join(',')==='work,text,documents,search,agent','row editor replaces category without duplicates');
   const cancelled=await run({app:true,choices:[2,0,1,-1]});
@@ -123,5 +124,62 @@ async function run({family='small',param='search',feed=fixture,registry=reg,stor
   check(flat(codeTest.result).some(x=>x.url==='https://chatgpt.com/codex/'),'coding opens Codex');
   const imageTest=await run({family:'medium',param:'image',feed:production,registry:productionRegistry});
   check(flat(imageTest.result).filter(x=>x.value==='#2?').length===2,'image family marked uncertain in both columns');
+  // Verify every category on each tested device width, not just the default Search row.
+  const configured=source.slice(source.indexOf('const C=')+8,source.indexOf('const categorySections=')).trim().replace(/;$/,'');
+  const mapping=JSON.parse(configured);
+  check(Object.keys(mapping).length===23,'exact 23 configured categories');
+  const sections=new Set();
+  const rootBudget=(w,width,height,pad)=>{
+    const nodes=flat(w),innerWidth=width-pad*2,innerHeight=height-pad*2;
+    const usedHeight=w.children.reduce((sum,c)=>sum+(c.size?.height||c.spacer||(c.children?.length?Math.max(0,...c.children.map(x=>x.size?.height||0)):0)),0);
+    check(usedHeight<=innerHeight,'total vertical layout budget');
+    for(const node of nodes){
+      if(!node.size||!node.children)continue;
+      const [top=0,left=0,bottom=0,right=0]=node.padding||[];
+      if(node.size.width>0&&!node.vertical){
+        const widthUsed=node.children.reduce((sum,c)=>sum+(c.size?.width||c.imageSize?.width||c.spacer||0),0)+(node.spacing||0)*Math.max(0,node.children.length-1);
+        check(widthUsed<=node.size.width-left-right+.01,'nested horizontal budget');
+      }
+      if(node.size.height>0&&node.vertical){
+        const fixed=node.children.reduce((sum,c)=>sum+(c.size?.height||c.imageSize?.height||c.spacer||0),0)+(node.spacing||0)*Math.max(0,node.children.length-1);
+        check(fixed<=node.size.height-top-bottom+.01,'nested vertical budget');
+      }
+      check(node.size.width<=innerWidth&&node.size.height<=innerHeight,'panel within root');
+    }
+  };
+  for(const [sw,sh,sm,wide,tall] of dimensions){
+    for(const param of categories)for(const family of ['small','medium']){
+      const runResult=await run({family,param,screen:{width:sw,height:sh},feed:production,registry:productionRegistry});
+      const [subset,category]=mapping[param][1].split(':');
+      const expected=production.subsets[subset].groups[category].models.slice().sort((a,b)=>a.rank-b.rank||a.id.localeCompare(b.id))[0];
+      const display=expected.id.replace(/^Amazon-Web-Search-Agent$/i,'Amazon Web Search').replace(/Qwen(\d)/i,'Qwen $1').replace(/\s*\(([^)]+)\)/g,' $1');
+      check(runResult.completed&&flat(runResult.result).some(x=>x.value===display),'actual frontier '+param+' '+family+' '+sw);
+      rootBudget(runResult.result,family==='small'?sm:wide,sm,family==='small'?8:10);
+    }
+    for(let offset=0;offset<categories.length;offset+=5){
+      const list=categories.slice(offset,offset+5);
+      const r=await run({family:'large',screen:{width:sw,height:sh},feed:production,registry:productionRegistry,stored:{'/d/AI-Radar/settings.json':JSON.stringify({large:list,largeCustomized:true})}});
+      check(r.completed&&flat(r.result).filter(x=>x.value==='#1').length>=list.length,'large renders custom group '+offset+' '+sw);
+      check(!flat(r.result).some(x=>x.image?.chart||x.value==='AI Radar'),'large remains graph-free');
+      rootBudget(r.result,wide,tall,10);
+    }
+  }
+  // Browse and choose across every section; verify each detail screen uses its selected category.
+  const sectionKeys=[['agent','alignment','work','coding','chatagent','taskoutcome','steering','tooluse'],['text','search','vision','documents'],['webdev','imagewebdev'],['image','editing','multiedit'],['video','imagevideo','videoedit'],['reasoning','writing','instruction']];
+  for(let i=0;i<sectionKeys.length;i++)for(let j=0;j<sectionKeys[i].length;j++){
+    const k=sectionKeys[i][j];sections.add(k);
+    const r=await run({app:true,choices:[0,i,j],feed:production,registry:productionRegistry});
+    check(r.tableRows[0]?.title.startsWith(mapping[k][0]+' · Top '),'grouped picker '+k);
+  }
+  check(sections.size===23,'all categories reachable through grouped settings');
+  for(const [family,i] of [['small',0],['medium',1],['large',2]]){
+    const r=await run({app:true,choices:family==='large'?[7,i]:[7,i,1,1],feed:production,registry:productionRegistry});
+    check(r.completed&&r.previews.some(w=>w.presented===family),'native preview route '+family);
+  }
+  const routes={imagewebdev:'https://arena.ai/leaderboard/code/image-to-webdev',multiedit:'https://arena.ai/leaderboard/image/image-edit/multi-image',editing:'https://arena.ai/leaderboard/image/image-edit/single-image',video:'https://arena.ai/leaderboard/video/text-to-video',imagevideo:'https://arena.ai/leaderboard/video/image-to-video',videoedit:'https://arena.ai/leaderboard/video/video-edit',image:'https://arena.ai/leaderboard/image/text-to-image'};
+  for(const [category,url] of Object.entries(routes)){
+    const r=await run({app:true,query:{category},selection:1,feed:production,registry:productionRegistry});
+    check(r.opened[0]===url,'exact leaderboard link '+category);
+  }
   console.log(count+' assertions passed');
 })().catch(e=>{console.error(e);process.exitCode=1});
