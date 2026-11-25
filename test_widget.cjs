@@ -229,10 +229,11 @@ async function run({family='small',param='search',feed=fixture,registry=reg,stor
   check(fixed.alerts.includes('Fixed widget parameter')&&fixed.files[prefs]===slot2.files[prefs],'fixed parameter explains migration without changing settings');
   const cancelPicker=await run({app:true,query:q('small','default'),choices:[9,-1],stored:slot2.files});
   check(cancelPicker.files[prefs]===slot2.files[prefs],'cancel does not overwrite selection');
-  const tappedPicker=await run({app:true,query:q('small','default','details'),selection:3,choices:[1,2],stored:slot2.files,feed:production,registry:productionRegistry});
-  check(JSON.parse(tappedPicker.files[prefs]).small.default==='vision','small detail change-category action saves selected category');
+  const tappedPicker=await run({app:true,query:q('small','default','details'),choices:[0,1,2],stored:slot2.files,feed:production,registry:productionRegistry});
+  check(JSON.parse(tappedPicker.files[prefs]).small.default==='vision','small action menu changes category');
+  check(tappedPicker.tableRows.length===0,'category change never opens large ranking table');
   const staleLink=await run({app:true,query:q('small','default','details'),stored:tappedPicker.files,feed:production,registry:productionRegistry});
-  check(staleLink.tableRows[0]?.title.startsWith('Vision · Top '),'stale widget link resolves current category');
+  check(staleLink.menus[0]?.title==='Vision'&&staleLink.tableRows.length===0,'stale widget link resolves current category without table');
   const corrupted=await run({family:'small',param:'',stored:{[prefs]:'{"small":{"default":"constructor"}}'},feed:production,registry:productionRegistry});
   check(flat(corrupted.result).some(x=>x.value==='Search'),'corrupted category preference safely falls back');
   const malicious=await run({app:true,query:q('large','__proto__'),choices:[9,-1],stored:slot2.files});
@@ -244,5 +245,21 @@ async function run({family='small',param='search',feed=fixture,registry=reg,stor
     const rendered=await run({family,param:'',stored:saved.files,feed:production,registry:productionRegistry});
     check(rendered.completed&&flat(rendered.result).some(x=>x.value==='#1'),'saved category renders '+family+' '+k);
   }
+  // Test actual tap URLs and verify the first screen contains four actions, no rankings table.
+  const tapQuery=Object.fromEntries(smallSelected.result.url.split('?')[1].split('&').map(part=>part.split('=').map(decodeURIComponent)));
+  check(tapQuery.mode==='quick','small widget emits quick menu route');
+  const quick=await run({app:true,query:tapQuery,stored:pickSmall.files,feed:production,registry:productionRegistry});
+  check(quick.completed&&quick.requests===0&&quick.tableRows.length===0,'quick menu needs no network or table');
+  check(quick.menus.length===1&&quick.menus[0].options.join('|')==='Change widget category|Open model|View full rankings|Settings','four short native actions');
+  const fullRank=await run({app:true,query:tapQuery,choices:[2],stored:pickSmall.files,feed:production,registry:productionRegistry});
+  check(fullRank.tableRows[0]?.title.startsWith('Work capability · Top '),'full ranking accessible by explicit choice');
+  const openModel=await run({app:true,query:q('small','default','quick'),choices:[1,0],feed:accessFeed,registry:reg});
+  check(openModel.menus[1]?.options.length<=3&&openModel.opened[0]==='https://chatgpt.com/'&&openModel.tableRows.length===0,'open provider directly from compact model picker');
+  const noModels=await run({app:true,query:q('small','default','quick'),choices:[1],feed:null});
+  check(noModels.alerts.includes('No models available')&&noModels.tableRows.length===0,'offline empty quick model menu safe');
+  const settingsFromQuick=await run({app:true,query:tapQuery,choices:[3],stored:pickSmall.files});
+  check(settingsFromQuick.menus[1]?.title==='Widget settings','settings still accessible');
+  const cancelQuick=await run({app:true,query:tapQuery,choices:[-1],stored:pickSmall.files});
+  check(cancelQuick.files[prefs]===pickSmall.files[prefs]&&cancelQuick.tableRows.length===0,'cancel quick menu no side effects');
   console.log(count+' assertions passed');
 })().catch(e=>{console.error(e);process.exitCode=1});

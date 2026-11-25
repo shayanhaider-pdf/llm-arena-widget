@@ -1,4 +1,4 @@
-// AI Radar v0.13 — Scriptable
+// AI Radar v0.14 — Scriptable
 const REPO='https://raw.githubusercontent.com/shayanhaider-pdf/llm-arena-widget/main/data/widget.json';
 const OLD_FEED='https://raw.githubusercontent.com/shayanhaider-pdf/llm-arena-widget/main/data/latest.json';
 const ACCESS='https://raw.githubusercontent.com/shayanhaider-pdf/llm-arena-widget/main/data/access.json';
@@ -405,7 +405,7 @@ function widget(ks,family,ctx=null){
   const inner=width-2*pad;
   const w=new ListWidget();w.backgroundColor=new Color('#15181F');w.setPadding(pad,pad,pad,pad);
   w.refreshAfterDate=new Date(Date.now()+(ctx?30*60000:6*3600000));
-  w.url=link(ks[0],'details',ctx);const gear=header(w,ks[0],large,inner);
+  w.url=link(ks[0],small&&ctx?'quick':'details',ctx);const gear=header(w,ks[0],large,inner);
   if(!small)gear.url=link(ks[0],'settings',ctx);
   w.addSpacer(gap);
   if(small){
@@ -513,6 +513,21 @@ async function editRows(current){
     if(j===3&&rows.length>1)rows.splice(i,1);
   }
 }
+// Small widgets have one tap target. Open a short native action sheet, not a dense table.
+async function quickMenu(ctx){
+  const k=savedCategory(ctx);
+  const i=await choose(C[k][0],['Change widget category','Open model','View full rankings','Settings']);
+  if(i===0)await changeCategory(ctx);
+  else if(i===1){
+    await refresh([k]);
+    const available=winners(get(k),k).map((m,j)=>({m,label:labels[j]})).filter(x=>x.m);
+    if(!available.length){await note('No models available',diagnostic||'No ranking data for this category.');return}
+    const j=await choose('Open model',available.map(({m,label})=>label+' · '+rank(m)+' '+modelName(m)));
+    if(j>=0&&available[j])Safari.open(available[j].m.url);
+  }
+  else if(i===2)await details(k,ctx);
+  else if(i===3)await menu(ctx);
+}
 async function changeCategory(ctx=null){
   if(!ctx){
     const i=await choose('Choose widget size',['Small','Medium']);if(i<0)return;
@@ -562,7 +577,8 @@ async function main(){
   }else{
     const q=args.queryParameters||{},ctx=singleContext(q.family,q.slot);
     const k=ctx?savedCategory(ctx):q.category;
-    if(q.mode==='settings'||!category(k))await menu(ctx);
+    if(ctx?.family==='small'&&(q.mode==='quick'||q.mode==='details'))await quickMenu(ctx);
+    else if(q.mode==='settings'||!category(k))await menu(ctx);
     else await details(k,ctx);
   }
 }
