@@ -1,0 +1,867 @@
+model_id	scope	access_status	provider	evidence_url
+Alpaca 13B	chat	unverified		
+Amazon Nova 2 Lite	chat	unverified		
+Amazon Nova Lite 1.0	chat	unverified		
+Amazon Nova Micro 1.0	chat	unverified		
+Amazon Nova Pro 1.0	chat	unverified		
+amazon-nova-experimental-chat (10-09)	chat	unverified		
+amazon-nova-experimental-chat (10-20)	chat	unverified		
+amazon-nova-experimental-chat (11-10)	chat	unverified		
+amazon-nova-experimental-chat (12-10)	chat	unverified		
+amazon-nova-experimental-chat (26-01-10)	chat	unverified		
+amazon-nova-experimental-chat (26-02-10)	chat	unverified		
+Amazon-Web-Search-Agent	chat	unverified		
+Athene 70B (0725)	chat	unverified		
+Athene V2 Chat	chat	unverified		
+Aya Expanse 32B	chat	unverified		
+Aya Expanse 8B	chat	unverified		
+Aya Vision 32B	chat	unverified		
+BAGEL	chat	unverified		
+Beam 1.0 501B A23B	chat	unverified		
+Beam 1.0 501B A23B	code	unverified		
+Beam 1.0 501B A23B	work	unverified		
+ChatGLM 6B	chat	unverified		
+ChatGLM2 6B	chat	unverified		
+ChatGLM3 6B	chat	unverified		
+ChatGPT Image Latest (High Fidelity, 20251216)	chat	unverified		
+ChatGPT-4o Latest (20250326)	chat	unverified		
+Claude 3 Haiku (20240307)	chat	unverified		
+Claude 3 Opus (20240229)	chat	unverified		
+Claude 3 Sonnet (20240229)	chat	unverified		
+Claude 3.5 Haiku (20241022)	chat	unverified		
+Claude 3.5 Sonnet (20240620)	chat	unverified		
+Claude 3.5 Sonnet (20241022)	chat	unverified		
+Claude 3.7 Sonnet (20250219)	chat	unverified		
+Claude 3.7 Sonnet (Thinking 32K, 20250219)	chat	unverified		
+Claude Fable 5 (High)	chat	unverified		
+Claude Fable 5 (High)	code	unverified		
+Claude Fable 5 (High)	work	unverified		
+Claude Fable 5.1 (High)	chat	unverified		
+Claude Fable 5.1 (Max)	chat	unverified		
+Claude Fable 5.1 (Max)	code	unverified		
+Claude Fable 5.1 (Max)	work	unverified		
+Claude Fable 5.2 (Max)	chat	unverified		
+Claude Fable 5.2 (Max)	work	unverified		
+Claude Fable 5.2 (xHigh)	code	unverified		
+Claude Haiku 4.5 (20251001)	chat	unverified		
+Claude Haiku 4.5 (20251001)	code	unverified		
+Claude Haiku 5.5 (High)	chat	unverified		
+Claude Haiku 5.5 (High)	code	unverified		
+Claude Haiku 5.5 (High)	work	unverified		
+Claude Opus 4 (20250514)	chat	unverified		
+Claude Opus 4 (Thinking 16K, 20250514)	chat	unverified		
+Claude Opus 4.1 (20250805)	chat	unverified		
+Claude Opus 4.1 (20250805)	code	unverified		
+Claude Opus 4.1 (Thinking 16K, 20250805)	chat	unverified		
+Claude Opus 4.5 (20251101)	chat	unverified		
+Claude Opus 4.5 (20251101)	code	unverified		
+Claude Opus 4.5 (High, 32K, 20251101)	chat	unverified		
+Claude Opus 4.5 (High, 32K, 20251101)	code	unverified		
+Claude Opus 4.5 (Search)	chat	unverified		
+Claude Opus 4.6	chat	unverified		
+Claude Opus 4.6	code	unverified		
+Claude Opus 4.6 (High)	chat	unverified		
+Claude Opus 4.6 (High)	code	unverified		
+Claude Opus 4.6 (Search)	chat	unverified		
+Claude Opus 4.7	chat	unverified		
+Claude Opus 4.7	code	unverified		
+Claude Opus 4.7 (High)	chat	unverified		
+Claude Opus 4.7 (High)	code	unverified		
+Claude Opus 4.8	chat	unverified		
+Claude Opus 4.8	code	unverified		
+Claude Opus 4.8 (High)	chat	unverified		
+Claude Opus 4.8 (High)	code	unverified		
+Claude Opus 5 (High)	chat	unverified		
+Claude Opus 5 (High)	code	unverified		
+Claude Opus 5 (Max)	chat	unverified		
+Claude Opus 5 (Max)	code	unverified		
+Claude Opus 5 (Max)	work	unverified		
+Claude Opus 5.5 (High)	chat	unverified		
+Claude Opus 5.5 (High)	work	unverified		
+Claude Opus 5.5 (Max)	code	unverified		
+Claude Opus 5.5 (Max)	work	unverified		
+Claude Opus 5.5 (Medium)	chat	unverified		
+Claude Sonnet 4 (20250514)	chat	unverified		
+Claude Sonnet 4 (Thinking 32K, 20250514)	chat	unverified		
+Claude Sonnet 4.5 (20250929)	chat	unverified		
+Claude Sonnet 4.5 (20250929)	code	unverified		
+Claude Sonnet 4.5 (High, 32K, 20250929)	chat	unverified		
+Claude Sonnet 4.5 (High, 32K, 20250929)	code	unverified		
+Claude Sonnet 4.6	chat	free	Anthropic	https://support.claude.com/en/articles/18537562-claude-sonnet-4-6-is-leaving-the-model-selector
+Claude Sonnet 4.6	code	free	Anthropic	https://support.claude.com/en/articles/18537562-claude-sonnet-4-6-is-leaving-the-model-selector
+Claude Sonnet 4.6 (Search)	chat	unverified	Anthropic	https://support.claude.com/en/articles/18537562-claude-sonnet-4-6-is-leaving-the-model-selector
+Claude Sonnet 5 (High)	chat	unverified	Anthropic	https://support.claude.com/en/articles/18537562-claude-sonnet-4-6-is-leaving-the-model-selector
+Claude Sonnet 5 (High)	code	unverified		
+Claude Sonnet 5 (High)	work	unverified		
+Claude Sonnet 5 (Search)	chat	unverified		
+Claude Sonnet 5.5 (High)	code	unverified		
+Claude Sonnet 5.5 (High)	work	unverified		
+Claude Sonnet 5.5 (Max)	work	unverified		
+Claude Sonnet 5.5 (xHigh)	chat	unverified		
+Claude Sonnet 5.5 (xHigh)	code	unverified		
+Code Llama 34B Instruct	chat	unverified		
+Code Llama 70B Instruct	chat	unverified		
+CogVLM2 Llama3 Chat 19B	chat	unverified		
+Command A (03-2025)	chat	unverified		
+Command R	chat	unverified		
+Command R (08-2024)	chat	unverified		
+Command R+	chat	unverified		
+Command R+ (08-2024)	chat	unverified		
+Cosmos3-Super-Text2Image	chat	unverified		
+Cosmos3-Super-Text2Image (Agentic)	chat	unverified		
+DALL-E 3	chat	unverified		
+DBRX Instruct Preview	chat	unverified		
+DeepSeek LLM 67B Chat	chat	unverified		
+DeepSeek-Coder-V2	chat	unverified		
+DeepSeek-R1	chat	unverified		
+DeepSeek-R1 (0528)	chat	unverified		
+DeepSeek-V2.5	chat	unverified		
+DeepSeek-V2.5 (1210)	chat	unverified		
+DeepSeek-V3	chat	unverified		
+DeepSeek-V3 (0324)	chat	unverified		
+DeepSeek-V3.1	chat	unverified		
+DeepSeek-V3.1 (Thinking)	chat	unverified		
+DeepSeek-V3.1-Terminus	chat	unverified		
+DeepSeek-V3.1-Terminus (Thinking)	chat	unverified		
+DeepSeek-V3.2	chat	unverified		
+DeepSeek-V3.2	code	unverified		
+DeepSeek-V3.2 (Thinking)	chat	unverified		
+DeepSeek-V3.2 (Thinking)	code	unverified		
+DeepSeek-V3.2-Exp	chat	unverified		
+DeepSeek-V3.2-Exp	code	unverified		
+DeepSeek-V3.2-Exp (Thinking)	chat	unverified		
+DeepSeek-V4-Flash	chat	unverified		
+DeepSeek-V4-Flash (High)	code	unverified		
+DeepSeek-V4-Flash Preview (High)	chat	unverified		
+DeepSeek-V4-Flash Preview (High)	code	unverified		
+DeepSeek-V4-Pro	chat	unverified		
+DeepSeek-V4-Pro	code	unverified		
+DeepSeek-V4-Pro (High, 20260813)	chat	unverified		
+DeepSeek-V4-Pro (High, 20260813)	code	unverified		
+DeepSeek-V4-Pro Preview (High)	chat	unverified		
+DeepSeek-V4-Pro Preview (High)	code	unverified		
+DeepSeek-V4.1-Flash-20260910 (Max)	chat	reported_free	DeepSeek	https://www.deepseek.com/en/
+DeepSeek-V4.1-Flash-20260910 (Max)	code	unverified		
+DeepSeek-V4.1-Flash-20261017 (Max)	code	reported_free	DeepSeek	https://freellmarena.com/free-ai
+DeepSeek-V4.1-Flash-20261017 (Max)	work	unverified	DeepSeek	https://deepseek.com/en/news/deepseek-v4-1-flash/
+Devstral 2	code	unverified		
+Devstral Medium (2507)	code	unverified		
+Dola Seed 2.0 Pro	chat	unverified		
+Dolly 2.0 12B	chat	unverified		
+Dolphin 2.2.1 Mistral 7B	chat	unverified		
+Dreamina Seedance 2.0 (720p)	chat	unverified		
+Dreamina Seedance 2.5 (720p)	chat	unverified		
+ERNIE 5.0 (0110)	chat	unverified		
+ERNIE 5.1	chat	unverified		
+ERNIE-5.0-Preview (1022)	chat	unverified		
+ERNIE-5.0-Preview (1203)	chat	unverified		
+ERNIE-5.0-Preview (1220)	chat	unverified		
+Falcon 180B Chat	chat	unverified		
+FastChat-T5 3B	chat	unverified		
+FLUX 3 Video	chat	unverified		
+FLUX 3 Video (20260811)	chat	unverified		
+FLUX.1 [dev] (FP8)	chat	unverified		
+FLUX.1 Kontext [dev]	chat	unverified		
+FLUX.1 Kontext [max]	chat	unverified		
+FLUX.1 Kontext [pro]	chat	unverified		
+FLUX.2 [dev]	chat	unverified		
+FLUX.2 [flex]	chat	unverified		
+FLUX.2 [klein] 4B	chat	unverified		
+FLUX.2 [klein] 9B	chat	unverified		
+FLUX.2 [max]	chat	unverified		
+FLUX.2 [pro]	chat	unverified		
+FLUX1.1 [pro]	chat	unverified		
+Gemini 1.5 Flash (001)	chat	unverified		
+Gemini 1.5 Flash (002)	chat	unverified		
+Gemini 1.5 Flash-8B (001)	chat	unverified		
+Gemini 1.5 Pro (001)	chat	unverified		
+Gemini 1.5 Pro (002)	chat	unverified		
+Gemini 2.0 Flash (001)	chat	unverified		
+Gemini 2.0 Flash Preview Image Generation	chat	unverified		
+Gemini 2.0 Flash-Lite Preview (02-05)	chat	unverified		
+Gemini 2.5 Flash	chat	unverified		
+Gemini 2.5 Flash Image Preview (nano-banana)	chat	unverified		
+Gemini 2.5 Flash Preview (09-2025)	chat	unverified		
+Gemini 2.5 Flash-Lite Preview (Non-Thinking, 09-2025)	chat	unverified		
+Gemini 2.5 Flash-Lite Preview (Thinking, 06-17)	chat	unverified		
+Gemini 2.5 Pro	chat	unverified		
+Gemini 2.5 Pro	code	unverified		
+Gemini 3 Flash	chat	unverified	Google	https://support.google.com/gemini/answer/16275805?hl=en
+Gemini 3 Flash	code	unverified		
+Gemini 3 Flash (Grounding)	chat	unverified		
+Gemini 3 Flash (Minimal)	chat	unverified		
+Gemini 3 Flash (Minimal)	code	unverified		
+Gemini 3 Pro	chat	unverified		
+Gemini 3 Pro	code	unverified		
+Gemini 3 Pro (Grounding)	chat	unverified		
+Gemini 3 Pro Image (nano-banana-pro, 2K)	chat	unverified		
+Gemini 3 Pro Image Preview (nano-banana-pro)	chat	unverified		
+Gemini 3.1 Flash Image (nano-banana-2, Web Search)	chat	reported_free	Google	https://support.google.com/gemini/answer/16275805?hl=en
+Gemini 3.1 Flash-Lite Image (nano-banana-2-lite)	chat	unverified		
+Gemini 3.1 Flash-Lite Preview	chat	unverified		
+Gemini 3.1 Flash-Lite Preview	code	unverified		
+Gemini 3.1 Pro (Grounding)	chat	unverified		
+Gemini 3.1 Pro Preview	chat	unverified		
+Gemini 3.1 Pro Preview	code	unverified		
+Gemini 3.1 Pro Preview	work	unverified		
+Gemini 3.5 Flash (High)	chat	unverified		
+Gemini 3.5 Flash (High)	code	unverified		
+Gemini 3.5 Flash (Medium)	chat	unverified		
+Gemini 3.5 Flash (Medium)	code	unverified		
+Gemini 3.5 Flash-Lite	chat	unverified		
+Gemini 3.5 Flash-Lite	code	unverified		
+Gemini 3.6 Flash (High)	chat	unverified		
+Gemini 3.6 Flash (High)	code	unverified		
+Gemini 3.7 Flash (High)	chat	unverified		
+Gemini 3.7 Flash (High)	code	unverified		
+Gemini 3.7 Flash (High)	work	unverified		
+Gemini 3.8 Flash (High)	chat	unverified	Google	https://support.google.com/gemini/answer/16275805?hl=en
+Gemini 3.8 Flash (High)	code	unverified		
+Gemini 3.8 Flash (High)	work	unverified		
+Gemini 4 Argon (High)	chat	unverified		
+Gemini 4 Argon (High)	code	unverified		
+Gemini 4 Argon (High)	work	unverified		
+Gemini 4 Carbon (High)	chat	unverified		
+Gemini 4 Carbon (High)	code	unverified		
+Gemini 4 Carbon (High)	work	unverified		
+Gemini 4 Hydrogen (High)	chat	reported_free	Google	https://support.google.com/gemini/answer/16275805?hl=en
+Gemini 4 Hydrogen (High)	work	unverified		
+Gemini 4 Hydrogen (xHigh)	code	unverified		
+Gemini 4 Neon (High)	chat	unverified		
+Gemini 4 Neon (High)	work	unverified		
+Gemini 4 Neon (xHigh)	code	unverified		
+Gemini Advanced (0514)	chat	unverified		
+Gemini Nano Banana 2.1	chat	unverified		
+Gemini Omni 1.1 Flash	chat	unverified		
+Gemini Omni 1.2 Flash	chat	unverified		
+Gemini Pro	chat	unverified		
+Gemini Pro (Dev API)	chat	unverified		
+gemini-omni-flash	chat	unverified		
+Gemma 1.1 2B IT	chat	unverified		
+Gemma 1.1 7B IT	chat	unverified		
+Gemma 2 27B IT	chat	unverified		
+Gemma 2 2B IT	chat	unverified		
+Gemma 2 9B IT	chat	unverified		
+Gemma 2 9B IT SimPO	chat	unverified		
+Gemma 2B IT	chat	unverified		
+Gemma 3 12B IT	chat	unverified		
+Gemma 3 27B IT	chat	unverified		
+Gemma 3 4B IT	chat	unverified		
+Gemma 3n E4B IT	chat	unverified		
+Gemma 4 26B A4B	chat	unverified		
+Gemma 4 26B A4B	code	unverified		
+Gemma 4 31B	chat	unverified		
+Gemma 4 31B	code	unverified		
+Gemma 7B IT	chat	unverified		
+GLM-4 (0520)	chat	unverified		
+GLM-4-Plus	chat	unverified		
+GLM-4-Plus (0111)	chat	unverified		
+GLM-4.5	chat	unverified		
+GLM-4.5-Air	chat	unverified		
+GLM-4.5V	chat	unverified		
+GLM-4.6	chat	unverified		
+GLM-4.6	code	unverified		
+GLM-4.6V	chat	unverified		
+GLM-4.7	chat	unverified		
+GLM-4.7	code	unverified		
+GLM-4.7-Flash	chat	unverified		
+GLM-5	chat	unverified		
+GLM-5	code	unverified		
+GLM-5.1	chat	unverified		
+GLM-5.1	code	unverified		
+GLM-5.2 (Max)	chat	unverified		
+GLM-5.2 (Max)	code	unverified		
+GLM-5.2 (Max)	work	unverified		
+GLM-5.3 (Max)	chat	unverified	Z.ai	https://chat.z.ai/
+GLM-5.3 (Max)	code	unverified		
+GLM-5.3 (Max)	work	unverified		
+GLM-5.3-Flash	chat	free	Z.ai	https://chat.z.ai/
+GLM-5.3-Flash	code	reported_free	Z.ai	https://chat.z.ai/space/f0ket6ru68b1-ppt
+GLM-5.3-Flash	work	reported_free	Z.ai	https://chat.z.ai/space/f0ket6ru68b1-ppt
+GLM-5V-Turbo	chat	unverified		
+GLM-Image	chat	unverified		
+GPT-3.5 Turbo (0125)	chat	unverified		
+GPT-3.5 Turbo (1106)	chat	unverified		
+GPT-4 (0314)	chat	unverified		
+GPT-4 (0613)	chat	unverified		
+GPT-4 Turbo (2024-04-09)	chat	unverified		
+GPT-4 Turbo Preview (0125)	chat	unverified		
+GPT-4 Turbo Preview (1106)	chat	unverified		
+GPT-4.1 (2025-04-14)	chat	unverified		
+GPT-4.1 mini (2025-04-14)	chat	unverified		
+GPT-4.1 nano (2025-04-14)	chat	unverified		
+GPT-4.5 Preview (2025-02-27)	chat	unverified		
+GPT-4o (2024-05-13)	chat	unverified		
+GPT-4o (2024-08-06)	chat	unverified		
+GPT-4o mini (2024-07-18)	chat	unverified		
+GPT-5 (High)	chat	unverified		
+GPT-5 (Medium)	code	unverified		
+GPT-5 Chat	chat	unverified		
+GPT-5 mini (High)	chat	unverified		
+GPT-5 nano (High)	chat	unverified		
+GPT-5.1	chat	unverified		
+GPT-5.1	code	unverified		
+GPT-5.1 (High)	chat	unverified		
+GPT-5.1 (Medium)	code	unverified		
+GPT-5.1 (Search)	chat	unverified		
+GPT-5.1-Codex	code	unverified		
+GPT-5.1-Codex-Mini	code	unverified		
+GPT-5.2	chat	unverified		
+GPT-5.2	code	unverified		
+GPT-5.2 (High)	chat	unverified		
+GPT-5.2 (Search, Non-Reasoning)	chat	unverified		
+GPT-5.2 (Search)	chat	unverified		
+GPT-5.2 Chat (20260210)	chat	unverified		
+GPT-5.2-Codex	code	unverified		
+GPT-5.3 Chat	chat	unverified		
+GPT-5.3-Codex (Codex Harness)	code	unverified		
+GPT-5.4	chat	unverified		
+GPT-5.4	code	unverified		
+GPT-5.4 (High, Codex Harness)	code	unverified		
+GPT-5.4 (High)	chat	unverified		
+GPT-5.4 (Medium, Codex Harness)	code	unverified		
+GPT-5.4 (Search)	chat	unverified		
+GPT-5.4 mini (High)	chat	unverified		
+GPT-5.4 mini (High)	code	unverified		
+GPT-5.4 nano (High)	chat	unverified		
+GPT-5.5	chat	unverified		
+GPT-5.5 (Codex Harness)	code	unverified		
+GPT-5.5 (High, Codex Harness)	code	unverified		
+GPT-5.5 (High)	chat	unverified		
+GPT-5.5 (Search)	chat	unverified		
+GPT-5.5 (xHigh, Codex Harness)	code	unverified		
+GPT-5.5 Instant	chat	unverified		
+GPT-5.6 Luna (xHigh, Codex Harness)	code	plus_candidate	OpenAI	https://help.openai.com/en/articles/20001354-gpt-6-and-other-models-in-chatgpt
+GPT-5.6 Luna (xHigh)	chat	reported_free	OpenAI	https://help.openai.com/en/articles/20001354-gpt-6-and-other-models-in-chatgpt
+GPT-5.6 Sol (xHigh, Codex Harness)	code	plus_candidate	OpenAI	https://help.openai.com/en/articles/20001354-gpt-6-and-other-models-in-chatgpt
+GPT-5.6 Sol (xHigh)	chat	plus_candidate	OpenAI	https://help.openai.com/en/articles/20001354-gpt-6-and-other-models-in-chatgpt
+GPT-5.6 Sol (xHigh)	work	plus_candidate	OpenAI	https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex
+GPT-5.6 Terra (xHigh, Codex Harness)	code	plus_candidate	OpenAI	https://help.openai.com/en/articles/20001354-gpt-6-and-other-models-in-chatgpt
+GPT-5.6 Terra (xHigh)	chat	unverified		
+GPT-5.6 Terra (xHigh)	work	plus_candidate	OpenAI	https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex
+GPT-6 Astra (Max)	chat	paid	OpenAI	https://help.openai.com/en/articles/20001354-gpt-6-and-other-models-in-chatgpt
+GPT-6 Astra (Max)	code	plus_candidate	OpenAI	https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex
+GPT-6 Astra (Max)	work	plus_candidate	OpenAI	https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex
+GPT-6 Luna (Low)	work	plus_candidate	OpenAI	https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex
+GPT-6 Luna (Max)	chat	unverified		
+GPT-6 Luna (Max)	code	plus_candidate	OpenAI	https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex
+GPT-6 Luna (Max)	work	plus_candidate	OpenAI	https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex
+GPT-6 Luna (Medium)	work	plus_candidate	OpenAI	https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex
+GPT-6 Sol (Max)	chat	plus_candidate	OpenAI	https://help.openai.com/en/articles/20001354-gpt-6-and-other-models-in-chatgpt
+GPT-6 Sol (Max)	code	plus_candidate	OpenAI	https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex
+GPT-6 Sol (Max)	work	plus_candidate	OpenAI	https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex
+GPT-6.1 Sol (Max)	chat	unverified		
+GPT-6.1 Sol (Max)	code	plus_candidate	OpenAI	https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex
+GPT-6.1 Sol (Max)	work	plus_candidate	OpenAI	https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex
+GPT-6.1 Sol (Medium)	work	plus	OpenAI	https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex
+GPT-6.1 Terra (Max)	chat	unverified		
+GPT-6.1 Terra (Max)	code	plus_candidate	OpenAI	https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex
+GPT-6.1 Terra (Max)	work	plus_candidate	OpenAI	https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex
+GPT-6.1 Terra (Medium)	work	plus	OpenAI	https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex
+GPT-6.2 Astra (Max)	chat	paid	OpenAI	https://help.openai.com/en/articles/20001354-gpt-6-and-other-models-in-chatgpt
+GPT-6.2 Astra (Max)	code	plus_candidate	OpenAI	https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex
+GPT-6.2 Astra (Max)	work	plus_candidate	OpenAI	https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex
+GPT-6.2 Sol (Max)	chat	plus_candidate	OpenAI	https://help.openai.com/en/articles/20001354-gpt-6-and-other-models-in-chatgpt
+GPT-6.2 Sol (Max)	code	plus_candidate	OpenAI	https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex
+GPT-6.2 Sol (Max)	work	plus_candidate	OpenAI	https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex
+GPT-Image-1	chat	unverified		
+GPT-Image-1 mini	chat	unverified		
+GPT-Image-1.5 (High Fidelity)	chat	unverified		
+GPT-Image-2 (Medium)	chat	unverified		
+GPT-Image-2.5 Flare	chat	unverified		
+GPT-Image-2.5 Sunburst	chat	unverified		
+GPT-Image-2.6 Flare (Medium)	chat	reported_free	OpenAI	https://openai.com/index/introducing-images-2-6/
+GPT-Image-2.6 Sunburst (Medium)	chat	reported_free	OpenAI	https://openai.com/index/introducing-images-2-6/
+gpt-oss-120b	chat	unverified		
+gpt-oss-20b	chat	unverified		
+GPT4All 13B Snoozy	chat	unverified		
+Granite 3.0 2B Instruct	chat	unverified		
+Granite 3.0 8B Instruct	chat	unverified		
+Granite 3.1 2B Instruct	chat	unverified		
+Granite 3.1 8B Instruct	chat	unverified		
+Granite 4.1 8B	chat	unverified		
+Granite 4.1 8B	code	unverified		
+Granite 4.2 30B	chat	unverified		
+Granite 4.2 3B	chat	unverified		
+Granite 4.2 8B	chat	unverified		
+Granite-4.0-H-Small	chat	unverified		
+Grok 2 (2024-08-13)	chat	unverified		
+Grok 2 mini (2024-08-13)	chat	unverified		
+Grok 3 Mini (High)	chat	unverified		
+Grok 3 Mini Beta	chat	unverified		
+Grok 3 Preview (02-24)	chat	unverified		
+Grok 4 (0709)	chat	unverified		
+Grok 4 Fast (Non-Reasoning)	chat	unverified		
+Grok 4 Fast (Reasoning)	chat	unverified		
+Grok 4 Fast (Reasoning)	code	unverified		
+Grok 4.1	chat	unverified		
+Grok 4.1 (Thinking)	chat	unverified		
+Grok 4.1 (Thinking)	code	unverified		
+Grok 4.1 Fast (Reasoning)	chat	unverified		
+Grok 4.1 Fast (Reasoning)	code	unverified		
+Grok 4.20 Beta (Reasoning, 0309)	chat	unverified		
+Grok 4.20 Beta (Reasoning, 0309)	code	unverified		
+Grok 4.20 Beta 1	chat	unverified		
+Grok 4.20 Multi-Agent Beta (0309)	chat	unverified		
+Grok 4.3	chat	unverified		
+Grok 4.3	code	unverified		
+Grok 4.5	chat	unverified		
+Grok 4.5	code	unverified		
+Grok 4.6 (High)	chat	unverified	xAI	https://x.ai/pricing
+Grok 4.6 (High)	code	unverified		
+Grok 4.6 (xHigh)	work	unverified		
+Grok 4.7 (xHigh)	chat	unverified		
+Grok 4.7 (xHigh)	code	unverified		
+Grok 4.7 (xHigh)	work	unverified		
+Grok Code Fast 1	code	unverified		
+Grok Imagine Image	chat	unverified		
+Grok Imagine Image (Quality, 20260519)	chat	unverified		
+Grok Imagine Image 2.0	chat	unverified		
+Grok Imagine Image 2.0 (20260801)	chat	unverified		
+Grok Imagine Image Pro	chat	unverified		
+Grok Imagine Video	chat	unverified		
+Grok Imagine Video (480p)	chat	unverified		
+Grok Imagine Video (720p)	chat	unverified		
+Grok Imagine Video 1.5	chat	unverified		
+Grok Imagine Video 1.5 (720p)	chat	unverified		
+Guanaco 33B	chat	unverified		
+Hailuo 02 Fast	chat	unverified		
+Hailuo 02 Pro	chat	unverified		
+Hailuo 02 Standard	chat	unverified		
+Hailuo 2.3	chat	unverified		
+HappyHorse 1.0	chat	unverified		
+HiDream-O1-Image	chat	unverified		
+HiDream-O1-Video-1.0	chat	unverified		
+Hunyuan Large (2025-02-10)	chat	unverified		
+Hunyuan Large Vision	chat	unverified		
+Hunyuan Standard (2025-02-10)	chat	unverified		
+Hunyuan Standard 256K	chat	unverified		
+Hunyuan Standard Vision (2024-12-31)	chat	unverified		
+Hunyuan T1 (20250711)	chat	unverified		
+Hunyuan Turbo (0110)	chat	unverified		
+Hunyuan TurboS (20250226)	chat	unverified		
+Hunyuan TurboS (20250416)	chat	unverified		
+Hunyuan Vision 1.5 Thinking	chat	unverified		
+HunyuanImage 3.0	chat	unverified		
+HunyuanImage 3.0 Instruct	chat	unverified		
+HunyuanVideo 1.5	chat	unverified		
+Hy3	chat	unverified		
+Hy3	code	unverified		
+Hy3	work	unverified		
+Hy3 preview	chat	unverified		
+Hy3 preview	code	unverified		
+Hy4	code	unverified		
+Hy4	work	unverified		
+Hy4 preview	code	unverified		
+Hy4 preview	work	unverified		
+Ideogram 2.0	chat	unverified		
+Ideogram 3.0 (Quality)	chat	unverified		
+Ideogram 4.0 (Quality)	chat	unverified		
+Ideogram 4.5	chat	unverified		
+Imagen 3 (generate-002)	chat	unverified		
+Imagen 4 (generate-001)	chat	unverified		
+Imagen 4 Ultra (generate-001)	chat	unverified		
+Inkling	chat	unverified		
+Inkling	code	unverified		
+Inkling	work	unverified		
+Inkling 2 Mini	chat	unverified		
+Inkling 2 Mini	code	unverified		
+Inkling 2 Mini	work	unverified		
+Inkling 2 Small	chat	unverified		
+Inkling 2 Small	code	unverified		
+Inkling 2 Small	work	unverified		
+Inkling-Small	chat	unverified		
+Inkling-Small	code	unverified		
+Inkling-Small	work	unverified		
+INTELLECT-3	chat	unverified		
+InternLM2.5 20B Chat	chat	unverified		
+InternVL2 26B	chat	unverified		
+InternVL2 4B	chat	unverified		
+Jamba 1.5 Large	chat	unverified		
+Jamba 1.5 Mini	chat	unverified		
+Kandinsky 5.0 Video Lite	chat	unverified		
+Kandinsky 5.0 Video Pro	chat	unverified		
+KAT-Coder-Pro V1	code	unverified		
+Kimi K2 Preview (0711)	chat	unverified		
+Kimi K2 Preview (0905)	chat	unverified		
+Kimi K2 Thinking Turbo	chat	unverified		
+Kimi K2 Thinking Turbo	code	unverified		
+Kimi K2.5 (Instant)	chat	unverified		
+Kimi K2.5 (Instant)	code	unverified		
+Kimi K2.5 (Thinking)	chat	unverified		
+Kimi K2.5 (Thinking)	code	unverified		
+Kimi K2.6	chat	unverified	Moonshot AI	https://www.kimi.com/en/help/membership/membership-pricing
+Kimi K2.6	code	unverified		
+Kimi K2.7 Code	code	unverified		
+Kimi K3 (Max)	chat	unverified	Moonshot AI	https://www.kimi.com/en/help/others/model-mode-selection
+Kimi K3 (Max)	code	unverified		
+Kimi K3 (Max)	work	unverified		
+Kimi K3.1 Pro (Max)	chat	unverified	Moonshot AI	https://www.kimi.com/en/help/membership/membership-pricing
+Kimi K3.1 Pro (Max)	code	unverified	Moonshot AI	https://www.kimi.com/en/help/kimi-code/benefits
+Kimi K3.1 Pro (Max)	work	unverified		
+Kling 2.1 Master	chat	unverified		
+Kling 2.1 Standard	chat	unverified		
+Kling 2.5 Turbo (1080p)	chat	unverified		
+Kling 2.6 Pro	chat	unverified		
+Kling 3.0 Pro	chat	unverified		
+Kling Image O1	chat	unverified		
+Kling O1 Pro	chat	unverified		
+Kling O3 Pro	chat	unverified		
+Koala 13B	chat	unverified		
+Krea 2 Large	chat	unverified		
+Krea 2 Medium	chat	unverified		
+Krea 2 Turbo	chat	unverified		
+Krea 3 Ultra	chat	unverified		
+Laguna M.1	code	unverified		
+Laguna XS.2	code	unverified		
+Ling-flash-2.0	chat	unverified		
+LLaMA 13B	chat	unverified		
+Llama 2 13B Chat	chat	unverified		
+Llama 2 70B Chat	chat	unverified		
+Llama 2 70B SteerLM Chat	chat	unverified		
+Llama 2 7B Chat	chat	unverified		
+Llama 3 70B Instruct	chat	unverified		
+Llama 3 8B Instruct	chat	unverified		
+Llama 3.1 405B Instruct (BF16)	chat	unverified		
+Llama 3.1 405B Instruct (FP8)	chat	unverified		
+Llama 3.1 70B Instruct	chat	unverified		
+Llama 3.1 8B Instruct	chat	unverified		
+Llama 3.1 Nemotron 51B Instruct	chat	unverified		
+Llama 3.1 Nemotron 70B Instruct	chat	unverified		
+Llama 3.1 Nemotron Ultra 253B v1	chat	unverified		
+Llama 3.1 Tulu 3 70B	chat	unverified		
+Llama 3.1 Tulu 3 8B	chat	unverified		
+Llama 3.2 11B Vision Instruct	chat	unverified		
+Llama 3.2 1B Instruct	chat	unverified		
+Llama 3.2 3B Instruct	chat	unverified		
+Llama 3.2 90B Vision Instruct	chat	unverified		
+Llama 3.3 70B Instruct	chat	unverified		
+Llama 3.3 Nemotron Super 49B v1	chat	unverified		
+Llama 3.3 Nemotron Super 49B v1.5	chat	unverified		
+Llama 4 Maverick 17B 128E Instruct	chat	unverified		
+Llama 4 Scout 17B 16E Instruct	chat	unverified		
+LLaVA 1.6 34B	chat	unverified		
+LLaVA-OneVision Qwen2 72B OV	chat	unverified		
+LongCat-Flash-Chat	chat	unverified		
+LongCat-Flash-Chat Exp (2602)	chat	unverified		
+LTX-2 19B	chat	unverified		
+Lucid Origin	chat	unverified		
+Luma Photon	chat	unverified		
+Luma Ray2	chat	unverified		
+Luma Ray3	chat	unverified		
+Magistral Medium (2506)	chat	unverified		
+MAI-Image-1	chat	unverified		
+MAI-Image-2	chat	unverified		
+MAI-Image-2.5	chat	unverified		
+MAI-Image-2.6	chat	unverified		
+MAI-Image-2.7	chat	unverified		
+Mercury	chat	unverified		
+Mercury 2	chat	unverified		
+Mercury 2	code	unverified		
+MiMo-V2-Flash (Non-Thinking)	chat	unverified		
+MiMo-V2-Flash (Non-Thinking)	code	unverified		
+MiMo-V2-Flash (Thinking)	chat	unverified		
+MiMo-V2-Flash (Thinking)	code	unverified		
+MiMo-V2-Omni	chat	unverified		
+MiMo-V2-Pro	chat	unverified		
+MiMo-V2-Pro	code	unverified		
+MiMo-V2.5	chat	unverified		
+MiMo-V2.5	code	unverified		
+MiMo-V2.5-Pro	chat	unverified		
+MiMo-V2.5-Pro	code	unverified		
+MiMo-V2.6-Flash	chat	unverified		
+MiMo-V2.6-Flash	code	unverified		
+MiMo-V2.6-Flash	work	unverified		
+MiMo-V2.6-Pro	chat	unverified		
+MiMo-V2.6-Pro	code	unverified		
+MiMo-V2.6-Pro	work	unverified		
+MiniCPM-V 2.6	chat	unverified		
+MiniMax H3	chat	unverified		
+MiniMax H3-Image	chat	reported_free	MiniMax	https://freellmarena.com/model/minimax-h3-image
+MiniMax-M1	chat	unverified		
+MiniMax-M2	chat	unverified		
+MiniMax-M2	code	unverified		
+MiniMax-M2.1 Preview	chat	unverified		
+MiniMax-M2.1 Preview	code	unverified		
+MiniMax-M2.5	chat	unverified		
+MiniMax-M2.5	code	unverified		
+MiniMax-M2.7	chat	unverified		
+MiniMax-M2.7	code	unverified		
+MiniMax-M3	chat	reported_free	MiniMax	https://freellmarena.com/free-ai
+MiniMax-M3	code	unverified		
+MiniMax-M3	work	unverified		
+MiniMax-M3.1-Flash	code	unverified		
+MiniMax-M3.1-Flash	work	unverified		
+Ministral 8B (2410)	chat	unverified		
+Mistral 7B Instruct	chat	unverified		
+Mistral 7B Instruct v0.2	chat	unverified		
+Mistral Large (2402)	chat	unverified		
+Mistral Large (2411)	chat	unverified		
+Mistral Large 2 (2407)	chat	unverified		
+Mistral Large 3	chat	unverified		
+Mistral Large 3	code	unverified		
+Mistral Large 4	chat	unverified		
+Mistral Large 4	code	reported_free	Mistral	https://docs.mistral.ai/vibe/code/cli/configuration
+Mistral Large 4	work	unverified		
+Mistral Medium	chat	unverified		
+Mistral Medium 3 (2505)	chat	unverified		
+Mistral Medium 3.1 (2508)	chat	unverified		
+Mistral Medium 3.5	chat	unverified		
+Mistral Medium 3.5	code	unverified		
+Mistral Medium 3.5	work	unverified		
+Mistral Small 24B Instruct (2501)	chat	unverified		
+Mistral Small 3.1 24B Instruct (2503)	chat	unverified		
+Mistral Small 3.2 (2506)	chat	unverified		
+Mixtral 8x22B Instruct v0.1	chat	unverified		
+Mixtral 8x7B Instruct v0.1	chat	unverified		
+Mochi 1	chat	unverified		
+Molmo 2 8B	chat	unverified		
+Molmo 72B (0924)	chat	unverified		
+Molmo 7B-D (0924)	chat	unverified		
+MPT 30B Chat	chat	unverified		
+MPT 7B Chat	chat	unverified		
+Muse Ember (Max)	code	unverified		
+Muse Ember (Max)	work	unverified		
+Muse Glimmer	chat	unverified		
+Muse Glimmer	code	unverified		
+Muse Image	chat	unverified		
+Muse Spark	chat	unverified		
+Muse Spark 1.1	chat	unverified		
+Muse Spark 1.1	code	unverified		
+Muse Spark 1.1	work	unverified		
+Muse Spark 1.2 (xHigh)	chat	unverified		
+Muse Spark 1.2 (xHigh)	code	unverified		
+Muse Spark 1.2 (xHigh)	work	unverified		
+Muse Spark 1.3 (Max)	chat	unverified		
+Muse Spark 1.3 (Max)	code	unverified		
+Muse Spark 1.3 (Max)	work	unverified		
+Muse Spark 1.3 (xHigh)	chat	unverified		
+Muse Spark 1.3 (xHigh)	code	unverified		
+Muse Spark Open (Max)	code	unverified		
+Muse Video	chat	unverified		
+Muse Wonder (Max)	chat	unverified		
+Muse Wonder (Max)	code	unverified		
+Muse Wonder (Max)	work	unverified		
+Muse Wonder Full (Max)	code	unverified		
+Muse Wonder Full (Max)	work	unverified		
+Nemotron 3 Ultra	work	unverified		
+Nemotron-4 340B Instruct	chat	unverified		
+Nous Hermes 2 Mixtral 8x7B DPO	chat	unverified		
+NVIDIA-Nemotron-3-Nano-30B-A3B (BF16)	chat	unverified		
+NVIDIA-Nemotron-3-Super-120B-A12B	chat	unverified		
+NVIDIA-Nemotron-3-Ultra-550B-A55B (NVFP4)	chat	unverified		
+NVIDIA-Nemotron-3.5-Lightning-30B-A3B (NVFP4)	chat	unverified		
+NVIDIA-Nemotron-3.5-Super-VL-120B-A12B (NVFP4)	chat	unverified		
+NVIDIA-Nemotron-3.5-Super-VL-120B-A12B (NVFP4)	code	unverified		
+NVIDIA-Nemotron-3.5-Super-VL-120B-A12B (NVFP4)	work	unverified		
+nvila-internal-15b-v1	chat	unverified		
+o1 (2024-12-17)	chat	unverified		
+o1-mini	chat	unverified		
+o1-preview	chat	unverified		
+o3 (2025-04-16)	chat	unverified		
+o3-mini	chat	unverified		
+o3-mini (High)	chat	unverified		
+o4-mini (2025-04-16)	chat	unverified		
+OLMo 2 32B Instruct (0325)	chat	unverified		
+Olmo 3 32B Think	chat	unverified		
+Olmo 3.1 32B Instruct	chat	unverified		
+Olmo 3.1 32B Think	chat	unverified		
+OLMo 7B Instruct	chat	unverified		
+OpenAssistant Pythia 12B	chat	unverified		
+OpenChat 3.5	chat	unverified		
+OpenChat 3.5 (0106)	chat	unverified		
+OpenHermes 2.5 Mistral 7B	chat	unverified		
+P-Image	chat	unverified		
+P-Image-Edit	chat	unverified		
+P-Video	chat	unverified		
+PaLM 2	chat	unverified		
+Phi-3 Medium 4K Instruct	chat	unverified		
+Phi-3 Mini 128K Instruct	chat	unverified		
+Phi-3 Mini 4K Instruct	chat	unverified		
+Phi-3 Mini 4K Instruct (June 2024)	chat	unverified		
+Phi-3 Small 8K Instruct	chat	unverified		
+Phi-3 Vision 128K Instruct	chat	unverified		
+Phi-3.5 Vision Instruct	chat	unverified		
+Phi-4	chat	unverified		
+Pika 2.2	chat	unverified		
+Pixtral 12B (2409)	chat	unverified		
+Pixtral Large (2411)	chat	unverified		
+PixVerse V5.6	chat	unverified		
+Qwen-14B-Chat	chat	unverified		
+Qwen-Image	chat	unverified		
+Qwen-Image (2512)	chat	unverified		
+Qwen-Image (Prompt Extend)	chat	unverified		
+Qwen-Image-2.0-Pro (2026-06-22)	chat	unverified		
+Qwen-Image-2.1	chat	unverified	Alibaba Qwen	https://freellmarena.com/model/qwen-image-2-1
+Qwen-Image-3.0-Pro	chat	unverified		
+Qwen-Image-Edit	chat	unverified		
+Qwen-Image-Edit (2511)	chat	unverified		
+Qwen-Max (0919)	chat	unverified		
+Qwen-Plus (0125)	chat	unverified		
+Qwen-VL-Max (1119)	chat	unverified		
+Qwen-VL-Max (2025-08-13)	chat	unverified		
+Qwen1.5-110B-Chat	chat	unverified		
+Qwen1.5-14B-Chat	chat	unverified		
+Qwen1.5-32B-Chat	chat	unverified		
+Qwen1.5-4B-Chat	chat	unverified		
+Qwen1.5-72B-Chat	chat	unverified		
+Qwen1.5-7B-Chat	chat	unverified		
+Qwen2-72B-Instruct	chat	unverified		
+Qwen2-VL-72B	chat	unverified		
+Qwen2-VL-7B-Instruct	chat	unverified		
+Qwen2.5-72B-Instruct	chat	unverified		
+Qwen2.5-Coder-32B-Instruct	chat	unverified		
+Qwen2.5-Max	chat	unverified		
+Qwen2.5-Plus (1127)	chat	unverified		
+Qwen2.5-VL-32B-Instruct	chat	unverified		
+Qwen2.5-VL-72B-Instruct	chat	unverified		
+Qwen3-235B-A22B	chat	unverified		
+Qwen3-235B-A22B (Non-Thinking)	chat	unverified		
+Qwen3-235B-A22B-Instruct (2507)	chat	unverified		
+Qwen3-235B-A22B-Thinking (2507)	chat	unverified		
+Qwen3-30B-A3B	chat	unverified		
+Qwen3-30B-A3B-Instruct (2507)	chat	unverified		
+Qwen3-32B	chat	unverified		
+Qwen3-Coder-480B-A35B-Instruct	chat	unverified		
+Qwen3-Coder-480B-A35B-Instruct	code	unverified		
+Qwen3-Max (2025-09-23)	chat	unverified		
+Qwen3-Max-Preview	chat	unverified		
+Qwen3-Next-80B-A3B-Instruct	chat	unverified		
+Qwen3-Next-80B-A3B-Thinking	chat	unverified		
+Qwen3-VL-235B-A22B-Instruct	chat	unverified		
+Qwen3-VL-235B-A22B-Thinking	chat	unverified		
+Qwen3.5-122B-A10B	chat	unverified		
+Qwen3.5-122B-A10B	code	unverified		
+Qwen3.5-27B	chat	unverified		
+Qwen3.5-27B	code	unverified		
+Qwen3.5-35B-A3B	chat	unverified		
+Qwen3.5-35B-A3B	code	unverified		
+Qwen3.5-397B-A17B	chat	unverified		
+Qwen3.5-397B-A17B	code	unverified		
+Qwen3.5-Flash	chat	unverified		
+Qwen3.5-Flash	code	unverified		
+Qwen3.5-Max-Preview	chat	unverified		
+Qwen3.6-Max-Preview	chat	unverified		
+Qwen3.6-Max-Preview	code	unverified		
+Qwen3.6-Plus	chat	unverified		
+Qwen3.6-Plus	code	unverified		
+Qwen3.7-Max	work	unverified		
+Qwen3.7-Max (20260517)	code	unverified		
+Qwen3.7-Max-Preview	chat	unverified		
+Qwen3.7-Plus	chat	unverified		
+Qwen3.7-Plus	work	unverified		
+Qwen3.8-27B	chat	unverified		
+Qwen3.8-27B	code	unverified		
+Qwen3.8-27B	work	unverified		
+Qwen3.8-Flash-Next	code	unverified		
+Qwen3.8-Flash-Next	work	unverified		
+Qwen3.8-Max	chat	free	Alibaba Qwen	https://qwen.ai/home
+Qwen3.8-Max	code	free	Alibaba Qwen	https://qwen.ai/blog?id=qwen3.8
+Qwen3.8-Max	work	reported_free	Alibaba Qwen	https://qwen.ai/blog?id=qwen3.8
+Qwen3.8-Max (0902)	code	unverified		
+Qwen4-Max (xHigh)	code	unverified		
+Qwen4-Max (xHigh)	work	unverified		
+QwQ-32B	chat	unverified		
+QwQ-32B-Preview	chat	unverified		
+Recraft V3	chat	unverified		
+Recraft V4	chat	unverified		
+Recraft V4.1 Flash	chat	unverified		
+Recraft V4.1 Flash V2	chat	unverified		
+Recraft V4.1 Pro	chat	unverified		
+Recraft V4.1 Utility Pro	chat	unverified		
+Reka Core (20240904)	chat	unverified		
+Reka Flash (20240904)	chat	unverified		
+Reka Flash 21B (20240226)	chat	unverified		
+Reka Flash 21B (Online, 20240226)	chat	unverified		
+Reve 2.0	chat	unverified		
+Reve 2.1	chat	unverified		
+Reve Edit Fast	chat	unverified		
+Reve v1	chat	unverified		
+Reve v1.1	chat	unverified		
+Reve v1.1 Fast	chat	unverified		
+Reve v1.5	chat	unverified		
+Ring-flash-2.0	chat	unverified		
+Runway Gen-4	chat	unverified		
+Runway Gen-4 Aleph	chat	unverified		
+Runway Gen-4 Turbo	chat	unverified		
+Runway Gen-4.5	chat	unverified		
+RWKV-4 Raven 14B	chat	unverified		
+Seed2.1 Pro Preview	code	unverified		
+Seedance 1.0 Lite	chat	unverified		
+Seedance 1.0 Pro	chat	unverified		
+Seedance 1.5 Pro	chat	unverified		
+SeedEdit 3.0	chat	unverified		
+Seedream 3.0	chat	unverified		
+Seedream 4.0 (2K)	chat	unverified		
+Seedream 4.0 (fal)	chat	unverified		
+Seedream 4.0 (High Res, fal)	chat	unverified		
+Seedream 4.5	chat	unverified		
+Seedream 5.0 Lite	chat	unverified		
+Seedream 5.0 Pro	chat	unverified		
+SkyReels V4	chat	unverified		
+SmolLM2 1.7B Instruct	chat	unverified		
+Snowflake Arctic Instruct	chat	unverified		
+SOLAR 10.7B Instruct v1.0	chat	unverified		
+Solar Pro 4	chat	unverified		
+Solar Pro 4	code	unverified		
+Solar Pro 4	work	unverified		
+Sora	chat	unverified		
+Sora 2	chat	unverified		
+Sora 2 Pro	chat	unverified		
+Spark-X2.6	code	unverified		
+Spark-X2.6	work	unverified		
+Stable Diffusion 3.5 Large	chat	unverified		
+StableLM Tuned Alpha 7B	chat	unverified		
+Starling LM 7B Alpha	chat	unverified		
+Starling LM 7B Beta	chat	unverified		
+Step 5 Preview	chat	unverified		
+Step 5 Preview	work	unverified		
+Step 5 Preview (High)	code	unverified		
+Step-1o Turbo (202506)	chat	unverified		
+Step-1o Vision 32K (High Res)	chat	unverified		
+Step-1V 32K	chat	unverified		
+Step-2 16K Exp (202412)	chat	unverified		
+Step-3	chat	unverified		
+Step-3.5-Flash	chat	unverified		
+Step1X-Edit	chat	unverified		
+StripedHyena Nous 7B	chat	unverified		
+Trinity Large Preview	chat	unverified		
+Trinity Large Thinking	chat	unverified		
+Trinity Large Thinking	code	unverified		
+Tulu 2 DPO 70B	chat	unverified		
+U2 Flash	code	unverified		
+UNI-1.1	chat	unverified		
+UNI-1.1 Max	chat	unverified		
+Veo 2	chat	unverified		
+Veo 3	chat	unverified		
+Veo 3 (Audio)	chat	unverified		
+Veo 3 Fast	chat	unverified		
+Veo 3 Fast (Audio)	chat	unverified		
+Veo 3.1 (Audio, 1080p)	chat	unverified		
+Veo 3.1 (Audio)	chat	unverified		
+Veo 3.1 Fast (Audio, 1080p)	chat	unverified		
+Veo 3.1 Fast (Audio)	chat	unverified		
+Vicuna 13B	chat	unverified		
+Vicuna 33B	chat	unverified		
+Vicuna 7B	chat	unverified		
+Vidu Q2 Pro	chat	unverified		
+Vidu Q2 Turbo	chat	unverified		
+Vidu Q3 Pro	chat	unverified		
+Wan 2.2 A14B	chat	unverified		
+Wan 2.5 Preview	chat	unverified		
+Wan 2.6	chat	unverified		
+Wan 2.6 Image	chat	unverified		
+Wan 2.7	chat	unverified		
+Wan 2.7 Image	chat	unverified		
+Wan 2.7 Image Pro	chat	unverified		
+Wan 3.0	chat	unverified		
+WizardLM 13B	chat	unverified		
+WizardLM 70B	chat	unverified		
+Yi 1.5 34B Chat	chat	unverified		
+Yi 34B Chat	chat	unverified		
+Yi Lightning	chat	unverified		
+Yi Vision	chat	unverified		
+Z-Image-Turbo	chat	unverified		
+Zephyr 7B Alpha	chat	unverified		
+Zephyr 7B Beta	chat	unverified		
+Zephyr ORPO 141B A35B v0.1	chat	unverified		
