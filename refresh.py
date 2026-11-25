@@ -223,6 +223,38 @@ def collect_web_index(key, old, observed):
         finally:
             browser.close()
 
+WIDGET_GROUPS = {
+    'search': ('overall',),
+    'text_style_control': ('overall','hard_prompts','creative_writing','instruction_following'),
+    'agent_capability': ('overall','work','chat'),
+    'vision_style_control': ('overall',),
+    'document_style_control': ('overall',),
+    'webdev': ('overall',),
+    'text_to_image': ('overall',),
+    'image_edit': ('overall',),
+    'text_to_video': ('overall',),
+    'image_to_video': ('overall',),
+    'video_edit': ('overall',),
+    'agent_steerability': ('overall',),
+}
+
+def write_widget_feed(data):
+    compact = {k: data[k] for k in ('source','generatedAt','errors')}
+    compact['subsets'] = {}
+    for subset, categories in WIDGET_GROUPS.items():
+        current = data['subsets'].get(subset)
+        if not current:
+            continue
+        groups = {k: current['groups'][k] for k in categories if k in current['groups']}
+        if groups:
+            compact['subsets'][subset] = {'checked':current['checked'],'groups':groups}
+    if not compact['subsets']:
+        raise ValueError('No usable widget categories')
+    target = OUT.parent / 'widget.json'
+    temp = target.with_suffix('.tmp')
+    temp.write_text(json.dumps(compact,ensure_ascii=False,separators=(',',':'),allow_nan=False))
+    temp.replace(target)
+
 def main():
     previous = json.loads(OUT.read_text()) if OUT.exists() else {'subsets':{}}
     subsets = dict(previous.get('subsets',{}))
@@ -273,5 +305,6 @@ def main():
     temp = OUT.with_suffix('.tmp')
     temp.write_text(json.dumps(data,ensure_ascii=False,separators=(',',':'),allow_nan=False))
     temp.replace(OUT)
+    write_widget_feed(data)
 if __name__ == '__main__':
     main()
