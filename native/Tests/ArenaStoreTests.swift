@@ -20,7 +20,7 @@ final class ArenaStoreTests: XCTestCase {
             directory: scratchDirectory(), bundledRankings: ranks, bundledAccess: access, clock: { date }
         )
         let snapshot = store.cached()
-        XCTAssertEqual(ArenaCategory.allCases.count, 23)
+        XCTAssertEqual(ArenaCategory.allCases.count, 24)
         for category in ArenaCategory.allCases {
             let board = snapshot.category(category)
             XCTAssertEqual(board.winners.map(\.tier), ArenaTier.allCases, category.rawValue)
