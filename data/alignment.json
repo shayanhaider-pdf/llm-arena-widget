@@ -64,10 +64,222 @@
         {
           "id": "Grok 4.7",
           "rank": 15
+        },
+        {
+          "id": "Claude Sonnet 5.5",
+          "rank": 16
+        },
+        {
+          "id": "Claude Opus 5.5",
+          "rank": 17
+        },
+        {
+          "id": "Grok 4.6",
+          "rank": 18
+        },
+        {
+          "id": "Gemini 4 Carbon",
+          "rank": 19
+        },
+        {
+          "id": "Muse Ember",
+          "rank": 20
+        },
+        {
+          "id": "Claude Haiku 5.5",
+          "rank": 21
+        },
+        {
+          "id": "Qwen4-Max",
+          "rank": 22
+        },
+        {
+          "id": "Muse Wonder",
+          "rank": 23
+        },
+        {
+          "id": "Muse Wonder Full",
+          "rank": 24
+        },
+        {
+          "id": "MiMo-V2.6-Flash",
+          "rank": 25
+        },
+        {
+          "id": "Gemini 4 Argon",
+          "rank": 26
+        },
+        {
+          "id": "Claude Fable 5.1",
+          "rank": 27
+        },
+        {
+          "id": "Claude Fable 5",
+          "rank": 28
+        },
+        {
+          "id": "Hy4",
+          "rank": 29
+        },
+        {
+          "id": "Beam 1.0 501B A23B",
+          "rank": 30
+        },
+        {
+          "id": "Muse Spark 1.3",
+          "rank": 31
+        },
+        {
+          "id": "Claude Opus 4.8",
+          "rank": 32
+        },
+        {
+          "id": "Inkling 2 Small",
+          "rank": 33
+        },
+        {
+          "id": "Claude Sonnet 5",
+          "rank": 34
+        },
+        {
+          "id": "Gemini 3.1 Pro Preview",
+          "rank": 35
+        },
+        {
+          "id": "Nemotron 3 Ultra",
+          "rank": 36
+        },
+        {
+          "id": "Mistral Large 4",
+          "rank": 37
+        },
+        {
+          "id": "NVIDIA-Nemotron-3.5-Super-VL-120B-A12B (NVFP4)",
+          "rank": 38
+        },
+        {
+          "id": "DeepSeek-V4-Pro",
+          "rank": 39
+        },
+        {
+          "id": "MiMo-V2.6-Pro",
+          "rank": 40
+        },
+        {
+          "id": "Kimi K3",
+          "rank": 41
+        },
+        {
+          "id": "Hy3",
+          "rank": 42
+        },
+        {
+          "id": "Spark-X2.6",
+          "rank": 43
+        },
+        {
+          "id": "Inkling 2 Mini",
+          "rank": 44
+        },
+        {
+          "id": "GLM-5.2",
+          "rank": 45
+        },
+        {
+          "id": "Qwen3.7-Plus",
+          "rank": 46
+        },
+        {
+          "id": "Qwen3.7-Max",
+          "rank": 47
+        },
+        {
+          "id": "Solar Pro 4",
+          "rank": 48
+        },
+        {
+          "id": "Qwen3.8-27B",
+          "rank": 49
+        },
+        {
+          "id": "Mistral Medium 3.5",
+          "rank": 50
+        },
+        {
+          "id": "Gemini 3.8 Flash",
+          "rank": 51
+        },
+        {
+          "id": "Gemini 3.7 Flash",
+          "rank": 52
+        },
+        {
+          "id": "Step 5 Preview",
+          "rank": 53
+        },
+        {
+          "id": "GLM-5.3-Flash",
+          "rank": 54
+        },
+        {
+          "id": "GLM-5.3",
+          "rank": 55
+        },
+        {
+          "id": "Gemini 3.6 Flash",
+          "rank": 56
+        },
+        {
+          "id": "Qwen3.8-Max",
+          "rank": 57
+        },
+        {
+          "id": "Inkling",
+          "rank": 58
+        },
+        {
+          "id": "Hy4 preview",
+          "rank": 59
+        },
+        {
+          "id": "Claude Opus 5",
+          "rank": 60
+        },
+        {
+          "id": "Muse Spark 1.2",
+          "rank": 61
+        },
+        {
+          "id": "DeepSeek-V4.1-Flash-20261017",
+          "rank": 62
+        },
+        {
+          "id": "Qwen3.8-Flash-Next",
+          "rank": 63
+        },
+        {
+          "id": "Muse Spark 1.1",
+          "rank": 64
+        },
+        {
+          "id": "MiniMax-M3",
+          "rank": 65
+        },
+        {
+          "id": "DeepSeek-V4.1-Flash-20260910",
+          "rank": 66
+        },
+        {
+          "id": "Inkling-Small",
+          "rank": 67
+        },
+        {
+          "id": "MiniMax-M3.1-Flash",
+          "rank": 68
         }
       ],
       "history": {},
-      "partial": true,
+      "partial": false,
       "totalModels": 68,
       "source": "https://arena.ai/leaderboard/agent/alignment"
     }

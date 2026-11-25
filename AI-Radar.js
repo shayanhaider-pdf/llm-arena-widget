@@ -190,13 +190,14 @@ function destination(model,k){
   return url;
 }
 // Access is data, not code: exact IDs only, with local overrides.
-function accessEntry(model,k){
+function accessEntry(model,k,g){
   const key=id(model);
   const x=own(settings.registry,key)?settings.registry[key]:null;
   const workKeys=['work','agent','chatagent','steering','alignment','taskoutcome','tooluse'];
   const scope=workKeys.includes(k)?'work':['webdev','coding','imagewebdev'].includes(k)?'code':'chat';
   let entry=null,provider=null;
-  if(access.schemaVersion===1&&freshDate(access.reviewedAt)&&Array.isArray(access.providers))for(const p of access.providers){
+  // The Alignment website publishes display names without exact benchmark variants.
+  if(g.source!==boardURLs.alignment&&access.schemaVersion===1&&freshDate(access.reviewedAt)&&Array.isArray(access.providers))for(const p of access.providers){
     if(!freshDate(p.reviewedAt||access.reviewedAt))continue;
     const entries=scope==='code'?(p.codeModels||[]):p.models;
     const match=entries.find(m=>id(m.id)===key&&(!m.expiresAt||m.expiresAt>today())&&(m.scope||'chat')===scope);
@@ -219,7 +220,7 @@ function previousMonthRank(g,m){
 function winners(g,k){
   if(!g||!Array.isArray(g.models))return [null,null,null];
   const ranked=g.models.filter(m=>m&&typeof m.id==='string'&&Number.isInteger(m.rank)&&m.rank>0).slice().sort((a,b)=>a.rank-b.rank||a.id.localeCompare(b.id));
-  const eligible=ranked.map(m=>({m,e:accessEntry(m.id,k)}));
+  const eligible=ranked.map(m=>({m,e:accessEntry(m.id,k,g)}));
   const plus=eligible.find(x=>x.e.plus)?.m;
   const free=eligible.find(x=>x.e.free)?.m;
   const plusCandidate=plus?null:eligible.find(x=>x.e.plusCandidate)?.m;
@@ -484,12 +485,14 @@ async function details(k,ctx=null){
   const table=new UITable();table.showSeparators=true;
   let selected=null;
   function row(title,subtitle,action){const r=new UITableRow();r.height=action?54:70;r.addText(title,subtitle||'');if(action){r.dismissOnSelect=true;r.onSelect=()=>{selected=action}}table.addRow(r)}
-  row(C[k][0]+' · Top '+top.length,g.date+(g.partial?' · Partial snapshot'+(g.totalModels?' ('+g.models.length+'/'+g.totalModels+')':''):' · Official dataset')+' · ? = unconfirmed access; – = no supported match');
+  const provenance=g.partial?'Partial snapshot'+(g.totalModels?' ('+g.models.length+'/'+g.totalModels+')':''):
+    g.source===boardURLs.alignment?'Official website snapshot':'Official dataset';
+  row(C[k][0]+' · Top '+top.length,g.date+' · '+provenance+' · ? = unconfirmed access; – = no supported match');
   row('Open Arena leaderboard','Compare with the public leaderboard',()=>Safari.open(boardURLs[k]||'https://arena.ai/leaderboard'));
   row('Settings','Choose categories and model access',async()=>await menu(ctx));
   if(ctx)row('Change widget category',ctx.slot.startsWith('fixed:')?'Currently uses a fixed parameter':C[savedCategory(ctx)][0],async()=>await changeCategory(ctx));
   const leaders=winners(g,k);for(let i=0;i<3;i++){const m=leaders[i];if(m)row(labels[i]+' · #'+m.rank+' '+m.name,m.unconfirmed?'Access not independently confirmed':'Open provider',()=>Safari.open(destination(m.id,k)))}
-  for(const m of top){const metric=m.rating??m.index_score??m.score;const e=accessEntry(m.id,k);const availability=e.free?'Free':e.plus?'Plus':e.reportedFree?'Free?':e.plusCandidate?'Plus?':'';row('#'+m.rank+' '+(settings.registry[id(m.id)]?.name||m.id),[availability,m.organization||'',metric!=null?'Score '+(Number.isFinite(metric)?Number(metric.toFixed(2)):metric):''].filter(Boolean).join(' · '),()=>Safari.open(destination(m.id,k)))}
+  for(const m of top){const metric=m.rating??m.index_score??m.score;const e=accessEntry(m.id,k,g);const availability=e.free?'Free':e.plus?'Plus':e.reportedFree?'Free?':e.plusCandidate?'Plus?':'';row('#'+m.rank+' '+(settings.registry[id(m.id)]?.name||m.id),[availability,m.organization||'',metric!=null?'Score '+(Number.isFinite(metric)?Number(metric.toFixed(2)):metric):''].filter(Boolean).join(' · '),()=>Safari.open(destination(m.id,k)))}
   await table.present();
   if(selected)await selected();
 }

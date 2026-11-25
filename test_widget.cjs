@@ -68,6 +68,17 @@ async function run({family='small',param='search',feed=fixture,registry=reg,stor
   check(flat(partial.result).some(x=>x.value==='A'),'partial cannot replace complete same-date group');
   const wrongScope=await run({family:'medium',param:'work',feed:{subsets:{agent_capability:{checked:today,groups:{work:{...group,models:[{id:'GPT-6.2 Sol',rank:1},{id:'Qwen3.8-Max',rank:2}]}}}}}});
   check(flat(wrongScope.result).filter(x=>x.value==='–').length===4,'chat access not treated as work access');
+  const alignment = {...group, source: 'https://arena.ai/leaderboard/agent/alignment'};
+  const alignmentFeed = {subsets: {agent_alignment: {checked: today, groups: {overall: alignment}}}};
+  const alignmentRegistry = {...reg, providers: [{...reg.providers[0], models: [{id: 'B', scope: 'work', status: 'free'}]}]};
+  const alignmentWidget = await run({family: 'medium', param: 'alignment', feed: alignmentFeed, registry: alignmentRegistry});
+  check(!flat(alignmentWidget.result).some(x => x.value === 'B'), 'display-only Alignment names do not imply access');
+  const alignmentDetails = await run({app: true, query: {category: 'alignment'}, feed: alignmentFeed, registry: alignmentRegistry});
+  check(alignmentDetails.tableRows[0].subtitle.includes('Official website snapshot'), 'Alignment details identify the website source');
+  check(alignmentDetails.tableRows.find(x => x.title === '#2 B').subtitle === '', 'Alignment details suppress unsupported eligibility');
+  const alignmentOverride = await run({family: 'medium', param: 'alignment', feed: alignmentFeed, registry: alignmentRegistry,
+    stored: {'/d/AI-Radar/settings.json': JSON.stringify({registry: {b: {free: true}}})}});
+  check(flat(alignmentOverride.result).some(x => x.value === 'B'), 'explicit local Alignment access remains available');
   const duplicateReg={...reg,providers:[...reg.providers,reg.providers[0]]};
   const badReg=await run({family:'medium',feed:accessFeed,registry:duplicateReg});
   check(flat(badReg.result).filter(x=>x.value==='–').length===4,'reject duplicate registry entries');
