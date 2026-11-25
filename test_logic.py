@@ -28,7 +28,8 @@ class TestRankings(unittest.TestCase):
         self.assertEqual(group([row('A',1,D1)],second,'2026-11-26'),second)
 
     def test_exclusions(self):
-        self.assertEqual(group([row('A',1,cat=c) for c in ('coding','code','math','mathematics')],{},D2),{})
+        self.assertEqual(group([row('A',1,cat=c) for c in ('math','mathematics')],{},D2),{})
+        self.assertIn('code',group([row('A',1,cat='code')],{},D2))
 
     def test_duplicates(self):
         g=group([row('A',1),row('a',1),row('B',2),row('Unranked',None)],{},D2)['overall']
@@ -74,6 +75,14 @@ class TestRankings(unittest.TestCase):
             g=compact['subsets'][s]['groups'][k]
             self.assertTrue(valid_group(g),(s,k))
             self.assertEqual(g['models'],checked['subsets'][s]['groups'][k]['models'],(s,k))
+
+    def test_alignment_uses_own_source(self):
+        data=dataset()
+        data['subsets'].pop('agent_alignment',None)
+        g=widget_feed(data)['subsets']['agent_alignment']['groups']['overall']
+        self.assertTrue(g['partial'])
+        self.assertEqual(g['source'],'https://arena.ai/leaderboard/agent/alignment')
+        self.assertNotEqual(g['models'],data['subsets']['agent_capability']['groups']['overall']['models'])
 
     def test_missing_required_group_blocks_publish(self):
         data=dataset()
