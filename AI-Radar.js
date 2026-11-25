@@ -1,4 +1,4 @@
-// AI Radar v0.10 — Scriptable
+// AI Radar v0.11 — Scriptable
 const REPO='https://raw.githubusercontent.com/shayanhaider-pdf/llm-arena-widget/main/data/widget.json';
 const OLD_FEED='https://raw.githubusercontent.com/shayanhaider-pdf/llm-arena-widget/main/data/latest.json';
 const ACCESS='https://raw.githubusercontent.com/shayanhaider-pdf/llm-arena-widget/main/data/access.json';
@@ -96,6 +96,14 @@ const C={
     "text_style_control:instruction_following"
   ]
 };
+const categorySections=[
+  ['Agent',['agent','alignment','work','coding','chatagent','taskoutcome','steering','tooluse']],
+  ['Chat',['text','search','vision','documents']],
+  ['Code',['webdev','imagewebdev']],
+  ['Image',['image','editing','multiedit']],
+  ['Video',['video','imagevideo','videoedit']],
+  ['Text specialties',['reasoning','writing','instruction']]
+];
 const defaults=['work','text','documents','search','image'];
 const oldDefaults=['search','work','text','vision','documents'];
 const fm=FileManager.local(),dir=fm.joinPath(fm.documentsDirectory(),'AI-Radar');
@@ -108,7 +116,7 @@ let settings=read('settings',{});if(!record(settings))settings={};
 if(!record(settings.registry))settings.registry={};if(!Array.isArray(settings.large)||settings.large.join(',')===oldDefaults.join(',')&&!settings.largeCustomized)settings.large=defaults.slice();if(!https(settings.feed)||settings.feed===OLD_FEED)settings.feed=REPO;
 let cache=read('monthly-cache',{});if(!record(cache))cache={};
 let access=read('access',{});if(!record(access))access={};
-let sync=read('monthly-sync',{});if(!record(sync)||sync.version!=='0.10')sync={version:'0.10'};
+let sync=read('monthly-sync',{});if(!record(sync)||sync.version!=='0.11')sync={version:'0.11'};
 const id=s=>String(s||'').trim().toLowerCase();
 const own=(o,k)=>Object.prototype.hasOwnProperty.call(o,k);
 const category=k=>typeof k==='string'&&own(C,k);
@@ -305,12 +313,17 @@ function modelName(m){
 }
 function rank(m){return m?'#'+m.rank+(m.unconfirmed?'?':''):'–'}
 function modelLink(m,k){return m?.url||link(k,'details')}
+const compactTitles={agent:'Agent overall',alignment:'Alignment',work:'Work',coding:'Agent coding',chatagent:'Agent chat',taskoutcome:'Task outcome',steering:'Steering',tooluse:'Tool use',text:'Overall text',search:'Search',vision:'Vision',documents:'Documents',webdev:'WebDev',imagewebdev:'Image WebDev',image:'Text to image',editing:'Single edit',multiedit:'Multi edit',video:'Text to video',imagevideo:'Image to video',videoedit:'Video edit',reasoning:'Reasoning',writing:'Writing',instruction:'Instructions'};
 function header(w,k,large,width){
   const h=w.addStack();h.size=new Size(width,18);h.centerAlignContent();
-  if(!large){symbol(h,categorySymbols[k]||'circle',14,ink);h.addSpacer(5);txt(h,C[k][0],14,ink,true)}
-  else txt(h,'',1);
-  h.addSpacer();const gear=h.addStack();gear.centerAlignContent();
-  symbol(gear,'gearshape',15,muted);
+  if(!large){
+    const compact=width<180;
+    symbol(h,categorySymbols[k]||'circle',13,ink);h.addSpacer(4);
+    const title=h.addStack();title.size=new Size(width-42,0);title.centerAlignContent();
+    txt(title,compact?compactTitles[k]:C[k][0],compact?12:14,ink,true);
+  }
+  h.addSpacer();const gear=h.addStack();gear.size=new Size(21,18);gear.centerAlignContent();gear.addSpacer();
+  symbol(gear,'gearshape',15,muted);gear.addSpacer();
   if(large)gear.url=link(k,'settings');
   return gear;
 }
@@ -318,8 +331,8 @@ function smallCard(parent,m,k,i,width,height){
   const compact=height<36;
   const p=panel(parent,width,height,i,compact?3:4);p.centerAlignContent();
   symbol(p,tierSymbols[i],12,colors[i]);p.addSpacer(4);
-  const body=p.addStack();body.size=new Size(width-24,0);body.layoutVertically();body.spacing=1;
-  const line=body.addStack();line.size=new Size(width-24,0);line.centerAlignContent();
+  const body=p.addStack();const textWidth=width-2*(compact?3:4)-16;body.size=new Size(textWidth,0);body.layoutVertically();body.spacing=1;
+  const line=body.addStack();line.size=new Size(textWidth,0);line.centerAlignContent();
   txt(line,labels[i],compact?7:8,colors[i],true);line.addSpacer();txt(line,rank(m),compact?10:12,colors[i],true);
   txt(body,modelName(m)||'–',compact?9:10,ink,true,1);
 }
@@ -381,6 +394,15 @@ function widget(ks,family){
   return w;
 }
 async function choose(title,items){const a=new Alert();a.title=title;for(const s of items)a.addAction(s);a.addCancelAction('Cancel');return await a.presentSheet()}
+async function pickCategory(title,excluded=[]){
+  const sections=categorySections.map(([name,ks])=>[name,ks.filter(k=>!excluded.includes(k))]).filter(([,ks])=>ks.length);
+  if(!sections.length)return null;
+  while(true){
+    const i=await choose(title,sections.map(([name])=>name));if(i<0)return null;
+    const [name,ks]=sections[i];const j=await choose(name,ks.map(k=>C[k][0]));
+    if(j>=0)return ks[j];
+  }
+}
 async function note(title,message){const a=new Alert();a.title=title;a.message=message;a.addAction('OK');await a.presentAlert()}
 async function edit(model){
   const k=id(model);if(!k||!safeKey(k))return;
@@ -413,7 +435,7 @@ async function accessMenu(k){
     if(options[i]==='Previous page')page--;else page++;
   }
 }
-const boardURLs={work:'https://arena.ai/leaderboard/agent/work',search:'https://arena.ai/leaderboard/chat/search',text:'https://arena.ai/leaderboard/chat/text',reasoning:'https://arena.ai/leaderboard/chat/text/hard-prompts',writing:'https://arena.ai/leaderboard/chat/text/creative-writing',vision:'https://arena.ai/leaderboard/chat/vision',documents:'https://arena.ai/leaderboard/chat/document',agent:'https://arena.ai/leaderboard/agent',alignment:'https://arena.ai/leaderboard/agent/alignment',coding:'https://arena.ai/leaderboard/agent/code',chatagent:'https://arena.ai/leaderboard/agent/chat',taskoutcome:'https://arena.ai/leaderboard/agent/task-feedback',steering:'https://arena.ai/leaderboard/agent/steerability',tooluse:'https://arena.ai/leaderboard/agent/tool-efficiency',imagewebdev:'https://arena.ai/leaderboard/code',multiedit:'https://arena.ai/leaderboard/image'};
+const boardURLs={work:'https://arena.ai/leaderboard/agent/work',search:'https://arena.ai/leaderboard/chat/search',text:'https://arena.ai/leaderboard/chat/text',reasoning:'https://arena.ai/leaderboard/chat/text/hard-prompts',writing:'https://arena.ai/leaderboard/chat/text/creative-writing',vision:'https://arena.ai/leaderboard/chat/vision',documents:'https://arena.ai/leaderboard/chat/document',agent:'https://arena.ai/leaderboard/agent',alignment:'https://arena.ai/leaderboard/agent/alignment',coding:'https://arena.ai/leaderboard/agent/code',chatagent:'https://arena.ai/leaderboard/agent/chat',taskoutcome:'https://arena.ai/leaderboard/agent/task-feedback',steering:'https://arena.ai/leaderboard/agent/steerability',tooluse:'https://arena.ai/leaderboard/agent/tool-efficiency',webdev:'https://arena.ai/leaderboard/code',imagewebdev:'https://arena.ai/leaderboard/code/image-to-webdev',image:'https://arena.ai/leaderboard/image/text-to-image',editing:'https://arena.ai/leaderboard/image/image-edit/single-image',multiedit:'https://arena.ai/leaderboard/image/image-edit/multi-image',video:'https://arena.ai/leaderboard/video/text-to-video',imagevideo:'https://arena.ai/leaderboard/video/image-to-video',videoedit:'https://arena.ai/leaderboard/video/video-edit'};
 async function details(k){
   await refresh([k]);
   const g=get(k);
@@ -423,7 +445,7 @@ async function details(k){
   const table=new UITable();table.showSeparators=true;
   let selected=null;
   function row(title,subtitle,action){const r=new UITableRow();r.height=action?54:70;r.addText(title,subtitle||'');if(action){r.dismissOnSelect=true;r.onSelect=()=>{selected=action}}table.addRow(r)}
-  row(C[k][0]+' · Top '+top.length,g.date+(g.partial?' · Partial snapshot'+(g.totalModels?' ('+g.models.length+'/'+g.totalModels+')':''):' · Official dataset')+' · ? = unconfirmed access');
+  row(C[k][0]+' · Top '+top.length,g.date+(g.partial?' · Partial snapshot'+(g.totalModels?' ('+g.models.length+'/'+g.totalModels+')':''):' · Official dataset')+' · ? = unconfirmed access; – = no supported match');
   row('Open Arena leaderboard','Compare with the public leaderboard',()=>Safari.open(boardURLs[k]||'https://arena.ai/leaderboard'));
   row('Settings','Choose categories and model access',async()=>await menu());
   const leaders=winners(g,k);for(let i=0;i<3;i++){const m=leaders[i];if(m)row(labels[i]+' · #'+m.rank+' '+m.name,m.unconfirmed?'Access not independently confirmed':'Open provider',()=>Safari.open(destination(m.id,k)))}
@@ -441,17 +463,30 @@ async function editRows(current){
     if(i===rows.length+1){rows=defaults.slice();continue}
     if(i===rows.length){
       if(rows.length>=5){await note('Five row limit','Replace an existing row instead.');continue}
-      const choices=Object.keys(C).filter(k=>!rows.includes(k));const j=await choose('Add category',choices.map(k=>C[k][0]));if(j>=0)rows.push(choices[j]);continue
+      const k=await pickCategory('Add category',rows);if(k)rows.push(k);continue
     }
     const ops=['Move up','Move down','Replace category','Remove row'];
     const j=await choose(C[rows[i]][0],ops);
     if(j===0&&i>0)[rows[i-1],rows[i]]=[rows[i],rows[i-1]];
     if(j===1&&i<rows.length-1)[rows[i],rows[i+1]]=[rows[i+1],rows[i]];
-    if(j===2){const choices=Object.keys(C).filter(k=>!rows.includes(k));const n=await choose('Replace with',choices.map(k=>C[k][0]));if(n>=0)rows[i]=choices[n]}
+    if(j===2){const k=await pickCategory('Replace with',rows);if(k)rows[i]=k}
     if(j===3&&rows.length>1)rows.splice(i,1);
   }
 }
-async function menu(){const i=await choose('Widget settings',['Browse top 20 by category','Set model access','Edit large categories','Edit existing model access','Set optional feed URL','Refresh published data','Free-tier provider directory']);if(i===0){const a=Object.keys(C),j=await choose('Category',a.map(k=>C[k][0]));if(j>=0)await details(a[j])}if(i===1){const a=Object.keys(C),j=await choose('Set model access',a.map(k=>C[k][0]));if(j>=0)await accessMenu(a[j])}if(i===2){const rows=await editRows(keys(settings.large.join(',')));if(rows){settings.large=rows;settings.largeCustomized=true;save('settings',settings)}}if(i===3){const a=Object.keys(settings.registry);if(!a.length){await note('No saved models','Browse a category or add an exact Arena model ID first.');return}const j=await choose('Saved models',a);if(j>=0)await edit(a[j])}if(i===4){const a=new Alert();a.title='Hosted feed';a.addTextField('HTTPS URL',settings.feed||REPO);a.addAction('Save');a.addCancelAction('Cancel');if(await a.presentAlert()>=0){const v=a.textFieldValue(0).trim();if(!v||https(v)){settings.feed=v||REPO;save('settings',settings)}else await note('Invalid URL','Enter an HTTPS feed URL.')}}if(i===5){await refresh(Object.keys(C),true);await note('Refresh',diagnostic||'Published files checked. Ranking collection runs monthly.')}if(i===6){await refresh([]);const p=Array.isArray(access.providers)?access.providers:[];if(!p.length){await note('No registry','Access data not yet available');return}const j=await choose('Free-tier directory',p.map(x=>x.provider+' · '+(x.freeTier||'unverified')));if(j>=0){const x=p[j];await note(x.provider,[...(x.freeModelFamilies||[]),x.notes,'Reviewed '+(x.reviewedAt||access.reviewedAt)].filter(Boolean).join('\\n'));Safari.open(x.url)}}}
+async function preview(){
+  const families=['small','medium','large'],i=await choose('Widget preview',['Small','Medium','Large']);
+  if(i<0)return;
+  const family=families[i];
+  let ks=family==='large'?keys(settings.large.join(',')).slice(0,5):[];
+  if(family!=='large'){const k=await pickCategory('Preview category');if(!k)return;ks=[k]}
+  if(!ks.length)ks=defaults.slice();
+  await refresh(ks);
+  const w=widget(ks,family);
+  if(family==='small')await w.presentSmall();
+  else if(family==='medium')await w.presentMedium();
+  else await w.presentLarge();
+}
+async function menu(){const i=await choose('Widget settings',['Browse top 20 by category','Set model access','Edit large categories','Edit existing model access','Set optional feed URL','Refresh published data','Free-tier provider directory','Preview widget']);if(i===0){const k=await pickCategory('Browse rankings');if(k)await details(k)}if(i===1){const k=await pickCategory('Set model access');if(k)await accessMenu(k)}if(i===2){const rows=await editRows(keys(settings.large.join(',')));if(rows){settings.large=rows;settings.largeCustomized=true;save('settings',settings)}}if(i===3){const a=Object.keys(settings.registry);if(!a.length){await note('No saved models','Browse a category or add an exact Arena model ID first.');return}const j=await choose('Saved models',a);if(j>=0)await edit(a[j])}if(i===4){const a=new Alert();a.title='Hosted feed';a.addTextField('HTTPS URL',settings.feed||REPO);a.addAction('Save');a.addCancelAction('Cancel');if(await a.presentAlert()>=0){const v=a.textFieldValue(0).trim();if(!v||https(v)){settings.feed=v||REPO;save('settings',settings)}else await note('Invalid URL','Enter an HTTPS feed URL.')}}if(i===5){await refresh(Object.keys(C),true);await note('Refresh',diagnostic||'Published files checked. Ranking collection runs monthly.')}if(i===6){await refresh([]);const p=Array.isArray(access.providers)?access.providers:[];if(!p.length){await note('No registry','Access data not yet available');return}const j=await choose('Free-tier directory',p.map(x=>x.provider+' · '+(x.freeTier||'unverified')));if(j>=0){const x=p[j];await note(x.provider,[...(x.freeModelFamilies||[]),x.notes,'Reviewed '+(x.reviewedAt||access.reviewedAt)].filter(Boolean).join('\\n'));Safari.open(x.url)}}if(i===7)await preview()}
 async function main(){if(config.runsInWidget){const family=['small','medium','large'].includes(config.widgetFamily)?config.widgetFamily:'small';let ks=keys(args.widgetParameter||'');if(family==='large'){
     const prior=ks.join(',');
     if(settings.largeCustomized||ks.length<=1||prior===oldDefaults.join(','))ks=keys(settings.large.join(','));
