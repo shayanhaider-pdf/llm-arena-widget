@@ -28,7 +28,7 @@ async function run({family='small',param='search',feed=fixture,direct=null,store
     const cells=flat(r.result);
     for(const name of ['A','B','C'])check(cells.some(x=>x.value===name),'winner '+name);
     check(!cells.some(x=>x.value==='AI Radar'),'no branding');
-    check(family==='small'||cells.some(x=>x.url==='https://example.com/b'),'direct link');
+    check(family==='small'||cells.some(x=>x.url==='https://arena.ai/'),'unknown provider fallback');
     check(family==='large'?['↑','−','↓'].every(v=>cells.some(x=>x.value===v)):!cells.some(x=>['↑','−','↓'].includes(x.value)),'weekly trend');
   }
   const cold=await run({feed:null});check(cold.completed&&flat(cold.result).some(x=>x.value==='Data unavailable · open settings'),'cold offline');check(cold.requests<=3,'cold request limit');
@@ -39,5 +39,14 @@ async function run({family='small',param='search',feed=fixture,direct=null,store
   const invalid=await run({param:'coding,math'});check(flat(invalid.result).some(x=>x.value==='Search'),'excluded categories fallback');
   const unconfirmed=await run();check(flat(unconfirmed.result).filter(x=>x.value==='No confirmed match').length===2,'no invented access');
   const live=await run({feed:null,direct:{num_rows_total:1,partial:false,rows:[{row:{model_name:'Live Model',rank:1,category:'overall',leaderboard_publish_date:today}}]}});check(flat(live.result).some(x=>x.value==='Live Model'),'direct Arena without GitHub');check(live.requests===2,'direct request budget');
+  const names=['GPT-6.2 Sol','Claude Opus 5','Gemini 4 Carbon','Qwen3.8-Max','DeepSeek V4','Grok 4.5','Mistral Large','Kimi K3','GLM-5.1','Amazon-Web-Search-Agent'];
+  const expected=['https://chatgpt.com/','https://claude.ai/new','https://gemini.google.com/','https://chat.qwen.ai/','https://chat.deepseek.com/','https://grok.com/','https://chat.mistral.ai/','https://www.kimi.com/','https://z.ai/chat','https://arena.ai/'];
+  for(let i=0;i<names.length;i++){
+    const model=names[i],g={date:today,observed:today,models:[{id:model,rank:1}],history:{}};
+    const f={subsets:{search:{checked:today,groups:{overall:g}}}};
+    const r=await run({family:'medium',feed:f,stored:{'/d/AI-Radar/settings.json':JSON.stringify({registry:{[model.toLowerCase()]:{plus:true,name:'Custom name',url:'https://example.com/old'}}})}});
+    check(flat(r.result).some(x=>x.url===expected[i]),'provider '+model);
+    check(!flat(r.result).some(x=>x.url==='https://example.com/old'),'ignore old URL '+model);
+  }
   console.log(count+' assertions passed');
 })().catch(e=>{console.error(e);process.exitCode=1});
