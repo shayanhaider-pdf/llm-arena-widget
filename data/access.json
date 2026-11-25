@@ -18,13 +18,13 @@
         },
         {
           "id": "GPT-6.2 Sol (Max)",
-          "status": "unverified",
+          "status": "plus_candidate",
           "scope": "chat",
           "notes": "Plus has GPT-6.2 Sol, but Max benchmark effort is not confirmed"
         },
         {
           "id": "GPT-6.2 Astra (Max)",
-          "status": "unverified",
+          "status": "plus_candidate",
           "scope": "work",
           "notes": "Astra is available in Plus Work, not necessarily Max effort or chat"
         },
@@ -39,6 +39,18 @@
           "status": "unverified",
           "scope": "chat",
           "notes": "Plus has Sol; exact xHigh entitlement not established"
+        },
+        {
+          "id": "GPT-6.1 Terra (Medium)",
+          "status": "plus",
+          "scope": "work",
+          "notes": "Work/Codex model; not standard chat"
+        },
+        {
+          "id": "GPT-6.1 Sol (Max)",
+          "status": "plus_candidate",
+          "scope": "work",
+          "notes": "Work/Codex model family available; Max effort not confirmed"
         }
       ],
       "notes": "Free default is GPT-5.6 Luna; Plus includes GPT-6.2 Sol with plan-specific effort limits.",
@@ -170,7 +182,7 @@
         },
         {
           "id": "DeepSeek-V4.1-Flash-20260910 (Max)",
-          "status": "unverified",
+          "status": "reported_free",
           "scope": "chat",
           "notes": "Older snapshot; third-party free chat listing does not establish current availability"
         }
@@ -220,7 +232,7 @@
       "models": [
         {
           "id": "Kimi K3 (Max)",
-          "status": "unverified",
+          "status": "reported_free",
           "scope": "chat",
           "notes": "Free access reported externally; official credits and entitlement require confirmation"
         },
