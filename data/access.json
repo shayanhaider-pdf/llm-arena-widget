@@ -11,24 +11,10 @@
       "reviewedAt": "2026-11-25",
       "models": [
         {
-          "id": "GPT-5.6 Luna (xHigh, Codex Harness)",
-          "status": "plus_candidate",
-          "scope": "code",
-          "notes": "Codex family included; exact harness and xHigh effort not independently verified.",
-          "source": "https://help.openai.com/en/articles/20001354-gpt-6-and-other-models-in-chatgpt"
-        },
-        {
           "id": "GPT-5.6 Luna (xHigh)",
           "status": "reported_free",
           "scope": "chat",
           "notes": "GPT-5.6 Luna family is available on Free, exact xHigh benchmark mode unverified.",
-          "source": "https://help.openai.com/en/articles/20001354-gpt-6-and-other-models-in-chatgpt"
-        },
-        {
-          "id": "GPT-5.6 Sol (xHigh, Codex Harness)",
-          "status": "plus_candidate",
-          "scope": "code",
-          "notes": "Codex family included; exact harness and xHigh effort not independently verified.",
           "source": "https://help.openai.com/en/articles/20001354-gpt-6-and-other-models-in-chatgpt"
         },
         {
@@ -41,29 +27,8 @@
         {
           "id": "GPT-5.6 Sol (xHigh)",
           "status": "plus_candidate",
-          "scope": "code",
-          "notes": "Codex model family documented; exact benchmark configuration not verified on Plus.",
-          "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
-        },
-        {
-          "id": "GPT-5.6 Sol (xHigh)",
-          "status": "plus_candidate",
           "scope": "work",
           "notes": "Work model family documented; exact benchmark configuration not verified on Plus.",
-          "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
-        },
-        {
-          "id": "GPT-5.6 Terra (xHigh, Codex Harness)",
-          "status": "plus_candidate",
-          "scope": "code",
-          "notes": "Codex family included; exact harness and xHigh effort not independently verified.",
-          "source": "https://help.openai.com/en/articles/20001354-gpt-6-and-other-models-in-chatgpt"
-        },
-        {
-          "id": "GPT-5.6 Terra (xHigh)",
-          "status": "plus_candidate",
-          "scope": "code",
-          "notes": "Codex model family documented; exact benchmark configuration not verified on Plus.",
           "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
         },
         {
@@ -83,22 +48,8 @@
         {
           "id": "GPT-6 Astra (Max)",
           "status": "plus_candidate",
-          "scope": "code",
-          "notes": "Codex model family documented; exact benchmark configuration not verified on Plus.",
-          "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
-        },
-        {
-          "id": "GPT-6 Astra (Max)",
-          "status": "plus_candidate",
           "scope": "work",
           "notes": "Work model family documented; exact benchmark configuration not verified on Plus.",
-          "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
-        },
-        {
-          "id": "GPT-6 Luna (Low)",
-          "status": "plus_candidate",
-          "scope": "code",
-          "notes": "Codex model family documented; exact benchmark configuration not verified on Plus.",
           "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
         },
         {
@@ -111,22 +62,8 @@
         {
           "id": "GPT-6 Luna (Max)",
           "status": "plus_candidate",
-          "scope": "code",
-          "notes": "Codex model family documented; exact benchmark configuration not verified on Plus.",
-          "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
-        },
-        {
-          "id": "GPT-6 Luna (Max)",
-          "status": "plus_candidate",
           "scope": "work",
           "notes": "Work model family documented; exact benchmark configuration not verified on Plus.",
-          "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
-        },
-        {
-          "id": "GPT-6 Luna (Medium)",
-          "status": "plus_candidate",
-          "scope": "code",
-          "notes": "Codex model family documented; exact benchmark configuration not verified on Plus.",
           "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
         },
         {
@@ -146,22 +83,8 @@
         {
           "id": "GPT-6 Sol (Max)",
           "status": "plus_candidate",
-          "scope": "code",
-          "notes": "Codex model family documented; exact benchmark configuration not verified on Plus.",
-          "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
-        },
-        {
-          "id": "GPT-6 Sol (Max)",
-          "status": "plus_candidate",
           "scope": "work",
           "notes": "Work model family documented; exact benchmark configuration not verified on Plus.",
-          "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
-        },
-        {
-          "id": "GPT-6.1 Sol (Max)",
-          "status": "plus_candidate",
-          "scope": "code",
-          "notes": "Codex model family documented; exact benchmark configuration not verified on Plus.",
           "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
         },
         {
@@ -176,13 +99,6 @@
           "status": "plus",
           "scope": "work",
           "notes": "Documented Work model and Medium effort on eligible Plus accounts.",
-          "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
-        },
-        {
-          "id": "GPT-6.1 Terra (Max)",
-          "status": "plus_candidate",
-          "scope": "code",
-          "notes": "Codex model family documented; exact benchmark configuration not verified on Plus.",
           "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
         },
         {
@@ -209,13 +125,6 @@
         {
           "id": "GPT-6.2 Astra (Max)",
           "status": "plus_candidate",
-          "scope": "code",
-          "notes": "Codex model family documented; exact benchmark configuration not verified on Plus.",
-          "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
-        },
-        {
-          "id": "GPT-6.2 Astra (Max)",
-          "status": "plus_candidate",
           "scope": "work",
           "notes": "Work model family documented; exact benchmark configuration not verified on Plus.",
           "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
@@ -226,13 +135,6 @@
           "scope": "chat",
           "notes": "Model family available on Plus; benchmark effort or deployment identity not confirmed.",
           "source": "https://help.openai.com/en/articles/20001354-gpt-6-and-other-models-in-chatgpt"
-        },
-        {
-          "id": "GPT-6.2 Sol (Max)",
-          "status": "plus_candidate",
-          "scope": "code",
-          "notes": "Codex model family documented; exact benchmark configuration not verified on Plus.",
-          "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
         },
         {
           "id": "GPT-6.2 Sol (Max)",
@@ -273,6 +175,106 @@
         "Chat: GPT-6.2 Sol, GPT-6 Sol, GPT-5.6 Sol (where available; effort limits apply)",
         "Work/Codex: GPT-6.2 Astra and Sol; GPT-6 Astra, GPT-6 Sol, GPT-6 Luna, GPT-6.1 Sol and Terra; GPT-5.6 Sol, Terra and Luna (selector and usage limits vary)",
         "Images 2.6 (consumer model family; API variant not selectable)"
+      ],
+      "codeModels": [
+        {
+          "id": "GPT-5.6 Luna (xHigh, Codex Harness)",
+          "status": "plus_candidate",
+          "scope": "code",
+          "notes": "Codex family included; exact harness and xHigh effort not independently verified.",
+          "source": "https://help.openai.com/en/articles/20001354-gpt-6-and-other-models-in-chatgpt"
+        },
+        {
+          "id": "GPT-5.6 Sol (xHigh, Codex Harness)",
+          "status": "plus_candidate",
+          "scope": "code",
+          "notes": "Codex family included; exact harness and xHigh effort not independently verified.",
+          "source": "https://help.openai.com/en/articles/20001354-gpt-6-and-other-models-in-chatgpt"
+        },
+        {
+          "id": "GPT-5.6 Sol (xHigh)",
+          "status": "plus_candidate",
+          "scope": "code",
+          "notes": "Codex model family documented; exact benchmark configuration not verified on Plus.",
+          "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        },
+        {
+          "id": "GPT-5.6 Terra (xHigh, Codex Harness)",
+          "status": "plus_candidate",
+          "scope": "code",
+          "notes": "Codex family included; exact harness and xHigh effort not independently verified.",
+          "source": "https://help.openai.com/en/articles/20001354-gpt-6-and-other-models-in-chatgpt"
+        },
+        {
+          "id": "GPT-5.6 Terra (xHigh)",
+          "status": "plus_candidate",
+          "scope": "code",
+          "notes": "Codex model family documented; exact benchmark configuration not verified on Plus.",
+          "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        },
+        {
+          "id": "GPT-6 Astra (Max)",
+          "status": "plus_candidate",
+          "scope": "code",
+          "notes": "Codex model family documented; exact benchmark configuration not verified on Plus.",
+          "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        },
+        {
+          "id": "GPT-6 Luna (Low)",
+          "status": "plus_candidate",
+          "scope": "code",
+          "notes": "Codex model family documented; exact benchmark configuration not verified on Plus.",
+          "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        },
+        {
+          "id": "GPT-6 Luna (Max)",
+          "status": "plus_candidate",
+          "scope": "code",
+          "notes": "Codex model family documented; exact benchmark configuration not verified on Plus.",
+          "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        },
+        {
+          "id": "GPT-6 Luna (Medium)",
+          "status": "plus_candidate",
+          "scope": "code",
+          "notes": "Codex model family documented; exact benchmark configuration not verified on Plus.",
+          "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        },
+        {
+          "id": "GPT-6 Sol (Max)",
+          "status": "plus_candidate",
+          "scope": "code",
+          "notes": "Codex model family documented; exact benchmark configuration not verified on Plus.",
+          "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        },
+        {
+          "id": "GPT-6.1 Sol (Max)",
+          "status": "plus_candidate",
+          "scope": "code",
+          "notes": "Codex model family documented; exact benchmark configuration not verified on Plus.",
+          "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        },
+        {
+          "id": "GPT-6.1 Terra (Max)",
+          "status": "plus_candidate",
+          "scope": "code",
+          "notes": "Codex model family documented; exact benchmark configuration not verified on Plus.",
+          "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        },
+        {
+          "id": "GPT-6.2 Astra (Max)",
+          "status": "plus_candidate",
+          "scope": "code",
+          "notes": "Codex model family documented; exact benchmark configuration not verified on Plus.",
+          "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        },
+        {
+          "id": "GPT-6.2 Sol (Max)",
+          "status": "plus_candidate",
+          "scope": "code",
+          "notes": "Codex model family documented; exact benchmark configuration not verified on Plus.",
+          "source": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        }
       ]
     },
     {
@@ -293,13 +295,6 @@
           "status": "free",
           "scope": "chat",
           "notes": "User-confirmed free access; exact current selector may vary"
-        },
-        {
-          "id": "Qwen3.8-Max",
-          "status": "free",
-          "scope": "code",
-          "notes": "Same user-confirmed browser model can be asked coding questions; not a claim of identical coding harness.",
-          "source": "https://qwen.ai/blog?id=qwen3.8"
         },
         {
           "id": "Qwen3.8-Max",
@@ -328,6 +323,15 @@
       ],
       "additionalSources": [
         "https://docs.qwencloud.com/token-plan/token-plan-product-updates"
+      ],
+      "codeModels": [
+        {
+          "id": "Qwen3.8-Max",
+          "status": "free",
+          "scope": "code",
+          "notes": "Same user-confirmed browser model can be asked coding questions; not a claim of identical coding harness.",
+          "source": "https://qwen.ai/blog?id=qwen3.8"
+        }
       ]
     },
     {
@@ -341,14 +345,6 @@
           "status": "free",
           "scope": "chat",
           "notes": "Explicitly available on Free until Dec 8 2026; expires",
-          "expiresAt": "2026-12-08"
-        },
-        {
-          "id": "Claude Sonnet 4.6",
-          "status": "free",
-          "scope": "code",
-          "notes": "Available in the free Claude selector through December 7; browser coding questions only.",
-          "source": "https://support.claude.com/en/articles/18537562-claude-sonnet-4-6-is-leaving-the-model-selector",
           "expiresAt": "2026-12-08"
         },
         {
@@ -371,6 +367,16 @@
       ],
       "additionalSources": [
         "https://claude.com/pricing"
+      ],
+      "codeModels": [
+        {
+          "id": "Claude Sonnet 4.6",
+          "status": "free",
+          "scope": "code",
+          "notes": "Available in the free Claude selector through December 7; browser coding questions only.",
+          "source": "https://support.claude.com/en/articles/18537562-claude-sonnet-4-6-is-leaving-the-model-selector",
+          "expiresAt": "2026-12-08"
+        }
       ]
     },
     {
@@ -438,13 +444,6 @@
         },
         {
           "id": "DeepSeek-V4.1-Flash-20261017 (Max)",
-          "status": "reported_free",
-          "scope": "code",
-          "notes": "Current family reported as available in free chat; exact Max benchmark revision and mode not confirmed.",
-          "source": "https://freellmarena.com/free-ai"
-        },
-        {
-          "id": "DeepSeek-V4.1-Flash-20261017 (Max)",
           "status": "unverified",
           "scope": "work",
           "notes": "Browser chat access does not confirm free agent harness.",
@@ -458,6 +457,15 @@
       ],
       "additionalSources": [
         "https://freellmarena.com/free-ai"
+      ],
+      "codeModels": [
+        {
+          "id": "DeepSeek-V4.1-Flash-20261017 (Max)",
+          "status": "reported_free",
+          "scope": "code",
+          "notes": "Current family reported as available in free chat; exact Max benchmark revision and mode not confirmed.",
+          "source": "https://freellmarena.com/free-ai"
+        }
       ]
     },
     {
@@ -512,13 +520,6 @@
           "status": "unverified",
           "scope": "chat",
           "notes": "Exact free web entitlement not established"
-        },
-        {
-          "id": "Kimi K3.1 Pro (Max)",
-          "status": "unverified",
-          "scope": "code",
-          "notes": "Free API/open-weight claims are not consumer membership proof.",
-          "source": "https://www.kimi.com/en/help/kimi-code/benefits"
         }
       ],
       "notes": "Free access reported; distinguish chat from agent credits and paid Code plans.",
@@ -528,6 +529,15 @@
       ],
       "additionalSources": [
         "https://freellmarena.com/free-ai"
+      ],
+      "codeModels": [
+        {
+          "id": "Kimi K3.1 Pro (Max)",
+          "status": "unverified",
+          "scope": "code",
+          "notes": "Free API/open-weight claims are not consumer membership proof.",
+          "source": "https://www.kimi.com/en/help/kimi-code/benefits"
+        }
       ]
     },
     {
@@ -551,13 +561,6 @@
         {
           "id": "GLM-5.3-Flash",
           "status": "reported_free",
-          "scope": "code",
-          "notes": "Z.ai public chat and agent product is branded GLM-5.3-Flash; exact agent/harness availability unconfirmed.",
-          "source": "https://chat.z.ai/space/f0ket6ru68b1-ppt"
-        },
-        {
-          "id": "GLM-5.3-Flash",
-          "status": "reported_free",
           "scope": "work",
           "notes": "Z.ai public chat and agent product is branded GLM-5.3-Flash; exact agent/harness availability unconfirmed.",
           "source": "https://chat.z.ai/space/f0ket6ru68b1-ppt"
@@ -570,6 +573,15 @@
       ],
       "additionalSources": [
         "https://chat.z.ai/space/t0up16h9ddm0-ppt"
+      ],
+      "codeModels": [
+        {
+          "id": "GLM-5.3-Flash",
+          "status": "reported_free",
+          "scope": "code",
+          "notes": "Z.ai public chat and agent product is branded GLM-5.3-Flash; exact agent/harness availability unconfirmed.",
+          "source": "https://chat.z.ai/space/f0ket6ru68b1-ppt"
+        }
       ]
     },
     {
@@ -577,7 +589,13 @@
       "url": "https://chat.mistral.ai/",
       "source": "https://mistral.ai/pricing/",
       "reviewedAt": "2026-11-25",
-      "models": [
+      "models": [],
+      "notes": "Free Vibe plan includes limited access to latest models; exact Arena variants not published.",
+      "freeTier": "confirmed",
+      "freeModelFamilies": [
+        "Vibe (model selector varies)"
+      ],
+      "codeModels": [
         {
           "id": "Mistral Large 4",
           "status": "reported_free",
@@ -585,11 +603,6 @@
           "notes": "Free Vibe includes limited coding; official default Large 4, but exact benchmark harness not confirmed.",
           "source": "https://docs.mistral.ai/vibe/code/cli/configuration"
         }
-      ],
-      "notes": "Free Vibe plan includes limited access to latest models; exact Arena variants not published.",
-      "freeTier": "confirmed",
-      "freeModelFamilies": [
-        "Vibe (model selector varies)"
       ]
     },
     {
