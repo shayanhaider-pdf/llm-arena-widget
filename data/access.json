@@ -1,0 +1,332 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-11-25",
+  "reviewInterval": "monthly",
+  "scope": "Consumer web/app access; no API credits, self-hosted weights, or time-limited trials. Exact Arena variant eligibility is separate from provider free tier.",
+  "providers": [
+    {
+      "provider": "OpenAI",
+      "url": "https://chatgpt.com/",
+      "source": "https://help.openai.com/en/articles/20001354-gpt-6-and-other-models-in-chatgpt",
+      "reviewedAt": "2026-11-25",
+      "models": [
+        {
+          "id": "GPT-5.6 Luna (xHigh)",
+          "status": "unverified",
+          "scope": "chat",
+          "notes": "Luna is on Free; exact xHigh configuration not established"
+        },
+        {
+          "id": "GPT-6.2 Sol (Max)",
+          "status": "unverified",
+          "scope": "chat",
+          "notes": "Plus has GPT-6.2 Sol, but Max benchmark effort is not confirmed"
+        },
+        {
+          "id": "GPT-6.2 Astra (Max)",
+          "status": "unverified",
+          "scope": "work",
+          "notes": "Astra is available in Plus Work, not necessarily Max effort or chat"
+        },
+        {
+          "id": "GPT-6.1 Sol (Medium)",
+          "status": "plus",
+          "scope": "work",
+          "notes": "Medium in Work/Codex; not a standard chat model"
+        },
+        {
+          "id": "GPT-5.6 Sol (xHigh)",
+          "status": "unverified",
+          "scope": "chat",
+          "notes": "Plus has Sol; exact xHigh entitlement not established"
+        }
+      ],
+      "notes": "Free default is GPT-5.6 Luna; Plus includes GPT-6.2 Sol with plan-specific effort limits.",
+      "freeTier": "confirmed",
+      "freeModelFamilies": [
+        "GPT-5.6 Luna"
+      ],
+      "additionalSources": [
+        "https://help.openai.com/en/articles/6825453-chatgpt-release-notes",
+        "https://openai.com/index/introducing-gpt-6-2-astra-sol/"
+      ]
+    },
+    {
+      "provider": "Alibaba Qwen",
+      "url": "https://chat.qwen.ai/",
+      "source": "https://qwen.ai/home",
+      "reviewedAt": "2026-11-25",
+      "models": [
+        {
+          "id": "Qwen3.8-Max",
+          "status": "free",
+          "scope": "chat",
+          "notes": "User-confirmed free access; exact current selector may vary"
+        },
+        {
+          "id": "Qwen3.8-Max (0902)",
+          "status": "unverified",
+          "scope": "chat",
+          "notes": "Snapshot-specific configuration not confirmed"
+        },
+        {
+          "id": "Qwen4-Max (xHigh)",
+          "status": "unverified",
+          "scope": "chat",
+          "notes": "Preview ended Nov 25; regular free access not established"
+        }
+      ],
+      "notes": "Qwen Chat is free; not every model or reasoning configuration is free.",
+      "freeTier": "confirmed",
+      "freeModelFamilies": [
+        "Qwen3.8-Max (user-confirmed)"
+      ],
+      "additionalSources": [
+        "https://docs.qwencloud.com/token-plan/token-plan-product-updates"
+      ]
+    },
+    {
+      "provider": "Anthropic",
+      "url": "https://claude.ai/",
+      "source": "https://support.claude.com/en/articles/18537562-claude-sonnet-4-6-is-leaving-the-model-selector",
+      "reviewedAt": "2026-11-25",
+      "models": [
+        {
+          "id": "Claude Sonnet 4.6",
+          "status": "free",
+          "scope": "chat",
+          "notes": "Explicitly available on Free until Dec 8 2026; expires",
+          "expiresAt": "2026-12-08"
+        },
+        {
+          "id": "Claude Sonnet 4.6 (Search)",
+          "status": "unverified",
+          "scope": "chat",
+          "notes": "Exact Search benchmark configuration not established"
+        },
+        {
+          "id": "Claude Sonnet 5 (High)",
+          "status": "unverified",
+          "scope": "chat",
+          "notes": "Specific effort not established"
+        }
+      ],
+      "notes": "Limited free plan; Sonnet 4.6 selector removal announced.",
+      "freeTier": "confirmed",
+      "freeModelFamilies": [
+        "Claude Sonnet 4.6 (until 8 December)"
+      ],
+      "additionalSources": [
+        "https://claude.com/pricing"
+      ]
+    },
+    {
+      "provider": "Google",
+      "url": "https://gemini.google.com/",
+      "source": "https://support.google.com/gemini/answer/16275805?hl=en",
+      "reviewedAt": "2026-11-25",
+      "models": [
+        {
+          "id": "Gemini 3.8 Flash (High)",
+          "status": "unverified",
+          "scope": "chat",
+          "notes": "Official release described paid app access; free exact High unclear"
+        },
+        {
+          "id": "Gemini 3 Flash",
+          "status": "unverified",
+          "scope": "chat",
+          "notes": "Current free model selector not established"
+        },
+        {
+          "id": "Gemini 4 Hydrogen (High)",
+          "status": "unverified",
+          "scope": "chat",
+          "notes": "Free auto-routing announced; exact High not established"
+        }
+      ],
+      "notes": "Free Gemini app with standard limits; auto-selected models can vary.",
+      "freeTier": "confirmed",
+      "freeModelFamilies": [
+        "Gemini 4 Hydrogen (auto selection, exact effort unverified)",
+        "Flash-Lite (family)"
+      ],
+      "additionalSources": [
+        "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-hydrogen-builders/",
+        "https://blog.google/innovation-and-ai/models-and-research/gemini-models/3-8-flash-and-3-8-flash-cyber/"
+      ]
+    },
+    {
+      "provider": "DeepSeek",
+      "url": "https://chat.deepseek.com/",
+      "source": "https://www.deepseek.com/en/",
+      "reviewedAt": "2026-11-25",
+      "models": [
+        {
+          "id": "DeepSeek-V4.1-Flash-20261017 (Max)",
+          "status": "unverified",
+          "scope": "chat",
+          "notes": "Current release confirmed; exact free Max mode not established"
+        },
+        {
+          "id": "DeepSeek-V4.1-Flash-20260910 (Max)",
+          "status": "unverified",
+          "scope": "chat",
+          "notes": "Older snapshot; third-party free chat listing does not establish current availability"
+        }
+      ],
+      "notes": "Free chat reported by independent directory; official site confirms V4.1 Flash release.",
+      "freeTier": "reported",
+      "freeModelFamilies": [
+        "DeepSeek V4.1 Flash (reported)"
+      ],
+      "additionalSources": [
+        "https://freellmarena.com/free-ai"
+      ]
+    },
+    {
+      "provider": "xAI",
+      "url": "https://grok.com/",
+      "source": "https://x.ai/pricing",
+      "reviewedAt": "2026-11-25",
+      "models": [
+        {
+          "id": "Grok 4.6 (High)",
+          "status": "unverified",
+          "scope": "chat",
+          "notes": "Provider free tier confirmed; exact High effort not established"
+        },
+        {
+          "id": "Grok 4.6 (xHigh)",
+          "status": "unverified",
+          "scope": "chat",
+          "notes": "Exact xHigh not established"
+        }
+      ],
+      "notes": "Limited free plan, availability depends on location.",
+      "freeTier": "confirmed",
+      "freeModelFamilies": [
+        "Grok (model/effort varies)"
+      ],
+      "additionalSources": [
+        "https://x.ai/legal/faq"
+      ]
+    },
+    {
+      "provider": "Moonshot AI",
+      "url": "https://www.kimi.com/",
+      "source": "https://www.kimi.com/en/help/membership/membership-pricing",
+      "reviewedAt": "2026-11-25",
+      "models": [
+        {
+          "id": "Kimi K3 (Max)",
+          "status": "unverified",
+          "scope": "chat",
+          "notes": "Free access reported externally; official credits and entitlement require confirmation"
+        },
+        {
+          "id": "Kimi K3.1 Pro (Max)",
+          "status": "unverified",
+          "scope": "chat",
+          "notes": "Exact free web entitlement not established"
+        },
+        {
+          "id": "Kimi K2.6",
+          "status": "unverified",
+          "scope": "chat",
+          "notes": "Consumes membership credits"
+        }
+      ],
+      "notes": "Free access reported; distinguish chat from agent credits and paid Code plans.",
+      "freeTier": "reported",
+      "freeModelFamilies": [
+        "Kimi K3 (reported, limits unclear)"
+      ],
+      "additionalSources": [
+        "https://freellmarena.com/free-ai"
+      ]
+    },
+    {
+      "provider": "Z.ai",
+      "url": "https://chat.z.ai/",
+      "source": "https://chat.z.ai/",
+      "reviewedAt": "2026-11-25",
+      "models": [
+        {
+          "id": "GLM-5.3-Flash",
+          "status": "free",
+          "scope": "chat",
+          "notes": "Public chat branded as GLM-5.3-Flash; free creation offered"
+        },
+        {
+          "id": "GLM-5.3 (Max)",
+          "status": "unverified",
+          "scope": "chat",
+          "notes": "Flash free does not establish Max access"
+        }
+      ],
+      "notes": "Public chat; exact availability subject to account and regional limits.",
+      "freeTier": "confirmed",
+      "freeModelFamilies": [
+        "GLM-5.3-Flash"
+      ],
+      "additionalSources": [
+        "https://chat.z.ai/space/t0up16h9ddm0-ppt"
+      ]
+    },
+    {
+      "provider": "Mistral",
+      "url": "https://chat.mistral.ai/",
+      "source": "https://mistral.ai/pricing/",
+      "reviewedAt": "2026-11-25",
+      "models": [],
+      "notes": "Free Vibe plan includes limited access to latest models; exact Arena variants not published.",
+      "freeTier": "confirmed",
+      "freeModelFamilies": [
+        "Vibe (model selector varies)"
+      ]
+    },
+    {
+      "provider": "Perplexity",
+      "url": "https://www.perplexity.ai/",
+      "source": "https://www.perplexity.ai/help-center/en/articles/11187416-which-perplexity-subscription-plan-is-right-for-you",
+      "reviewedAt": "2026-11-25",
+      "models": [],
+      "notes": "Free basic search; premium model selection is separate.",
+      "freeTier": "confirmed",
+      "freeModelFamilies": [
+        "Default search (exact model not disclosed)"
+      ]
+    },
+    {
+      "provider": "Meta",
+      "url": "https://www.meta.ai/",
+      "source": "https://www.meta.ai/",
+      "reviewedAt": "2026-11-25",
+      "models": [],
+      "notes": "Consumer chat available; exact current Muse/Llama model and region require verification.",
+      "freeTier": "unverified",
+      "freeModelFamilies": []
+    },
+    {
+      "provider": "MiniMax",
+      "url": "https://www.minimax.io/",
+      "source": "https://www.minimax.io/",
+      "reviewedAt": "2026-11-25",
+      "models": [],
+      "notes": "Consumer free allocation and exact model need verification.",
+      "freeTier": "unverified",
+      "freeModelFamilies": []
+    },
+    {
+      "provider": "Baidu",
+      "url": "https://yiyan.baidu.com/",
+      "source": "https://yiyan.baidu.com/",
+      "reviewedAt": "2026-11-25",
+      "models": [],
+      "notes": "Regional registration and exact ERNIE model access require verification.",
+      "freeTier": "unverified",
+      "freeModelFamilies": []
+    }
+  ]
+}
