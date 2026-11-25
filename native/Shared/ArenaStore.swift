@@ -607,6 +607,13 @@ private func providerURL(_ model: String, _ category: ArenaCategory) -> URL? {
         default: return URL(string: "https://chatgpt.com/")
         }
     }
+    if id.hasPrefix("claude") || id.range(of: #"^anthropic[\s/:_-]"#, options: .regularExpression) != nil {
+        switch scope {
+        case .work: return URL(string: "https://claude.ai/")
+        case .code: return URL(string: "https://claude.ai/code")
+        default: return URL(string: "https://claude.ai/new")
+        }
+    }
     for (pattern, link) in providerRoutes where id.range(of: pattern, options: .regularExpression) != nil {
         return URL(string: link)
     }
@@ -614,7 +621,6 @@ private func providerURL(_ model: String, _ category: ArenaCategory) -> URL? {
 }
 
 private let providerRoutes: [(String, String)] = [
-    (#"^(claude|anthropic[\s/:_-])"#, "https://claude.ai/new"),
     (#"^(gemini|google[\s/:_-]|gemma|imagen|veo|nano[- ]?banana)"#, "https://gemini.google.com/"),
     (#"^(qwen|qwq|qvq|alibaba[\s/:_-])"#, "https://chat.qwen.ai/"),
     (#"^deepseek"#, "https://chat.deepseek.com/"),
@@ -627,6 +633,7 @@ private let providerRoutes: [(String, String)] = [
     (#"^ideogram"#, "https://ideogram.ai/"),
     (#"^midjourney"#, "https://www.midjourney.com/"),
     (#"^runway"#, "https://app.runwayml.com/"),
+    (#"^wan[-\s\d.]"#, "https://wan.video/"),
     (#"^minimax"#, "https://agent.minimax.io/"),
     (#"^(ernie|baidu)"#, "https://yiyan.baidu.com/"),
     (#"^(hunyuan|hy4)"#, "https://yuanbao.tencent.com/"),

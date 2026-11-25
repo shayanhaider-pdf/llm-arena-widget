@@ -229,7 +229,7 @@ private struct RadarHome: View {
             let url = try result.get()
             let hasAccess = url.startAccessingSecurityScopedResource()
             defer { if hasAccess { url.stopAccessingSecurityScopedResource() } }
-            let summary = try store.importScriptableSettings(Data(contentsOf: url))
+            let summary = try store.importScriptableSettings(Data(contentsOf: url, options: .mappedIfSafe))
             snapshot = store.cached()
             WidgetCenter.shared.reloadAllTimelines()
             var lines = ["Imported \(summary.overridesImported) model overrides for chat categories."]
@@ -238,6 +238,8 @@ private struct RadarHome: View {
                 lines.append("To recreate your board, use Edit Widget and select these rows in order. \(categories).")
             }
             importMessage = lines.joined(separator: "\n\n")
+        } catch let error as CocoaError where error.code == .userCancelled {
+            return
         } catch {
             importMessage = "The settings file couldn’t be imported. Choose AI-Radar/settings.json from Scriptable."
         }
@@ -308,6 +310,11 @@ private struct WinnerCard: View {
                     .fixedSize(horizontal: false, vertical: true)
                 if winner.isUnconfirmed {
                     Text("Access unconfirmed")
+                        .font(.footnote)
+                        .foregroundStyle(RadarColor.muted)
+                }
+                if winner.model != nil, winner.destination == nil {
+                    Text("See the Arena leaderboard")
                         .font(.footnote)
                         .foregroundStyle(RadarColor.muted)
                 }
