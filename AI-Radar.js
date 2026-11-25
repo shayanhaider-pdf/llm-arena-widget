@@ -1,4 +1,4 @@
-// AI Radar v0.14 — Scriptable
+// AI Radar v0.15 — Scriptable
 const REPO='https://raw.githubusercontent.com/shayanhaider-pdf/llm-arena-widget/main/data/widget.json';
 const OLD_FEED='https://raw.githubusercontent.com/shayanhaider-pdf/llm-arena-widget/main/data/latest.json';
 const ACCESS='https://raw.githubusercontent.com/shayanhaider-pdf/llm-arena-widget/main/data/access.json';
@@ -83,6 +83,10 @@ const C={
     "Video editing",
     "video_edit:overall"
   ],
+  "math": [
+    "Mathematics",
+    "text_style_control:math"
+  ],
   "reasoning": [
     "Reasoning",
     "text_style_control:hard_prompts"
@@ -102,7 +106,7 @@ const categorySections=[
   ['Code',['webdev','imagewebdev']],
   ['Image',['image','editing','multiedit']],
   ['Video',['video','imagevideo','videoedit']],
-  ['Text specialties',['reasoning','writing','instruction']]
+  ['Text specialties',['reasoning','writing','instruction','math']]
 ];
 const defaults=['work','text','documents','search','image'];
 const oldDefaults=['search','work','text','vision','documents'];
@@ -123,7 +127,7 @@ const category=k=>typeof k==='string'&&own(C,k);
 const safeKey=k=>!['__proto__','constructor','prototype'].includes(k);
 const today=()=>new Date().toISOString().slice(0,10);
 const dayAgo=(d,n)=>new Date(Date.parse(d+'T00:00:00Z')-n*86400000).toISOString().slice(0,10);
-function keys(s){return [...new Set(String(s||'').split(',').map(x=>{let t=id(x);return category(t)?t:Object.keys(C).find(k=>C[k][1]===t)}).filter(Boolean))]}
+function keys(s){return [...new Set(String(s||'').split(',').map(x=>{let t=id(x);if(t==='mathematics')t='math';return category(t)?t:Object.keys(C).find(k=>C[k][1]===t)}).filter(Boolean))]}
 // Scriptable exposes a read-only parameter, not a native widget identity.
 const singleFamilies=['small','medium'];
 const slots=['default',...Array.from({length:8},(_,i)=>'slot:'+(i+2))];
@@ -322,8 +326,8 @@ function stylePanel(p,fill,edge){
   if(edge){p.borderWidth=.6;p.borderColor=new Color(edge)}
 }
 const tierSymbols=['crown.fill','bolt.fill','square.stack.3d.up'];
-const categorySymbols={search:'magnifyingglass',work:'briefcase',text:'text.alignleft',documents:'doc.text',vision:'photo',reasoning:'brain',writing:'pencil',image:'photo.artframe',editing:'wand.and.stars',video:'video',webdev:'chevron.left.forwardslash.chevron.right',agent:'cpu',imagevideo:'film',videoedit:'film',steering:'slider.horizontal.3',instruction:'list.bullet',chatagent:'bubble.left.and.bubble.right',alignment:'checkmark.shield',coding:'chevron.left.forwardslash.chevron.right',taskoutcome:'checkmark.circle',tooluse:'wrench.and.screwdriver',imagewebdev:'photo.on.rectangle',multiedit:'photo.on.rectangle.angled'};
-const shortTitles={work:'Work capability',text:'Overall text',documents:'Documents',reasoning:'Reasoning',writing:'Writing',image:'Images',editing:'Edit image',video:'Video',webdev:'Web dev',agent:'Agent',imagevideo:'Img → video',videoedit:'Edit video',steering:'Steering',instruction:'Instruction',chatagent:'Agent chat',alignment:'Alignment',coding:'Coding',taskoutcome:'Task outcome',tooluse:'Tool use',imagewebdev:'Image WebDev',multiedit:'Multi edit'};
+const categorySymbols={math:'function',search:'magnifyingglass',work:'briefcase',text:'text.alignleft',documents:'doc.text',vision:'photo',reasoning:'brain',writing:'pencil',image:'photo.artframe',editing:'wand.and.stars',video:'video',webdev:'chevron.left.forwardslash.chevron.right',agent:'cpu',imagevideo:'film',videoedit:'film',steering:'slider.horizontal.3',instruction:'list.bullet',chatagent:'bubble.left.and.bubble.right',alignment:'checkmark.shield',coding:'chevron.left.forwardslash.chevron.right',taskoutcome:'checkmark.circle',tooluse:'wrench.and.screwdriver',imagewebdev:'photo.on.rectangle',multiedit:'photo.on.rectangle.angled'};
+const shortTitles={math:'Mathematics',work:'Work capability',text:'Overall text',documents:'Documents',reasoning:'Reasoning',writing:'Writing',image:'Images',editing:'Edit image',video:'Video',webdev:'Web dev',agent:'Agent',imagevideo:'Img → video',videoedit:'Edit video',steering:'Steering',instruction:'Instruction',chatagent:'Agent chat',alignment:'Alignment',coding:'Coding',taskoutcome:'Task outcome',tooluse:'Tool use',imagewebdev:'Image WebDev',multiedit:'Multi edit'};
 function txt(s,v,size=10,c=ink,bold=false,lines=1){
   const t=s.addText(String(v));
   t.font=bold?Font.semiboldSystemFont(size):Font.systemFont(size);
@@ -353,7 +357,7 @@ function modelName(m){
 }
 function rank(m){return m?'#'+m.rank+(m.unconfirmed?'?':''):'–'}
 function modelLink(m,k,ctx=null){return m?.url||link(k,'details',ctx)}
-const compactTitles={agent:'Agent overall',alignment:'Alignment',work:'Work',coding:'Agent coding',chatagent:'Agent chat',taskoutcome:'Task outcome',steering:'Steering',tooluse:'Tool use',text:'Overall text',search:'Search',vision:'Vision',documents:'Documents',webdev:'WebDev',imagewebdev:'Image WebDev',image:'Text to image',editing:'Single edit',multiedit:'Multi edit',video:'Text to video',imagevideo:'Image to video',videoedit:'Video edit',reasoning:'Reasoning',writing:'Writing',instruction:'Instructions'};
+const compactTitles={math:'Mathematics',agent:'Agent overall',alignment:'Alignment',work:'Work',coding:'Agent coding',chatagent:'Agent chat',taskoutcome:'Task outcome',steering:'Steering',tooluse:'Tool use',text:'Overall text',search:'Search',vision:'Vision',documents:'Documents',webdev:'WebDev',imagewebdev:'Image WebDev',image:'Text to image',editing:'Single edit',multiedit:'Multi edit',video:'Text to video',imagevideo:'Image to video',videoedit:'Video edit',reasoning:'Reasoning',writing:'Writing',instruction:'Instructions'};
 function header(w,k,large,width){
   const h=w.addStack();h.size=new Size(width,18);h.centerAlignContent();
   if(!large){
@@ -475,7 +479,7 @@ async function accessMenu(k){
     if(options[i]==='Previous page')page--;else page++;
   }
 }
-const boardURLs={work:'https://arena.ai/leaderboard/agent/work',search:'https://arena.ai/leaderboard/chat/search',text:'https://arena.ai/leaderboard/chat/text',reasoning:'https://arena.ai/leaderboard/chat/text/hard-prompts',writing:'https://arena.ai/leaderboard/chat/text/creative-writing',vision:'https://arena.ai/leaderboard/chat/vision',documents:'https://arena.ai/leaderboard/chat/document',agent:'https://arena.ai/leaderboard/agent',alignment:'https://arena.ai/leaderboard/agent/alignment',coding:'https://arena.ai/leaderboard/agent/code',chatagent:'https://arena.ai/leaderboard/agent/chat',taskoutcome:'https://arena.ai/leaderboard/agent/task-feedback',steering:'https://arena.ai/leaderboard/agent/steerability',tooluse:'https://arena.ai/leaderboard/agent/tool-efficiency',webdev:'https://arena.ai/leaderboard/code',imagewebdev:'https://arena.ai/leaderboard/code/image-to-webdev',image:'https://arena.ai/leaderboard/image/text-to-image',editing:'https://arena.ai/leaderboard/image/image-edit/single-image',multiedit:'https://arena.ai/leaderboard/image/image-edit/multi-image',video:'https://arena.ai/leaderboard/video/text-to-video',imagevideo:'https://arena.ai/leaderboard/video/image-to-video',videoedit:'https://arena.ai/leaderboard/video/video-edit'};
+const boardURLs={math:'https://arena.ai/leaderboard/chat/text/math',work:'https://arena.ai/leaderboard/agent/work',search:'https://arena.ai/leaderboard/chat/search',text:'https://arena.ai/leaderboard/chat/text',reasoning:'https://arena.ai/leaderboard/chat/text/hard-prompts',writing:'https://arena.ai/leaderboard/chat/text/creative-writing',vision:'https://arena.ai/leaderboard/chat/vision',documents:'https://arena.ai/leaderboard/chat/document',agent:'https://arena.ai/leaderboard/agent',alignment:'https://arena.ai/leaderboard/agent/alignment',coding:'https://arena.ai/leaderboard/agent/code',chatagent:'https://arena.ai/leaderboard/agent/chat',taskoutcome:'https://arena.ai/leaderboard/agent/task-feedback',steering:'https://arena.ai/leaderboard/agent/steerability',tooluse:'https://arena.ai/leaderboard/agent/tool-efficiency',webdev:'https://arena.ai/leaderboard/code',imagewebdev:'https://arena.ai/leaderboard/code/image-to-webdev',image:'https://arena.ai/leaderboard/image/text-to-image',editing:'https://arena.ai/leaderboard/image/image-edit/single-image',multiedit:'https://arena.ai/leaderboard/image/image-edit/multi-image',video:'https://arena.ai/leaderboard/video/text-to-video',imagevideo:'https://arena.ai/leaderboard/video/image-to-video',videoedit:'https://arena.ai/leaderboard/video/video-edit'};
 async function details(k,ctx=null){
   await refresh([k]);
   const g=get(k);
