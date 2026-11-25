@@ -38,7 +38,7 @@ async function run({family='small',param='search',feed=fixture,registry=reg,stor
   const broken=await run({feed:{subsets:null},stored:{'/d/AI-Radar/settings.json':'null','/d/AI-Radar/monthly-cache.json':'[]'}});check(broken.completed&&broken.result,'corrupt settings');
   const reason=await run({param:'reasoning'});check(flat(reason.result).some(x=>x.value==='A'),'hard_6 resolves');
   const app=await run({app:true});check(app.completed,'first app launch');
-  const invalid=await run({param:'coding,math'});check(flat(invalid.result).some(x=>x.value==='Search'),'excluded categories fallback');
+  const invalid=await run({param:'math,invalid'});check(flat(invalid.result).some(x=>x.value==='Search'),'invalid category fallback');
   const unconfirmed=await run();check(flat(unconfirmed.result).filter(x=>x.value==='–').length===4,'no invented access');
   const offline2=await run({feed:null,registry:null,stored:good.files});check(offline2.requests===0,'no unnecessary same-day requests');
   const changed=await run({family:'medium',feed:{subsets:{search:{checked:today,groups:{overall:{...group,models:[{id:'New monthly model',rank:1}]}}}}},stored:{...good.files,'/d/AI-Radar/monthly-sync.json':'{}'}});check(flat(changed.result).some(x=>x.value==='New monthly model'),'data update with unchanged code');
@@ -83,12 +83,12 @@ async function run({family='small',param='search',feed=fixture,registry=reg,stor
   check(repaired.requests===1&&flat(repaired.result).some(x=>x.value==='A'),'corrupt same-day cache refetched');
   const production=JSON.parse(fs.readFileSync(__dirname+'/data/widget.json','utf8'));
   const productionRegistry=JSON.parse(fs.readFileSync(__dirname+'/data/access.json','utf8'));
-  const categories=['work','search','reasoning','writing','vision','documents','text','webdev','image','editing','video','agent','imagevideo','videoedit','steering','instruction','chatagent'];
+  const categories=['agent','alignment','work','coding','chatagent','taskoutcome','steering','tooluse','text','search','vision','documents','webdev','imagewebdev','image','editing','multiedit','video','imagevideo','videoedit','reasoning','writing','instruction'];
   for(const param of categories){
     const r=await run({family:'medium',param,feed:production,registry:productionRegistry});
     check(r.completed&&r.result&&flat(r.result).some(x=>x.value==='#1')&&!flat(r.result).some(x=>x.value==='Rankings unavailable'),'production group '+param);
     const detail=await run({app:true,query:{category:param},feed:production,registry:productionRegistry});
-    const expected=param==='videoedit'?Math.min(20,production.subsets.video_edit.groups.overall.models.length):20;
+    const expected=param==='alignment'?Math.min(20,production.subsets.agent_alignment.groups.overall.models.length):param==='videoedit'?Math.min(20,production.subsets.video_edit.groups.overall.models.length):20;
     check(detail.tableRows.filter(row=>/^#\d+ /.test(row.title)).length===expected,'top rows '+param);
   }
   const tapped=await run({app:true,query:{category:'search'},feed:accessFeed,selection:3});
@@ -102,7 +102,7 @@ async function run({family='small',param='search',feed=fixture,registry=reg,stor
   check(custom.largeCustomized&&custom.large.join(',')==='text,work,documents,search,image','row editor moves and saves');
   const replaced=await run({app:true,choices:[2,4,2,0,7]});
   const replacedSettings=JSON.parse(replaced.files['/d/AI-Radar/settings.json']);
-  check(replacedSettings.large.join(',')==='work,text,documents,search,reasoning','row editor replaces category without duplicates');
+  check(replacedSettings.large.join(',')==='work,text,documents,search,agent','row editor replaces category without duplicates');
   const cancelled=await run({app:true,choices:[2,0,1,-1]});
   check(!cancelled.files['/d/AI-Radar/settings.json'],'cancel does not persist changes');
   const customWidget=await run({family:'large',param:'search,work,text,vision,documents',feed:production,registry:productionRegistry,stored:reordered.files});
