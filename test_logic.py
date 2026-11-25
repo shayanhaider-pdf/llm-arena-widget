@@ -84,6 +84,25 @@ class TestRankings(unittest.TestCase):
         self.assertEqual(g['source'],'https://arena.ai/leaderboard/agent/alignment')
         self.assertNotEqual(g['models'],data['subsets']['agent_capability']['groups']['overall']['models'])
 
+    def test_published_group_validation_matches_widget(self):
+        g=group([row('A',1)],{},D2)['overall']
+        self.assertTrue(valid_group(g,D2))
+        for invalid in (
+            {**g,'date':'20261125'},
+            {**g,'partial':'false'},
+            {**g,'models':[{'id':'__proto__','rank':1}]},
+            {**g,'models':[{'id':'A','rank':1},{'id':'a','rank':2}]},
+        ):
+            with self.subTest(invalid=invalid):
+                self.assertFalse(valid_group(invalid,D2))
+        self.assertFalse(valid_group(g,D1))
+
+    def test_checked_date_blocks_incompatible_feed(self):
+        data=dataset()
+        data['subsets']['search']['checked']='2020-01-01'
+        with self.assertRaises(ValueError):
+            widget_feed(data)
+
     def test_missing_required_group_blocks_publish(self):
         data=dataset()
         del data['subsets']['search']['groups']['overall']
