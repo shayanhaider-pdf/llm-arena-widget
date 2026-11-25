@@ -72,7 +72,7 @@ function accessEntry(model,k){
     if(match){entry=match;provider=p;break}
   }
   const status=entry?.status||'unknown';
-  return {free:typeof x?.free==='boolean'?x.free:status==='free',plus:typeof x?.plus==='boolean'?x.plus:status==='plus',reportedFree:x?.free!==false&&status==='reported_free',plusCandidate:x?.plus!==false&&status==='plus_candidate',notes:entry?.notes||'',provider:provider?.provider||'',status}
+  return {free:typeof x?.free==='boolean'?x.free:status==='free',plus:typeof x?.plus==='boolean'?x.plus:status==='plus',reportedFree:x?.free!==false&&status==='reported_free',plusCandidate:x?.plus!==false&&(status==='plus_candidate'||entry?.plusCandidate===true),notes:entry?.notes||'',provider:provider?.provider||'',status}
 }
 if(!validAccess(access))access={};
 function previousMonthRank(g,m){
@@ -95,8 +95,8 @@ function winners(g,k){
   const freeCandidate=free?null:eligible.find(x=>x.e.reportedFree)?.m;
   return [ranked[0],plus||plusCandidate,free||freeCandidate].map((m,i)=>{
     if(!m)return null;
-    const x=settings.registry[id(m.id)]||{},prior=previousMonthRank(g,m);
-    return {...m,name:x.name||m.id,url:destination(m.id,k),unconfirmed:(i===1&&!plus)||(i===2&&!free),delta:prior==null?null:prior-m.rank,history:Object.keys(g.history||{}).filter(validDate).sort().map(d=>g.history[d]?.[id(m.id)]).filter(r=>Number.isInteger(r)&&r>0).slice(-6)}
+    const x=record(settings.registry[id(m.id)])?settings.registry[id(m.id)]:{},prior=previousMonthRank(g,m);
+    return {...m,name:typeof x.name==='string'&&x.name.trim()?x.name:m.id,url:destination(m.id,k),unconfirmed:(i===1&&!plus)||(i===2&&!free),delta:prior==null?null:prior-m.rank,history:Object.keys(g.history||{}).filter(validDate).sort().map(d=>g.history[d]?.[id(m.id)]).filter(r=>Number.isInteger(r)&&r>0).slice(-6)}
   })
 }
 let diagnostic='';
@@ -146,7 +146,7 @@ function validAccess(j){
   if(!record(j)||j.schemaVersion!==1||!validDate(j.reviewedAt)||j.reviewedAt>today()||!Array.isArray(j.providers)||!j.providers.length)return false;
   const ids=new Set();
   return j.providers.every(p=>record(p)&&typeof p.provider==='string'&&p.provider.trim()&&https(p.url)&&https(p.source)&&(!p.reviewedAt||validDate(p.reviewedAt)&&p.reviewedAt<=j.reviewedAt)&&Array.isArray(p.models)&&(!p.codeModels||Array.isArray(p.codeModels))&&[...p.models,...(p.codeModels||[])].every(m=>{
-    if(!record(m)||typeof m.id!=='string'||!m.id.trim()||!safeKey(id(m.id))||!statuses.includes(m.status)||!['chat','work','code'].includes(m.scope||'chat')||(m.expiresAt&&!validDate(m.expiresAt)))return false;
+    if(!record(m)||typeof m.id!=='string'||!m.id.trim()||!safeKey(id(m.id))||!statuses.includes(m.status)||!['chat','work','code'].includes(m.scope||'chat')||(m.plusCandidate!==undefined&&typeof m.plusCandidate!=='boolean')||(m.expiresAt&&!validDate(m.expiresAt)))return false;
     const key=id(m.id)+':'+(m.scope||'chat');
     if(ids.has(key))return false;ids.add(key);return true;
   }));
@@ -190,7 +190,7 @@ function txt(s,v,size=10,c=ink,bold=false,lines=1){
   return t;
 }
 function symbol(s,name,size,color=muted){
-  const sf=SFSymbol.named(name)||SFSymbol.named('circle');
+  let sf;try{sf=SFSymbol.named(name)}catch{};if(!sf)sf=SFSymbol.named('circle');
   const i=s.addImage(sf.image);
   i.imageSize=new Size(size,size);i.tintColor=new Color(color);return i;
 }
@@ -233,11 +233,11 @@ function mediumCard(parent,m,k,i,width,height){
   const p=panel(parent,width,height,i,7);p.layoutVertically();p.url=modelLink(m,k);
   const h=p.addStack();h.centerAlignContent();symbol(h,tierSymbols[i],11,colors[i]);h.addSpacer(3);
   txt(h,labels[i],8,colors[i],true);p.addSpacer(4);
-  txt(p,rank(m),27,colors[i],true);p.addSpacer(3);
-  txt(p,modelName(m)||'–',11,ink,true,2);p.addSpacer();
+  txt(p,rank(m),height<105?23:27,colors[i],true);p.addSpacer(3);
+  txt(p,modelName(m)||'–',height<105?10:11,ink,true,2);p.addSpacer();
   // Draw only observed history. Until two real observations exist, use a non-data accent stripe.
   const chartWidth=Math.max(12,width-14),values=m?.history||[];
-  if(values.length>=2&&typeof DrawContext!=='undefined'){
+  if(values.length>=2&&height>=105&&typeof DrawContext!=='undefined'){
     const d=new DrawContext();d.size=new Size(chartWidth,12);d.opaque=false;d.respectScreenScale=true;
     const min=Math.min(...values),range=Math.max(1,Math.max(...values)-min),path=new Path();
     values.forEach((value,j)=>{const point=new Point(1+j*(chartWidth-2)/(values.length-1),2+8*(value-min)/range);if(j===0)path.move(point);else path.addLine(point)});
