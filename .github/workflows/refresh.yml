@@ -28,7 +28,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: python -m pip install 'huggingface_hub>=0.28,<2' 'pyarrow>=18,<24'
+      - run: python -m pip install 'huggingface_hub>=0.28,<2' 'pyarrow>=18,<24' 'playwright>=1.50,<2'
+      - run: python -m playwright install --with-deps chromium
       - run: python -m unittest -v test_logic.py
       - run: node test_widget.cjs
       - run: python refresh.py
