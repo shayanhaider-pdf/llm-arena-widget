@@ -1,4 +1,4 @@
-// AI Radar v0.12 — Scriptable
+// AI Radar v0.13 — Scriptable
 const REPO='https://raw.githubusercontent.com/shayanhaider-pdf/llm-arena-widget/main/data/widget.json';
 const OLD_FEED='https://raw.githubusercontent.com/shayanhaider-pdf/llm-arena-widget/main/data/latest.json';
 const ACCESS='https://raw.githubusercontent.com/shayanhaider-pdf/llm-arena-widget/main/data/access.json';
@@ -124,6 +124,36 @@ const safeKey=k=>!['__proto__','constructor','prototype'].includes(k);
 const today=()=>new Date().toISOString().slice(0,10);
 const dayAgo=(d,n)=>new Date(Date.parse(d+'T00:00:00Z')-n*86400000).toISOString().slice(0,10);
 function keys(s){return [...new Set(String(s||'').split(',').map(x=>{let t=id(x);return category(t)?t:Object.keys(C).find(k=>C[k][1]===t)}).filter(Boolean))]}
+// Scriptable exposes a read-only parameter, not a native widget identity.
+const singleFamilies=['small','medium'];
+const slots=['default',...Array.from({length:8},(_,i)=>'slot:'+(i+2))];
+function singleContext(family,slot){
+  if(!singleFamilies.includes(family))return null;
+  if(slots.includes(slot))return {family,slot};
+  if(typeof slot==='string'&&slot.startsWith('fixed:')&&category(slot.slice(6)))return {family,slot};
+  return null;
+}
+function contextFor(family,parameter){
+  if(!singleFamilies.includes(family))return null;
+  const raw=id(parameter);
+  if(slots.includes(raw))return singleContext(family,raw);
+  const fixed=keys(raw)[0];
+  return singleContext(family,fixed?'fixed:'+fixed:'default');
+}
+function savedCategory(ctx){
+  if(ctx.slot.startsWith('fixed:'))return ctx.slot.slice(6);
+  const data=read('widget-categories',{});
+  const k=record(data)&&record(data[ctx.family])?data[ctx.family][ctx.slot]:null;
+  return category(k)?k:'search';
+}
+function storeCategory(ctx,k){
+  if(!singleContext(ctx.family,ctx.slot)||!slots.includes(ctx.slot)||!category(k))throw Error('Invalid widget category');
+  let data=read('widget-categories',{});
+  if(!record(data))data={};
+  if(!record(data[ctx.family]))data[ctx.family]={};
+  data[ctx.family][ctx.slot]=k;
+  save('widget-categories',data);
+}
 function https(s){return typeof s==='string'&&/^https:\/\/[a-z0-9.-]+(?::\d+)?(?:[/?#][^\s\\]*)?$/i.test(s)}
 function validDate(d){if(typeof d!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(d))return false;const t=Date.parse(d+'T00:00:00Z');return Number.isFinite(t)&&new Date(t).toISOString().slice(0,10)===d}
 function freshDate(d){return validDate(d)&&d<=today()&&d>=dayAgo(today(),62)}
@@ -274,7 +304,7 @@ async function refresh(ks,force=false){
   if(diagnostic)console.log(diagnostic);
 }
 function get(k){if(!category(k))return null;const [sub,cat]=C[k][1].split(':');const groups=cache[sub]?.groups||{};const aliases=k==='reasoning'?[cat,'hard_6','hard']: [cat];for(const key of aliases)if(validGroup(groups[key]))return groups[key];return null}
-const link=(k,mode='details')=>'scriptable:///run/'+encodeURIComponent(Script.name())+'?category='+encodeURIComponent(k)+'&mode='+encodeURIComponent(mode);
+const link=(k,mode='details',ctx=null)=>'scriptable:///run/'+encodeURIComponent(Script.name())+'?category='+encodeURIComponent(k)+'&mode='+encodeURIComponent(mode)+(ctx?'&family='+encodeURIComponent(ctx.family)+'&slot='+encodeURIComponent(ctx.slot):'');
 // Graphite: native stacks preserve independent tap targets.
 const ink='#F2F3F6',muted='#B5BBC7';
 const labels=['FRONTIER','CHATGPT PLUS','FREE'];
@@ -321,7 +351,7 @@ function modelName(m){
   return (m?.name||'').replace(/^Amazon-Web-Search-Agent$/i,'Amazon Web Search').replace(/Qwen(\d)/i,'Qwen $1').replace(/\s*\(([^)]+)\)/g,' $1');
 }
 function rank(m){return m?'#'+m.rank+(m.unconfirmed?'?':''):'–'}
-function modelLink(m,k){return m?.url||link(k,'details')}
+function modelLink(m,k,ctx=null){return m?.url||link(k,'details',ctx)}
 const compactTitles={agent:'Agent overall',alignment:'Alignment',work:'Work',coding:'Agent coding',chatagent:'Agent chat',taskoutcome:'Task outcome',steering:'Steering',tooluse:'Tool use',text:'Overall text',search:'Search',vision:'Vision',documents:'Documents',webdev:'WebDev',imagewebdev:'Image WebDev',image:'Text to image',editing:'Single edit',multiedit:'Multi edit',video:'Text to video',imagevideo:'Image to video',videoedit:'Video edit',reasoning:'Reasoning',writing:'Writing',instruction:'Instructions'};
 function header(w,k,large,width){
   const h=w.addStack();h.size=new Size(width,18);h.centerAlignContent();
@@ -345,8 +375,8 @@ function smallCard(parent,m,k,i,width,height){
   txt(line,labels[i],compact?7:8,colors[i],true);line.addSpacer();txt(line,rank(m),compact?10:12,colors[i],true);
   txt(body,modelName(m)||'–',compact?9:10,ink,true,1);
 }
-function mediumCard(parent,m,k,i,width,height){
-  const p=panel(parent,width,height,i,7);p.layoutVertically();p.url=modelLink(m,k);
+function mediumCard(parent,m,k,i,width,height,ctx=null){
+  const p=panel(parent,width,height,i,7);p.layoutVertically();p.url=modelLink(m,k,ctx);
   const h=p.addStack();h.centerAlignContent();symbol(h,tierSymbols[i],11,colors[i]);h.addSpacer(3);
   txt(h,labels[i],8,colors[i],true);p.addSpacer(4);
   txt(p,rank(m),height<105?23:27,colors[i],true);p.addSpacer(3);
@@ -369,14 +399,14 @@ function largeCell(parent,m,k,i,width,height){
   txt(p,rank(m),compact?11:13,colors[i],true);p.addSpacer(1);
   txt(p,modelName(m)||'–',compact?8.5:9.5,ink,true,2);
 }
-function widget(ks,family){
+function widget(ks,family,ctx=null){
   const [width,height]=widgetSize(family);
   const small=family==='small',large=family==='large',pad=small?8:10,gap=small?3:5;
   const inner=width-2*pad;
   const w=new ListWidget();w.backgroundColor=new Color('#15181F');w.setPadding(pad,pad,pad,pad);
-  w.refreshAfterDate=new Date(Date.now()+6*3600000);
-  w.url=link(ks[0]);const gear=header(w,ks[0],large,inner);
-  if(!small)gear.url=link(ks[0],'settings');
+  w.refreshAfterDate=new Date(Date.now()+(ctx?30*60000:6*3600000));
+  w.url=link(ks[0],'details',ctx);const gear=header(w,ks[0],large,inner);
+  if(!small)gear.url=link(ks[0],'settings',ctx);
   w.addSpacer(gap);
   if(small){
     const k=ks[0],m=winners(get(k),k),rh=Math.floor((height-2*pad-18-3*gap)/3);
@@ -384,7 +414,7 @@ function widget(ks,family){
   }else if(!large){
     const k=ks[0],m=winners(get(k),k),cw=Math.floor((inner-2*gap)/3),rh=height-2*pad-18-gap;
     const row=w.addStack();row.spacing=gap;
-    for(let i=0;i<3;i++)mediumCard(row,m[i],k,i,cw,rh);
+    for(let i=0;i<3;i++)mediumCard(row,m[i],k,i,cw,rh,ctx);
   }else{
     const catW=Math.floor(inner*.20),cw=Math.floor((inner-catW-3*gap)/3);
     const headings=w.addStack();headings.spacing=gap;headings.addSpacer(catW);
@@ -445,10 +475,10 @@ async function accessMenu(k){
   }
 }
 const boardURLs={work:'https://arena.ai/leaderboard/agent/work',search:'https://arena.ai/leaderboard/chat/search',text:'https://arena.ai/leaderboard/chat/text',reasoning:'https://arena.ai/leaderboard/chat/text/hard-prompts',writing:'https://arena.ai/leaderboard/chat/text/creative-writing',vision:'https://arena.ai/leaderboard/chat/vision',documents:'https://arena.ai/leaderboard/chat/document',agent:'https://arena.ai/leaderboard/agent',alignment:'https://arena.ai/leaderboard/agent/alignment',coding:'https://arena.ai/leaderboard/agent/code',chatagent:'https://arena.ai/leaderboard/agent/chat',taskoutcome:'https://arena.ai/leaderboard/agent/task-feedback',steering:'https://arena.ai/leaderboard/agent/steerability',tooluse:'https://arena.ai/leaderboard/agent/tool-efficiency',webdev:'https://arena.ai/leaderboard/code',imagewebdev:'https://arena.ai/leaderboard/code/image-to-webdev',image:'https://arena.ai/leaderboard/image/text-to-image',editing:'https://arena.ai/leaderboard/image/image-edit/single-image',multiedit:'https://arena.ai/leaderboard/image/image-edit/multi-image',video:'https://arena.ai/leaderboard/video/text-to-video',imagevideo:'https://arena.ai/leaderboard/video/image-to-video',videoedit:'https://arena.ai/leaderboard/video/video-edit'};
-async function details(k){
+async function details(k,ctx=null){
   await refresh([k]);
   const g=get(k);
-  if(!g){const j=await choose('No published data for '+C[k][0],['Open Arena leaderboard','Settings']);if(j===0)Safari.open(boardURLs[k]||'https://arena.ai/leaderboard');if(j===1)await menu();return}
+  if(!g){const j=await choose('No published data for '+C[k][0],['Open Arena leaderboard','Settings']);if(j===0)Safari.open(boardURLs[k]||'https://arena.ai/leaderboard');if(j===1)await menu(ctx);return}
   const models=g.models.slice().sort((a,b)=>a.rank-b.rank||a.id.localeCompare(b.id));
   const top=models.slice(0,20);
   const table=new UITable();table.showSeparators=true;
@@ -456,7 +486,8 @@ async function details(k){
   function row(title,subtitle,action){const r=new UITableRow();r.height=action?54:70;r.addText(title,subtitle||'');if(action){r.dismissOnSelect=true;r.onSelect=()=>{selected=action}}table.addRow(r)}
   row(C[k][0]+' · Top '+top.length,g.date+(g.partial?' · Partial snapshot'+(g.totalModels?' ('+g.models.length+'/'+g.totalModels+')':''):' · Official dataset')+' · ? = unconfirmed access; – = no supported match');
   row('Open Arena leaderboard','Compare with the public leaderboard',()=>Safari.open(boardURLs[k]||'https://arena.ai/leaderboard'));
-  row('Settings','Choose categories and model access',async()=>await menu());
+  row('Settings','Choose categories and model access',async()=>await menu(ctx));
+  if(ctx)row('Change widget category',ctx.slot.startsWith('fixed:')?'Currently uses a fixed parameter':C[savedCategory(ctx)][0],async()=>await changeCategory(ctx));
   const leaders=winners(g,k);for(let i=0;i<3;i++){const m=leaders[i];if(m)row(labels[i]+' · #'+m.rank+' '+m.name,m.unconfirmed?'Access not independently confirmed':'Open provider',()=>Safari.open(destination(m.id,k)))}
   for(const m of top){const metric=m.rating??m.index_score??m.score;const e=accessEntry(m.id,k);const availability=e.free?'Free':e.plus?'Plus':e.reportedFree?'Free?':e.plusCandidate?'Plus?':'';row('#'+m.rank+' '+(settings.registry[id(m.id)]?.name||m.id),[availability,m.organization||'',metric!=null?'Score '+(Number.isFinite(metric)?Number(metric.toFixed(2)):metric):''].filter(Boolean).join(' · '),()=>Safari.open(destination(m.id,k)))}
   await table.present();
@@ -482,6 +513,24 @@ async function editRows(current){
     if(j===3&&rows.length>1)rows.splice(i,1);
   }
 }
+async function changeCategory(ctx=null){
+  if(!ctx){
+    const i=await choose('Choose widget size',['Small','Medium']);if(i<0)return;
+    const family=singleFamilies[i];
+    const j=await choose('Choose widget profile',slots.map(slot=>(slot==='default'?'Default (empty parameter)':slot)+' · '+C[savedCategory({family,slot})][0]));
+    if(j<0)return;
+    ctx={family,slot:slots[j]};
+  }
+  if(ctx.slot.startsWith('fixed:')){
+    await note('Fixed widget parameter','This widget is pinned to '+C[savedCategory(ctx)][0]+'. To use the picker, clear Parameter in Edit Widget once. For additional independent widgets use slot:2 through slot:9. Then change the category from its settings.');
+    return;
+  }
+  const current=savedCategory(ctx);
+  const k=await pickCategory('Change category · '+C[current][0]);
+  if(!k)return;
+  storeCategory(ctx,k);
+  await note('Category saved',C[k][0]+' · '+ctx.family+' '+ctx.slot+'. The Home Screen updates on the next iOS widget refresh.');
+}
 async function preview(){
   const families=['small','medium','large'],i=await choose('Widget preview',['Small','Medium','Large']);
   if(i<0)return;
@@ -495,9 +544,26 @@ async function preview(){
   else if(family==='medium')await w.presentMedium();
   else await w.presentLarge();
 }
-async function menu(){const i=await choose('Widget settings',['Browse top 20 by category','Set model access','Edit large categories','Edit existing model access','Set optional feed URL','Refresh published data','Free-tier provider directory','Preview widget','Card appearance']);if(i===0){const k=await pickCategory('Browse rankings');if(k)await details(k)}if(i===1){const k=await pickCategory('Set model access');if(k)await accessMenu(k)}if(i===2){const rows=await editRows(keys(settings.large.join(',')));if(rows){settings.large=rows;settings.largeCustomized=true;save('settings',settings)}}if(i===3){const a=Object.keys(settings.registry);if(!a.length){await note('No saved models','Browse a category or add an exact Arena model ID first.');return}const j=await choose('Saved models',a);if(j>=0)await edit(a[j])}if(i===4){const a=new Alert();a.title='Hosted feed';a.addTextField('HTTPS URL',settings.feed||REPO);a.addAction('Save');a.addCancelAction('Cancel');if(await a.presentAlert()>=0){const v=a.textFieldValue(0).trim();if(!v||https(v)){settings.feed=v||REPO;save('settings',settings)}else await note('Invalid URL','Enter an HTTPS feed URL.')}}if(i===5){await refresh(Object.keys(C),true);await note('Refresh',diagnostic||'Published files checked. Ranking collection runs monthly.')}if(i===6){await refresh([]);const p=Array.isArray(access.providers)?access.providers:[];if(!p.length){await note('No registry','Access data not yet available');return}const j=await choose('Free-tier directory',p.map(x=>x.provider+' · '+(x.freeTier||'unverified')));if(j>=0){const x=p[j];await note(x.provider,[...(x.freeModelFamilies||[]),x.notes,'Reviewed '+(x.reviewedAt||access.reviewedAt)].filter(Boolean).join('\\n'));Safari.open(x.url)}}if(i===7)await preview();if(i===8){const j=await choose('Card appearance',['Glass-safe (Clear / Tinted)','Graphite cards (Light / Dark)']);if(j>=0){settings.cardAppearance=j===0?'glass':'graphite';save('settings',settings);await note('Appearance saved',j===0?'No solid internal backgrounds. Compatible layout for Clear and Tinted Home Screens.':'Use with Light or Dark Home Screen appearance. Clear or Tinted may turn cards white.')}}}
-async function main(){if(config.runsInWidget){const family=['small','medium','large'].includes(config.widgetFamily)?config.widgetFamily:'small';let ks=keys(args.widgetParameter||'');if(family==='large'){
-    const prior=ks.join(',');
-    if(settings.largeCustomized||ks.length<=1||prior===oldDefaults.join(','))ks=keys(settings.large.join(','));
-  }else if(!ks.length)ks=['search'];if(!ks.length)ks=family==='large'?defaults:['search'];ks=ks.slice(0,family==='large'?5:1);await refresh(ks);Script.setWidget(widget(ks,family))}else{const k=args.queryParameters?.category;if(args.queryParameters?.mode==='settings'||!category(k))await menu();else await details(k)}}
+async function menu(ctx=null){const i=await choose('Widget settings',['Browse top 20 by category','Set model access','Edit large categories','Edit existing model access','Set optional feed URL','Refresh published data','Free-tier provider directory','Preview widget','Card appearance','Change widget category']);if(i===0){const k=await pickCategory('Browse rankings');if(k)await details(k)}if(i===1){const k=await pickCategory('Set model access');if(k)await accessMenu(k)}if(i===2){const rows=await editRows(keys(settings.large.join(',')));if(rows){settings.large=rows;settings.largeCustomized=true;save('settings',settings)}}if(i===3){const a=Object.keys(settings.registry);if(!a.length){await note('No saved models','Browse a category or add an exact Arena model ID first.');return}const j=await choose('Saved models',a);if(j>=0)await edit(a[j])}if(i===4){const a=new Alert();a.title='Hosted feed';a.addTextField('HTTPS URL',settings.feed||REPO);a.addAction('Save');a.addCancelAction('Cancel');if(await a.presentAlert()>=0){const v=a.textFieldValue(0).trim();if(!v||https(v)){settings.feed=v||REPO;save('settings',settings)}else await note('Invalid URL','Enter an HTTPS feed URL.')}}if(i===5){await refresh(Object.keys(C),true);await note('Refresh',diagnostic||'Published files checked. Ranking collection runs monthly.')}if(i===6){await refresh([]);const p=Array.isArray(access.providers)?access.providers:[];if(!p.length){await note('No registry','Access data not yet available');return}const j=await choose('Free-tier directory',p.map(x=>x.provider+' · '+(x.freeTier||'unverified')));if(j>=0){const x=p[j];await note(x.provider,[...(x.freeModelFamilies||[]),x.notes,'Reviewed '+(x.reviewedAt||access.reviewedAt)].filter(Boolean).join('\\n'));Safari.open(x.url)}}if(i===7)await preview();if(i===9)await changeCategory(ctx);if(i===8){const j=await choose('Card appearance',['Glass-safe (Clear / Tinted)','Graphite cards (Light / Dark)']);if(j>=0){settings.cardAppearance=j===0?'glass':'graphite';save('settings',settings);await note('Appearance saved',j===0?'No solid internal backgrounds. Compatible layout for Clear and Tinted Home Screens.':'Use with Light or Dark Home Screen appearance. Clear or Tinted may turn cards white.')}}}
+async function main(){
+  if(config.runsInWidget){
+    const family=['small','medium','large'].includes(config.widgetFamily)?config.widgetFamily:'small';
+    const ctx=contextFor(family,args.widgetParameter);
+    let ks=keys(args.widgetParameter||'');
+    if(ctx)ks=[savedCategory(ctx)];
+    else{
+      const prior=ks.join(',');
+      if(settings.largeCustomized||ks.length<=1||prior===oldDefaults.join(','))ks=keys(settings.large.join(','));
+      if(!ks.length)ks=defaults;
+    }
+    ks=ks.slice(0,family==='large'?5:1);
+    await refresh(ks);
+    Script.setWidget(widget(ks,family,ctx));
+  }else{
+    const q=args.queryParameters||{},ctx=singleContext(q.family,q.slot);
+    const k=ctx?savedCategory(ctx):q.category;
+    if(q.mode==='settings'||!category(k))await menu(ctx);
+    else await details(k,ctx);
+  }
+}
 try{await main()}catch(e){console.log('AI Radar error: '+String(e));if(config.runsInWidget){const w=new ListWidget();w.backgroundColor=new Color('#121821');w.setPadding(12,12,12,12);txt(w,'Rankings unavailable',13,ink,true);txt(w,'Open settings to troubleshoot',9,muted);w.url=link('search','settings');Script.setWidget(w)}else await note('AI Radar error',String(e))}finally{Script.complete()}
