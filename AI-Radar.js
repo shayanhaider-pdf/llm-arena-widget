@@ -1,4 +1,4 @@
-// AI Radar v0.4 — Scriptable
+// AI Radar v0.5 — Scriptable
 const REPO='https://raw.githubusercontent.com/shayanhaider-pdf/llm-arena-widget/main/data/latest.json';
 const DATASET='lmarena-ai/leaderboard-dataset';
 const C={search:['Search','search:overall'],reasoning:['Reasoning','text_style_control:hard_6'],writing:['Creative writing','text_style_control:creative_writing'],vision:['Vision','vision_style_control:overall'],documents:['Documents','document_style_control:overall'],text:['Overall text','text_style_control:overall'],webdev:['Web development','webdev:overall'],image:['Image generation','text_to_image:overall'],editing:['Image editing','image_edit:overall'],video:['Video generation','text_to_video:overall'],agent:['Agent','agent:overall']};
@@ -23,7 +23,32 @@ function group(rows,previous={},date=today()){
   for(const [k,g] of Object.entries(out)){const old=previous[k]||{};if(old.date>g.date){out[k]=old;continue}g.models.sort((a,b)=>a.rank-b.rank||a.id.localeCompare(b.id));g.history={...(old.history||{})};g.history[date]=Object.fromEntries(g.models.map(m=>[id(m.id),m.rank]));for(const d of Object.keys(g.history))if(d<dayAgo(date,14))delete g.history[d];g.observed=date}
   return out
 }
-function winners(g){if(!g||!Array.isArray(g.models))return [null,null,null];const reg=settings.registry;const ranked=g.models.filter(m=>m&&typeof m.id==='string'&&Number.isInteger(m.rank)&&m.rank>0).slice().sort((a,b)=>a.rank-b.rank||a.id.localeCompare(b.id));return [ranked[0],ranked.find(m=>reg[id(m.id)]?.plus===true),ranked.find(m=>reg[id(m.id)]?.free===true)].map(m=>{if(!m)return null;const x=reg[id(m.id)]||{}, prior=g.history?.[dayAgo(g.observed||today(),7)]?.[id(m.id)];return {...m,name:x.name||m.id,url:https(x.url||'')?x.url:null,delta:prior==null?null:prior-m.rank}})}
+// Route by original Arena model ID, never by the user's display label.
+const providerLinks=[
+  [/^(?:gpt(?:[-\s\d]|$)|chatgpt|openai[\s/:_-]|o[134](?:[-\s.]|$)|dall[- ]?e|sora)/i,'https://chatgpt.com/'],
+  [/^(?:claude|anthropic[\s/:_-])/i,'https://claude.ai/new'],
+  [/^(?:gemini|google[\s/:_-]|gemma|imagen|veo|nano[- ]?banana)/i,'https://gemini.google.com/'],
+  [/^(?:qwen|qwq|qvq|alibaba[\s/:_-])/, 'https://chat.qwen.ai/'],
+  [/^(?:deepseek)/i,'https://chat.deepseek.com/'],
+  [/^(?:grok|xai[\s/:_-]|x\.ai)/i,'https://grok.com/'],
+  [/^(?:mistral|mixtral|magistral|ministral|devstral|pixtral|codestral)/i,'https://chat.mistral.ai/'],
+  [/^(?:kimi|moonshot)/i,'https://www.kimi.com/'],
+  [/^(?:glm(?:[-\s\d]|$)|zai[\s/:_-]|z\.ai|zhipu|chatglm)/i,'https://z.ai/chat'],
+  [/^(?:llama|meta[\s/:_-])/, 'https://www.meta.ai/'],
+  [/^(?:perplexity|sonar)/i,'https://www.perplexity.ai/'],
+  [/^(?:ideogram)/i,'https://ideogram.ai/'],
+  [/^(?:midjourney)/i,'https://www.midjourney.com/'],
+  [/^(?:runway)/i,'https://app.runwayml.com/']
+];
+function providerURL(model){
+  const key=id(model).replace(/^models\//,'');
+  for(const [pattern,url] of providerLinks)if(pattern.test(key))return url;
+  return null;
+}
+function destination(model){
+  return providerURL(model)||'https://arena.ai/';
+}
+function winners(g){if(!g||!Array.isArray(g.models))return [null,null,null];const reg=settings.registry;const ranked=g.models.filter(m=>m&&typeof m.id==='string'&&Number.isInteger(m.rank)&&m.rank>0).slice().sort((a,b)=>a.rank-b.rank||a.id.localeCompare(b.id));return [ranked[0],ranked.find(m=>reg[id(m.id)]?.plus===true),ranked.find(m=>reg[id(m.id)]?.free===true)].map(m=>{if(!m)return null;const x=reg[id(m.id)]||{}, prior=g.history?.[dayAgo(g.observed||today(),7)]?.[id(m.id)];return {...m,name:x.name||m.id,url:destination(m.id),delta:prior==null?null:prior-m.rank}})}
 let diagnostic='';
 async function request(url){const r=new Request(url);r.timeoutInterval=8;const j=await r.loadJSON();if(!j||r.response&&r.response.statusCode>=400||j.error)throw Error(String(j&&j.error||'HTTP '+(r.response&&r.response.statusCode)));return j}
 function validGroup(g){return record(g)&&/^\d{4}-\d{2}-\d{2}$/.test(g.date||'')&&Array.isArray(g.models)&&g.models.length>0&&g.models.every(m=>record(m)&&typeof m.id==='string'&&m.id.trim()&&Number.isInteger(m.rank)&&m.rank>0)}
@@ -85,9 +110,41 @@ for(const k of ks){const g=get(k),m=winners(g);const r=w.addStack();if(small){r.
 return w}
 async function choose(title,items){const a=new Alert();a.title=title;for(const s of items)a.addAction(s);a.addCancelAction('Cancel');return await a.presentSheet()}
 async function note(title,message){const a=new Alert();a.title=title;a.message=message;a.addAction('OK');await a.presentAlert()}
-async function edit(model){const k=id(model);if(!k)return;const x=settings.registry[k]||{};const a=new Alert();a.title=model;a.message='Choose access type and enter the destination URL. Eligibility is user-confirmed.';a.addTextField('Display name',x.name||model);a.addTextField('HTTPS destination',x.url||'');['ChatGPT Plus','Free','Both','Link only','Remove'].forEach(s=>a.addAction(s));a.addCancelAction('Cancel');const i=await a.presentAlert();if(i<0)return;if(i===4)delete settings.registry[k];else{const url=a.textFieldValue(1).trim();if(url&&!https(url)){await note('Invalid URL','Enter an HTTPS link. Nothing saved.');return}settings.registry[k]={name:a.textFieldValue(0).trim()||model,url,plus:i===0||i===2,free:i===1||i===2}}save('settings',settings)}
-async function modelMenu(m){const x=settings.registry[id(m.id)]||{};const i=await choose(m.id,['Open saved destination','Edit destination / access']);if(i===0){if(https(x.url||''))Safari.open(x.url);else await edit(m.id)}if(i===1)await edit(m.id)}
+async function edit(model){
+  const k=id(model);if(!k)return;
+  const x=settings.registry[k]||{};
+  const a=new Alert();
+  a.title=model;
+  a.message='Choose which access you have. The chat website is selected automatically.';
+  a.addTextField('Display name',x.name||model);
+  ['ChatGPT Plus','Free','Both','Clear access'].forEach(v=>a.addAction(v));
+  a.addCancelAction('Cancel');
+  const i=await a.presentAlert();if(i<0)return;
+  if(i===3)delete settings.registry[k];
+  else settings.registry[k]={name:a.textFieldValue(0).trim()||model,plus:i===0||i===2,free:i===1||i===2};
+  save('settings',settings)
+}
+async function modelMenu(m){
+  Safari.open(destination(m.id))
+}
+async function accessMenu(k){
+  await refresh([k],true);
+  const g=get(k);
+  if(!g){await note('Rankings unavailable',diagnostic||'No rankings for this category');return}
+  const models=g.models.slice().sort((a,b)=>a.rank-b.rank);
+  let page=0;
+  while(true){
+    const slice=models.slice(page*15,page*15+15);
+    const options=slice.map(m=>'#'+m.rank+' '+m.id);
+    if(page>0)options.push('Previous page');
+    if((page+1)*15<models.length)options.push('Next page');
+    const i=await choose('Set model access',options);
+    if(i<0)return;
+    if(i<slice.length){await edit(slice[i].id);return}
+    if(options[i]==='Previous page')page--;else page++;
+  }
+}
 async function details(k){await refresh([k],true);const g=get(k);if(!g){await note('Rankings unavailable','The ranking feed has not loaded. Run the GitHub refresh workflow or try again. '+diagnostic);await menu();return}const models=g.models.slice().sort((a,b)=>a.rank-b.rank||a.id.localeCompare(b.id));const top=winners(g).filter(Boolean);const ordered=[...new Map([...top,...models].map(m=>[id(m.id),m])).values()];let page=0;while(true){const slice=ordered.slice(page*15,page*15+15);const options=['Settings',...slice.map(m=>'#'+m.rank+' '+(settings.registry[id(m.id)]?.name||m.id))];if(page>0)options.push('Previous page');if((page+1)*15<ordered.length)options.push('Next page');const i=await choose(C[k][0]+' · '+g.date+(g.partial?' · Partial rankings':''),options);if(i<0)return;if(i===0){await menu();return}if(i<=slice.length){await modelMenu(slice[i-1]);return}if(options[i]==='Previous page')page--;else page++}}
-async function menu(){const i=await choose('Widget settings',['Browse category / edit model link','Add model by exact Arena ID','Edit large categories','Edit existing model','Set optional feed URL']);if(i===0){const a=Object.keys(C),j=await choose('Category',a.map(k=>C[k][0]));if(j>=0)await details(a[j])}if(i===1){const a=new Alert();a.title='Exact Arena model ID';a.addTextField('Model ID','');a.addAction('Continue');a.addCancelAction('Cancel');if(await a.presentAlert()>=0)await edit(a.textFieldValue(0))}if(i===2){const a=new Alert();a.title='Large categories';a.message=Object.keys(C).join(', ');a.addTextField('Up to five',keys(settings.large.join(',')).join(','));a.addAction('Save');a.addCancelAction('Cancel');if(await a.presentAlert()>=0){const v=keys(a.textFieldValue(0)).slice(0,5);if(v.length){settings.large=v;save('settings',settings)}}}if(i===3){const a=Object.keys(settings.registry);if(!a.length){await note('No saved models','Browse a category or add an exact Arena model ID first.');return}const j=await choose('Saved models',a);if(j>=0)await edit(a[j])}if(i===4){const a=new Alert();a.title='Hosted feed';a.addTextField('HTTPS URL',settings.feed||REPO);a.addAction('Save');a.addCancelAction('Cancel');if(await a.presentAlert()>=0){const v=a.textFieldValue(0).trim();if(!v||https(v)){settings.feed=v||REPO;save('settings',settings)}}}}
+async function menu(){const i=await choose('Widget settings',['Browse category / set model access','Add model by exact Arena ID','Edit large categories','Edit existing model access','Set optional feed URL']);if(i===0){const a=Object.keys(C),j=await choose('Category',a.map(k=>C[k][0]));if(j>=0)await accessMenu(a[j])}if(i===1){const a=new Alert();a.title='Exact Arena model ID';a.addTextField('Model ID','');a.addAction('Continue');a.addCancelAction('Cancel');if(await a.presentAlert()>=0)await edit(a.textFieldValue(0))}if(i===2){const a=new Alert();a.title='Large categories';a.message=Object.keys(C).join(', ');a.addTextField('Up to five',keys(settings.large.join(',')).join(','));a.addAction('Save');a.addCancelAction('Cancel');if(await a.presentAlert()>=0){const v=keys(a.textFieldValue(0)).slice(0,5);if(v.length){settings.large=v;save('settings',settings)}}}if(i===3){const a=Object.keys(settings.registry);if(!a.length){await note('No saved models','Browse a category or add an exact Arena model ID first.');return}const j=await choose('Saved models',a);if(j>=0)await edit(a[j])}if(i===4){const a=new Alert();a.title='Hosted feed';a.addTextField('HTTPS URL',settings.feed||REPO);a.addAction('Save');a.addCancelAction('Cancel');if(await a.presentAlert()>=0){const v=a.textFieldValue(0).trim();if(!v||https(v)){settings.feed=v||REPO;save('settings',settings)}}}}
 async function main(){if(config.runsInWidget){const family=['small','medium','large'].includes(config.widgetFamily)?config.widgetFamily:'small';let ks=keys(args.widgetParameter||'');if(!ks.length)ks=family==='large'?keys(settings.large.join(',')):['search'];if(!ks.length)ks=defaults;ks=ks.slice(0,family==='large'?5:1);await refresh(ks);Script.setWidget(widget(ks,family))}else{const k=args.queryParameters?.category;if(args.queryParameters?.mode==='settings'||!C[k])await menu();else await details(k)}}
 try{await main()}catch(e){console.log('AI Radar error: '+String(e));if(config.runsInWidget){const w=new ListWidget();w.backgroundColor=new Color('#121821');w.setPadding(12,12,12,12);txt(w,'Rankings unavailable',13,ink,true);txt(w,'Open settings to troubleshoot',9,muted);w.url=link('search','settings');Script.setWidget(w)}else await note('AI Radar error',String(e))}finally{Script.complete()}
