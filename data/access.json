@@ -148,14 +148,16 @@
           "status": "reported_free",
           "scope": "chat",
           "notes": "Images 2.6 is available across ChatGPT tiers, but these exact API variants/efforts cannot be selected in the consumer UI.",
-          "source": "https://openai.com/index/introducing-images-2-6/"
+          "source": "https://openai.com/index/introducing-images-2-6/",
+          "plusCandidate": true
         },
         {
           "id": "GPT-Image-2.6 Sunburst (Medium)",
           "status": "reported_free",
           "scope": "chat",
           "notes": "Images 2.6 is available across ChatGPT tiers, but these exact API variants/efforts cannot be selected in the consumer UI.",
-          "source": "https://openai.com/index/introducing-images-2-6/"
+          "source": "https://openai.com/index/introducing-images-2-6/",
+          "plusCandidate": true
         }
       ],
       "notes": "Free default is GPT-5.6 Luna; Plus includes GPT-6.2 Sol with plan-specific effort limits.",
