@@ -1,8 +1,101 @@
-// AI Radar v0.9 — Scriptable
+// AI Radar v0.10 — Scriptable
 const REPO='https://raw.githubusercontent.com/shayanhaider-pdf/llm-arena-widget/main/data/widget.json';
 const OLD_FEED='https://raw.githubusercontent.com/shayanhaider-pdf/llm-arena-widget/main/data/latest.json';
 const ACCESS='https://raw.githubusercontent.com/shayanhaider-pdf/llm-arena-widget/main/data/access.json';
-const C={work:['Work capability','agent_capability:work'],search:['Search','search:overall'],reasoning:['Reasoning','text_style_control:hard_prompts'],writing:['Creative writing','text_style_control:creative_writing'],vision:['Vision','vision_style_control:overall'],documents:['Documents','document_style_control:overall'],text:['Overall text','text_style_control:overall'],webdev:['Web development','webdev:overall'],image:['Image generation','text_to_image:overall'],editing:['Image editing','image_edit:overall'],video:['Video generation','text_to_video:overall'],agent:['Agent capability','agent_capability:overall'],imagevideo:['Image to video','image_to_video:overall'],videoedit:['Video editing','video_edit:overall'],steering:['Steering','agent_steerability:overall'],instruction:['Instruction following','text_style_control:instruction_following'],chatagent:['Agent chat','agent_capability:chat']};
+const C={
+  "agent": [
+    "Agent overall",
+    "agent_capability:overall"
+  ],
+  "alignment": [
+    "Alignment",
+    "agent_alignment:overall"
+  ],
+  "work": [
+    "Work capability",
+    "agent_capability:work"
+  ],
+  "coding": [
+    "Agent coding",
+    "agent_capability:code"
+  ],
+  "chatagent": [
+    "Agent chat",
+    "agent_capability:chat"
+  ],
+  "taskoutcome": [
+    "Task outcome",
+    "agent_task_outcome:overall"
+  ],
+  "steering": [
+    "Steering",
+    "agent_steerability:overall"
+  ],
+  "tooluse": [
+    "Tool use",
+    "agent_tool_efficiency:overall"
+  ],
+  "text": [
+    "Overall text",
+    "text_style_control:overall"
+  ],
+  "search": [
+    "Search",
+    "search:overall"
+  ],
+  "vision": [
+    "Vision",
+    "vision_style_control:overall"
+  ],
+  "documents": [
+    "Documents",
+    "document_style_control:overall"
+  ],
+  "webdev": [
+    "Web development",
+    "webdev:overall"
+  ],
+  "imagewebdev": [
+    "Image-to-WebDev",
+    "webdev:image_to_webdev"
+  ],
+  "image": [
+    "Image generation",
+    "text_to_image:overall"
+  ],
+  "editing": [
+    "Single image edit",
+    "image_edit:overall"
+  ],
+  "multiedit": [
+    "Multi image edit",
+    "image_edit:multi_image_edit"
+  ],
+  "video": [
+    "Video generation",
+    "text_to_video:overall"
+  ],
+  "imagevideo": [
+    "Image to video",
+    "image_to_video:overall"
+  ],
+  "videoedit": [
+    "Video editing",
+    "video_edit:overall"
+  ],
+  "reasoning": [
+    "Reasoning",
+    "text_style_control:hard_prompts"
+  ],
+  "writing": [
+    "Creative writing",
+    "text_style_control:creative_writing"
+  ],
+  "instruction": [
+    "Instruction following",
+    "text_style_control:instruction_following"
+  ]
+};
 const defaults=['work','text','documents','search','image'];
 const oldDefaults=['search','work','text','vision','documents'];
 const fm=FileManager.local(),dir=fm.joinPath(fm.documentsDirectory(),'AI-Radar');
@@ -15,7 +108,7 @@ let settings=read('settings',{});if(!record(settings))settings={};
 if(!record(settings.registry))settings.registry={};if(!Array.isArray(settings.large)||settings.large.join(',')===oldDefaults.join(',')&&!settings.largeCustomized)settings.large=defaults.slice();if(!https(settings.feed)||settings.feed===OLD_FEED)settings.feed=REPO;
 let cache=read('monthly-cache',{});if(!record(cache))cache={};
 let access=read('access',{});if(!record(access))access={};
-let sync=read('monthly-sync',{});if(!record(sync)||sync.version!=='0.9')sync={version:'0.9'};
+let sync=read('monthly-sync',{});if(!record(sync)||sync.version!=='0.10')sync={version:'0.10'};
 const id=s=>String(s||'').trim().toLowerCase();
 const own=(o,k)=>Object.prototype.hasOwnProperty.call(o,k);
 const category=k=>typeof k==='string'&&own(C,k);
@@ -54,16 +147,16 @@ function providerURL(model){
 }
 function destination(model,k){
   const url=providerURL(model)||'https://arena.ai/';
-  if(url==='https://chatgpt.com/'&&['work','agent','chatagent','steering'].includes(k))return 'https://chatgpt.com/work/';
-  if(url==='https://chatgpt.com/'&&k==='webdev')return 'https://chatgpt.com/codex/';
+  if(url==='https://chatgpt.com/'&&['work','agent','chatagent','steering','alignment','taskoutcome','tooluse'].includes(k))return 'https://chatgpt.com/work/';
+  if(url==='https://chatgpt.com/'&&['webdev','coding','imagewebdev'].includes(k))return 'https://chatgpt.com/codex/';
   return url;
 }
 // Access is data, not code: exact IDs only, with local overrides.
 function accessEntry(model,k){
   const key=id(model);
   const x=own(settings.registry,key)?settings.registry[key]:null;
-  const workKeys=['work','agent','chatagent','steering'];
-  const scope=workKeys.includes(k)?'work':k==='webdev'?'code':'chat';
+  const workKeys=['work','agent','chatagent','steering','alignment','taskoutcome','tooluse'];
+  const scope=workKeys.includes(k)?'work':['webdev','coding','imagewebdev'].includes(k)?'code':'chat';
   let entry=null,provider=null;
   if(access.schemaVersion===1&&freshDate(access.reviewedAt)&&Array.isArray(access.providers))for(const p of access.providers){
     if(!freshDate(p.reviewedAt||access.reviewedAt))continue;
@@ -181,8 +274,8 @@ const colors=['#C5A6FF','#90E8B9','#80CBFF'];
 const surfaces=['#292439','#21332E','#202D40'];
 const edges=['#594873','#38594B','#3C5875'];
 const tierSymbols=['crown.fill','bolt.fill','square.stack.3d.up'];
-const categorySymbols={search:'magnifyingglass',work:'briefcase',text:'text.alignleft',documents:'doc.text',vision:'photo',reasoning:'brain',writing:'pencil',image:'photo.artframe',editing:'wand.and.stars',video:'video',webdev:'chevron.left.forwardslash.chevron.right',agent:'cpu',imagevideo:'film',videoedit:'film',steering:'slider.horizontal.3',instruction:'list.bullet',chatagent:'bubble.left.and.bubble.right'};
-const shortTitles={work:'Work capability',text:'Overall text',documents:'Documents',reasoning:'Reasoning',writing:'Writing',image:'Images',editing:'Edit image',video:'Video',webdev:'Web dev',agent:'Agent',imagevideo:'Img → video',videoedit:'Edit video',steering:'Steering',instruction:'Instruction',chatagent:'Agent chat'};
+const categorySymbols={search:'magnifyingglass',work:'briefcase',text:'text.alignleft',documents:'doc.text',vision:'photo',reasoning:'brain',writing:'pencil',image:'photo.artframe',editing:'wand.and.stars',video:'video',webdev:'chevron.left.forwardslash.chevron.right',agent:'cpu',imagevideo:'film',videoedit:'film',steering:'slider.horizontal.3',instruction:'list.bullet',chatagent:'bubble.left.and.bubble.right',alignment:'checkmark.shield',coding:'chevron.left.forwardslash.chevron.right',taskoutcome:'checkmark.circle',tooluse:'wrench.and.screwdriver',imagewebdev:'photo.on.rectangle',multiedit:'photo.on.rectangle.angled'};
+const shortTitles={work:'Work capability',text:'Overall text',documents:'Documents',reasoning:'Reasoning',writing:'Writing',image:'Images',editing:'Edit image',video:'Video',webdev:'Web dev',agent:'Agent',imagevideo:'Img → video',videoedit:'Edit video',steering:'Steering',instruction:'Instruction',chatagent:'Agent chat',alignment:'Alignment',coding:'Coding',taskoutcome:'Task outcome',tooluse:'Tool use',imagewebdev:'Image WebDev',multiedit:'Multi edit'};
 function txt(s,v,size=10,c=ink,bold=false,lines=1){
   const t=s.addText(String(v));
   t.font=bold?Font.semiboldSystemFont(size):Font.systemFont(size);
@@ -320,7 +413,7 @@ async function accessMenu(k){
     if(options[i]==='Previous page')page--;else page++;
   }
 }
-const boardURLs={work:'https://arena.ai/leaderboard/agent/work',search:'https://arena.ai/leaderboard/chat/search',text:'https://arena.ai/leaderboard/chat/text',reasoning:'https://arena.ai/leaderboard/chat/text/hard-prompts',writing:'https://arena.ai/leaderboard/chat/text/creative-writing',vision:'https://arena.ai/leaderboard/chat/vision',documents:'https://arena.ai/leaderboard/chat/document',agent:'https://arena.ai/leaderboard/agent'};
+const boardURLs={work:'https://arena.ai/leaderboard/agent/work',search:'https://arena.ai/leaderboard/chat/search',text:'https://arena.ai/leaderboard/chat/text',reasoning:'https://arena.ai/leaderboard/chat/text/hard-prompts',writing:'https://arena.ai/leaderboard/chat/text/creative-writing',vision:'https://arena.ai/leaderboard/chat/vision',documents:'https://arena.ai/leaderboard/chat/document',agent:'https://arena.ai/leaderboard/agent',alignment:'https://arena.ai/leaderboard/agent/alignment',coding:'https://arena.ai/leaderboard/agent/code',chatagent:'https://arena.ai/leaderboard/agent/chat',taskoutcome:'https://arena.ai/leaderboard/agent/task-feedback',steering:'https://arena.ai/leaderboard/agent/steerability',tooluse:'https://arena.ai/leaderboard/agent/tool-efficiency',imagewebdev:'https://arena.ai/leaderboard/code',multiedit:'https://arena.ai/leaderboard/image'};
 async function details(k){
   await refresh([k]);
   const g=get(k);
@@ -330,11 +423,11 @@ async function details(k){
   const table=new UITable();table.showSeparators=true;
   let selected=null;
   function row(title,subtitle,action){const r=new UITableRow();r.height=action?54:70;r.addText(title,subtitle||'');if(action){r.dismissOnSelect=true;r.onSelect=()=>{selected=action}}table.addRow(r)}
-  row(C[k][0]+' · Top '+top.length,g.date+(g.partial?' · Partial snapshot':' · Official dataset')+' · ? = unconfirmed access');
+  row(C[k][0]+' · Top '+top.length,g.date+(g.partial?' · Partial snapshot'+(g.totalModels?' ('+g.models.length+'/'+g.totalModels+')':''):' · Official dataset')+' · ? = unconfirmed access');
   row('Open Arena leaderboard','Compare with the public leaderboard',()=>Safari.open(boardURLs[k]||'https://arena.ai/leaderboard'));
   row('Settings','Choose categories and model access',async()=>await menu());
   const leaders=winners(g,k);for(let i=0;i<3;i++){const m=leaders[i];if(m)row(labels[i]+' · #'+m.rank+' '+m.name,m.unconfirmed?'Access not independently confirmed':'Open provider',()=>Safari.open(destination(m.id,k)))}
-  for(const m of top){const metric=m.rating??m.score;const e=accessEntry(m.id,k);const availability=e.free?'Free':e.plus?'Plus':e.reportedFree?'Free?':e.plusCandidate?'Plus?':'';row('#'+m.rank+' '+(settings.registry[id(m.id)]?.name||m.id),[availability,m.organization||'',metric!=null?'Score '+(Number.isFinite(metric)?Number(metric.toFixed(2)):metric):''].filter(Boolean).join(' · '),()=>Safari.open(destination(m.id,k)))}
+  for(const m of top){const metric=m.rating??m.index_score??m.score;const e=accessEntry(m.id,k);const availability=e.free?'Free':e.plus?'Plus':e.reportedFree?'Free?':e.plusCandidate?'Plus?':'';row('#'+m.rank+' '+(settings.registry[id(m.id)]?.name||m.id),[availability,m.organization||'',metric!=null?'Score '+(Number.isFinite(metric)?Number(metric.toFixed(2)):metric):''].filter(Boolean).join(' · '),()=>Safari.open(destination(m.id,k)))}
   await table.present();
   if(selected)await selected();
 }
