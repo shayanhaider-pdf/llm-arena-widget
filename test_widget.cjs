@@ -48,5 +48,9 @@ async function run({family='small',param='search',feed=fixture,direct=null,store
     check(flat(r.result).some(x=>x.url===expected[i]),'provider '+model);
     check(!flat(r.result).some(x=>x.url==='https://example.com/old'),'ignore old URL '+model);
   }
+  const accessFeed={subsets:{search:{checked:today,groups:{overall:{date:today,observed:today,models:[{id:'GPT-6.2 Sol',rank:1},{id:'Qwen3.8-Max',rank:2}],history:{}}}}}};
+  const access=await run({family:'medium',feed:accessFeed});
+  check(flat(access.result).some(x=>x.value==='#1 · verify'),'unconfirmed OpenAI is marked');
+  check(flat(access.result).some(x=>x.value==='Qwen3.8-Max'),'user-confirmed free model preselected');
   console.log(count+' assertions passed');
 })().catch(e=>{console.error(e);process.exitCode=1});
