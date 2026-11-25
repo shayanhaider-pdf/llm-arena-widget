@@ -48,7 +48,25 @@ function providerURL(model){
 function destination(model){
   return providerURL(model)||'https://arena.ai/';
 }
-function winners(g){if(!g||!Array.isArray(g.models))return [null,null,null];const reg=settings.registry;const ranked=g.models.filter(m=>m&&typeof m.id==='string'&&Number.isInteger(m.rank)&&m.rank>0).slice().sort((a,b)=>a.rank-b.rank||a.id.localeCompare(b.id));return [ranked[0],ranked.find(m=>reg[id(m.id)]?.plus===true),ranked.find(m=>reg[id(m.id)]?.free===true)].map(m=>{if(!m)return null;const x=reg[id(m.id)]||{}, prior=g.history?.[dayAgo(g.observed||today(),7)]?.[id(m.id)];return {...m,name:x.name||m.id,url:destination(m.id),delta:prior==null?null:prior-m.rank}})}
+function freeEligible(m){
+  const x=settings.registry[id(m.id)];
+  if(x && typeof x.free==='boolean')return x.free;
+  // This exact model was explicitly identified by the user as free.
+  return /^qwen\s*3\.8[\s-]+max$/i.test(m.id.trim());
+}
+function winners(g){
+  if(!g||!Array.isArray(g.models))return [null,null,null];
+  const reg=settings.registry;
+  const ranked=g.models.filter(m=>m&&typeof m.id==='string'&&Number.isInteger(m.rank)&&m.rank>0).slice().sort((a,b)=>a.rank-b.rank||a.id.localeCompare(b.id));
+  const plus=ranked.find(m=>reg[id(m.id)]?.plus===true);
+  // A candidate is explicitly not a confirmed Plus entitlement.
+  const candidate=plus?null:ranked.find(m=>providerURL(m.id)==='https://chatgpt.com/'&&reg[id(m.id)]?.plus!==false);
+  return [ranked[0],plus||candidate,ranked.find(freeEligible)].map((m,i)=>{
+    if(!m)return null;
+    const x=reg[id(m.id)]||{},prior=g.history?.[dayAgo(g.observed||today(),7)]?.[id(m.id)];
+    return {...m,name:x.name||m.id,url:destination(m.id),unconfirmed:i===1&&!plus,delta:prior==null?null:prior-m.rank}
+  })
+}
 let diagnostic='';
 async function request(url){const r=new Request(url);r.timeoutInterval=8;const j=await r.loadJSON();if(!j||r.response&&r.response.statusCode>=400||j.error)throw Error(String(j&&j.error||'HTTP '+(r.response&&r.response.statusCode)));return j}
 function validGroup(g){return record(g)&&/^\d{4}-\d{2}-\d{2}$/.test(g.date||'')&&Array.isArray(g.models)&&g.models.length>0&&g.models.every(m=>record(m)&&typeof m.id==='string'&&m.id.trim()&&Number.isInteger(m.rank)&&m.rank>0)}
@@ -103,7 +121,7 @@ function get(k){if(!C[k])return null;const [sub,cat]=C[k][1].split(':');const gr
 const link=(k,mode='details')=>'scriptable:///run/'+encodeURIComponent(Script.name())+'?category='+encodeURIComponent(k)+'&mode='+encodeURIComponent(mode);
 const ink='#E8EEF7',muted='#9CA3AF',labels=['FRONTIER','CHATGPT PLUS','FREE'],colors=['#F5C76B','#65D6A8','#8AB4F8'];
 function txt(s,v,size=10,c=ink,bold=false){const t=s.addText(String(v));t.font=bold?Font.semiboldSystemFont(size):Font.systemFont(size);t.textColor=new Color(c);t.lineLimit=1;t.minimumScaleFactor=.6;return t}
-function cell(s,m,i,small=false,large=false,k='search'){const c=s.addStack();c.layoutVertically();if(!small)c.url=m?.url||link(k,'settings');if(small){txt(c,labels[i],8,colors[i],true)}const row=c.addStack();row.centerAlignContent();txt(row,m?.name||(i===0?'No rankings':'Set access'),small?9:10);if(small){row.addSpacer(3);if(m)txt(row,'#'+m.rank,8,muted)}else{const r=c.addStack();if(m)txt(r,'#'+m.rank,9,muted);if(large&&m?.delta!=null){r.addSpacer(3);txt(r,m.delta>0?'↑':m.delta<0?'↓':'−',10,m.delta>0?'#34D399':m.delta<0?'#F87171':muted)}}return c}
+function cell(s,m,i,small=false,large=false,k='search'){const c=s.addStack();c.layoutVertically();if(!small)c.url=m?.url||link(k,'settings');if(small){txt(c,labels[i],8,colors[i],true)}const row=c.addStack();row.centerAlignContent();txt(row,m?.name||(i===0?'No rankings':'Set access'),small?9:10);if(small){row.addSpacer(3);if(m)txt(row,'#'+m.rank+(m.unconfirmed?'?':''),8,muted)}else{const r=c.addStack();if(m)txt(r,'#'+m.rank+(m.unconfirmed?' · verify':''),9,muted);if(large&&m?.delta!=null){r.addSpacer(3);txt(r,m.delta>0?'↑':m.delta<0?'↓':'−',10,m.delta>0?'#34D399':m.delta<0?'#F87171':muted)}}return c}
 function widget(ks,family){const small=family==='small',large=family==='large';const w=new ListWidget();w.backgroundColor=new Color('#121821');w.setPadding(12,12,12,12);w.refreshAfterDate=new Date(Date.now()+6*3600000);w.url=link(ks[0]);const h=w.addStack();h.centerAlignContent();if(!large)txt(h,C[ks[0]][0],15,ink,true);if(ks.some(k=>get(k)?.partial)){h.addSpacer(4);txt(h,'Snapshot',8,muted)}else if(ks.some(k=>get(k)&&(cache[C[k][1].split(':')[0]]?.checked!==today()||get(k).observed!==today()))){h.addSpacer(4);txt(h,'Cached',8,muted)}h.addSpacer();const gear=h.addStack();txt(gear,'⚙',15,muted);if(!small)gear.url=link(ks[0],'settings');w.addSpacer(large?4:8);
 if(!small){const r=w.addStack();if(large)r.addSpacer(60);for(let i=0;i<3;i++){const c=r.addStack();c.size=new Size(large?76:90,0);txt(c,labels[i],8,colors[i],true);if(i<2)r.addSpacer(4)}w.addSpacer(7)}
 for(const k of ks){const g=get(k),m=winners(g);const r=w.addStack();if(small){r.layoutVertically();for(let i=0;i<3;i++){cell(r,m[i],i,true,false,k);if(i!==2)r.addSpacer(4)}}else{r.centerAlignContent();if(large){const c=r.addStack();c.size=new Size(60,0);txt(c,C[k][0],9,muted,true)}for(let i=0;i<3;i++){const c=cell(r,m[i],i,false,large,k);c.size=new Size(large?76:90,0);if(i<2)r.addSpacer(4)}}if(!g)txt(w,'Data unavailable · open settings',8,muted);if(large)w.addSpacer(12)}
@@ -156,7 +174,7 @@ async function details(k){
   row(C[k][0]+' · Top '+top.length,g.date+(g.partial?' · Dated snapshot':' · Official dataset'));
   row('Open complete Arena leaderboard','See full rankings on Arena',()=>Safari.open(boardURLs[k]||'https://arena.ai/leaderboard'));
   row('Settings','Choose categories and model access',async()=>await menu());
-  const leaders=winners(g);for(let i=0;i<3;i++){const m=leaders[i];if(m)row(labels[i]+' · #'+m.rank+' '+m.name,'Open provider',()=>Safari.open(destination(m.id)))}
+  const leaders=winners(g);for(let i=0;i<3;i++){const m=leaders[i];if(m)row(labels[i]+' · #'+m.rank+' '+m.name,m.unconfirmed?'OpenAI candidate — Plus availability unverified':'Open provider',()=>Safari.open(destination(m.id)))}
   for(const m of top){const metric=m.rating??m.score;row('#'+m.rank+' '+(settings.registry[id(m.id)]?.name||m.id),[m.organization||'',metric!=null?'Score '+metric:''].filter(Boolean).join(' · '),()=>Safari.open(destination(m.id)))}
   await table.present();
 }
