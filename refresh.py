@@ -61,7 +61,7 @@ def group(rows, previous, observed):
                 if isinstance(val, (str,int,float)) and (not isinstance(val,float) or __import__('math').isfinite(val)):
                     model[field] = val
             groups[cat]['models'].append(model)
-    cutoff = (dt.date.fromisoformat(observed)-dt.timedelta(days=14)).isoformat()
+    cutoff = (dt.date.fromisoformat(observed)-dt.timedelta(days=100)).isoformat()
     for cat, g in list(groups.items()):
         old = previous.get(cat,{})
         if old.get('date','') > g['date']:
