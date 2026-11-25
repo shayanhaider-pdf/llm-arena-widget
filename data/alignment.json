@@ -1,0 +1,75 @@
+{
+  "checked": "2026-11-25",
+  "groups": {
+    "overall": {
+      "date": "2026-11-24",
+      "observed": "2026-11-25",
+      "models": [
+        {
+          "id": "GPT-6.2 Sol",
+          "rank": 1
+        },
+        {
+          "id": "GPT-6.2 Astra",
+          "rank": 2
+        },
+        {
+          "id": "GPT-6.1 Terra",
+          "rank": 3
+        },
+        {
+          "id": "GPT-6 Astra",
+          "rank": 4
+        },
+        {
+          "id": "GPT-6.1 Sol",
+          "rank": 5
+        },
+        {
+          "id": "GPT-6 Sol",
+          "rank": 6
+        },
+        {
+          "id": "GPT-6 Luna",
+          "rank": 7
+        },
+        {
+          "id": "Kimi K3.1 Pro",
+          "rank": 8
+        },
+        {
+          "id": "Claude Fable 5.2",
+          "rank": 9
+        },
+        {
+          "id": "GPT-5.6 Sol",
+          "rank": 10
+        },
+        {
+          "id": "GPT-5.6 Terra",
+          "rank": 11
+        },
+        {
+          "id": "GPT-5.6 Luna",
+          "rank": 12
+        },
+        {
+          "id": "Gemini 4 Hydrogen",
+          "rank": 13
+        },
+        {
+          "id": "Gemini 4 Neon",
+          "rank": 14
+        },
+        {
+          "id": "Grok 4.7",
+          "rank": 15
+        }
+      ],
+      "history": {},
+      "partial": true,
+      "totalModels": 68,
+      "source": "https://arena.ai/leaderboard/agent/alignment"
+    }
+  }
+}
