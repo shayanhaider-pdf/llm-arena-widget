@@ -13,12 +13,15 @@ OUT = pathlib.Path(__file__).parent / 'data' / 'latest.json'
 WIDGET_GROUPS = {
     'search': ('overall',),
     'text_style_control': ('overall','hard_prompts','creative_writing','instruction_following'),
-    'agent_capability': ('overall','work','chat'),
+    'agent_capability': ('overall','work','code','chat'),
+    'agent_task_outcome': ('overall',),
+    'agent_tool_efficiency': ('overall',),
+    'agent_alignment': ('overall',),
     'vision_style_control': ('overall',),
     'document_style_control': ('overall',),
-    'webdev': ('overall',),
+    'webdev': ('overall','image_to_webdev'),
     'text_to_image': ('overall',),
-    'image_edit': ('overall',),
+    'image_edit': ('overall','multi_image_edit'),
     'text_to_video': ('overall',),
     'image_to_video': ('overall',),
     'video_edit': ('overall',),
@@ -47,13 +50,13 @@ def group(rows, previous, observed):
         except (KeyError, TypeError, ValueError, OverflowError) as exc:
             raise ValueError('Invalid ranked row') from exc
         cat = norm(row.get('category') or 'overall')
-        if cat in {'coding', 'code', 'math', 'mathematics'}:
+        if cat in {'math', 'mathematics'}:
             continue
         if cat not in groups or date > groups[cat]['date']:
             groups[cat] = {'date':date,'models':[]}
         if date == groups[cat]['date']:
             model = {'id':name.strip(),'rank':rank}
-            for field in ('rating','score','organization','license','num_votes','votes','observation_count','session_count'):
+            for field in ('rating','score','index_score','organization','license','vote_count','num_votes','votes','observation_count','session_count'):
                 val = row.get(field)
                 if isinstance(val, (str,int,float)) and (not isinstance(val,float) or math.isfinite(val)):
                     model[field] = val
@@ -140,11 +143,24 @@ def valid_group(g):
     except (KeyError,TypeError,ValueError,AttributeError):
         return False
 
+def alignment_snapshot():
+    """Fallback only: official website snapshot, not a substitute benchmark."""
+    path = pathlib.Path(__file__).parent / 'data' / 'alignment.json'
+    return json.loads(path.read_text(encoding='utf-8')) if path.exists() else {}
+
 def widget_feed(data):
     compact = {k:data[k] for k in ('source','generatedAt','errors')}
     compact['subsets'] = {}
     for subset,categories in WIDGET_GROUPS.items():
         current = data['subsets'].get(subset,{})
+        if subset == 'agent_alignment':
+            fallback = alignment_snapshot()
+            official = current.get('groups',{}).get('overall',{})
+            candidate = fallback.get('groups',{}).get('overall',{})
+            if valid_group(candidate) and (not valid_group(official) or candidate['date'] > official['date']):
+                current = fallback
+            if current.get('groups',{}).get('overall',{}).get('partial'):
+                compact['errors'] = {**compact['errors'], 'agent_alignment/overall':'Official website snapshot is partial; full downloadable split unavailable'}
         groups = {}
         for k in categories:
             g = current.get('groups',{}).get(k)
@@ -168,6 +184,9 @@ def publish(data):
 def main():
     previous = json.loads(OUT.read_text(encoding='utf-8')) if OUT.exists() else {'subsets':{}}
     subsets = dict(previous['subsets'])
+    fallback = alignment_snapshot()
+    if 'agent_alignment' not in subsets and fallback:
+        subsets['agent_alignment'] = fallback
     now = dt.datetime.now(dt.timezone.utc)
     observed = now.date().isoformat()
     revision,available = discover()
