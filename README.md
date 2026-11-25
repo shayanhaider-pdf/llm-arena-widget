@@ -1,6 +1,9 @@
-# AI Radar v0.11 — Graphite
+# AI Radar v0.12 — Graphite
 
 Configurable Scriptable widgets for iPhone and compatible Apple devices. The Graphite theme uses purple Frontier, mint ChatGPT Plus and blue Free cards. Small and medium show one category; large shows up to five ordered rows, without branding, charts, or footer text. Medium draws rank history only when at least two observations fit the available space; otherwise it shows a decorative accent stripe.
+
+## Home Screen appearance
+The default Glass-safe appearance avoids opaque inner fills and borders, which can become white and obscure text under iOS Clear or Tinted rendering. In Scriptable, Settings > Card appearance allows opting into the original filled Graphite cards for standard Light/Dark Home Screens. The safe layout preserves the same ranking data, dimensions and navigation, but omits the chart and solid inner backgrounds. Scriptable does not expose WidgetKit's rendering mode to the script, so this is an explicit setting rather than automatic detection. Native tinted rendering still requires an on-device check; simulated tests verify the absence of offending fills, not Apple's compositor.
 
 ## Install and configure
 Paste [AI-Radar.js](AI-Radar.js) into your existing Scriptable script, preserving its name. Run it and choose Refresh published data. Small/medium accept one category parameter: agent, alignment, work, coding, chatagent, taskoutcome, steering, tooluse, text, search, vision, documents, webdev, imagewebdev, image, editing, multiedit, video, imagevideo, videoedit, reasoning, writing, instruction.

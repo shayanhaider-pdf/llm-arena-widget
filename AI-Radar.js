@@ -1,4 +1,4 @@
-// AI Radar v0.11 — Scriptable
+// AI Radar v0.12 — Scriptable
 const REPO='https://raw.githubusercontent.com/shayanhaider-pdf/llm-arena-widget/main/data/widget.json';
 const OLD_FEED='https://raw.githubusercontent.com/shayanhaider-pdf/llm-arena-widget/main/data/latest.json';
 const ACCESS='https://raw.githubusercontent.com/shayanhaider-pdf/llm-arena-widget/main/data/access.json';
@@ -281,6 +281,15 @@ const labels=['FRONTIER','CHATGPT PLUS','FREE'];
 const colors=['#C5A6FF','#90E8B9','#80CBFF'];
 const surfaces=['#292439','#21332E','#202D40'];
 const edges=['#594873','#38594B','#3C5875'];
+// Scriptable does not expose WidgetKit's accented rendering mode in config.
+// Safe default: no solid internal fills, because Clear/Tinted may turn them white.
+// Full-colour Graphite is opt-in for standard Light/Dark Home Screen appearances.
+const filledCards=settings.cardAppearance==='graphite';
+function stylePanel(p,fill,edge){
+  if(!filledCards)return;
+  p.backgroundColor=new Color(fill);
+  if(edge){p.borderWidth=.6;p.borderColor=new Color(edge)}
+}
 const tierSymbols=['crown.fill','bolt.fill','square.stack.3d.up'];
 const categorySymbols={search:'magnifyingglass',work:'briefcase',text:'text.alignleft',documents:'doc.text',vision:'photo',reasoning:'brain',writing:'pencil',image:'photo.artframe',editing:'wand.and.stars',video:'video',webdev:'chevron.left.forwardslash.chevron.right',agent:'cpu',imagevideo:'film',videoedit:'film',steering:'slider.horizontal.3',instruction:'list.bullet',chatagent:'bubble.left.and.bubble.right',alignment:'checkmark.shield',coding:'chevron.left.forwardslash.chevron.right',taskoutcome:'checkmark.circle',tooluse:'wrench.and.screwdriver',imagewebdev:'photo.on.rectangle',multiedit:'photo.on.rectangle.angled'};
 const shortTitles={work:'Work capability',text:'Overall text',documents:'Documents',reasoning:'Reasoning',writing:'Writing',image:'Images',editing:'Edit image',video:'Video',webdev:'Web dev',agent:'Agent',imagevideo:'Img → video',videoedit:'Edit video',steering:'Steering',instruction:'Instruction',chatagent:'Agent chat',alignment:'Alignment',coding:'Coding',taskoutcome:'Task outcome',tooluse:'Tool use',imagewebdev:'Image WebDev',multiedit:'Multi edit'};
@@ -305,7 +314,7 @@ function widgetSize(family){
 }
 function panel(parent,width,height,i,pad=6){
   const p=parent.addStack();p.size=new Size(width,height);p.cornerRadius=9;
-  p.backgroundColor=new Color(surfaces[i]);p.borderWidth=.6;p.borderColor=new Color(edges[i]);
+  stylePanel(p,surfaces[i],edges[i]);
   p.setPadding(pad,pad,pad,pad);return p;
 }
 function modelName(m){
@@ -344,14 +353,14 @@ function mediumCard(parent,m,k,i,width,height){
   txt(p,modelName(m)||'–',height<105?10:11,ink,true,2);p.addSpacer();
   // Draw only observed history. Until two real observations exist, use a non-data accent stripe.
   const chartWidth=Math.max(12,width-14),values=m?.history||[];
-  if(values.length>=2&&height>=105&&typeof DrawContext!=='undefined'){
+  if(filledCards&&values.length>=2&&height>=105&&typeof DrawContext!=='undefined'){
     const d=new DrawContext();d.size=new Size(chartWidth,12);d.opaque=false;d.respectScreenScale=true;
     const min=Math.min(...values),range=Math.max(1,Math.max(...values)-min),path=new Path();
     values.forEach((value,j)=>{const point=new Point(1+j*(chartWidth-2)/(values.length-1),2+8*(value-min)/range);if(j===0)path.move(point);else path.addLine(point)});
     d.addPath(path);d.setStrokeColor(new Color(colors[i]));d.setLineWidth(1.4);d.strokePath();
     const image=p.addImage(d.getImage());image.imageSize=new Size(chartWidth,12);
   }else{
-    const accent=p.addStack();accent.size=new Size(chartWidth,3);accent.cornerRadius=1.5;accent.backgroundColor=new Color(edges[i]);
+    const accent=p.addStack();accent.size=new Size(chartWidth,3);accent.cornerRadius=1.5;stylePanel(accent,edges[i]);
   }
 }
 function largeCell(parent,m,k,i,width,height){
@@ -384,7 +393,7 @@ function widget(ks,family){
     const rh=Math.min(66,Math.floor((height-2*pad-18-19-2*gap-(ks.length-1)*gap)/ks.length));
     for(let j=0;j<ks.length;j++){
       const k=ks[j],m=winners(get(k),k),r=w.addStack();r.spacing=gap;r.centerAlignContent();
-      const cat=r.addStack();cat.size=new Size(catW,rh);cat.cornerRadius=9;cat.backgroundColor=new Color('#242932');cat.setPadding(rh<50?3:5,4,rh<50?3:5,4);cat.layoutVertically();cat.url=link(k);
+      const cat=r.addStack();cat.size=new Size(catW,rh);cat.cornerRadius=9;stylePanel(cat,'#242932');cat.setPadding(rh<50?3:5,4,rh<50?3:5,4);cat.layoutVertically();cat.url=link(k);
       symbol(cat,categorySymbols[k]||'circle',rh<50?11:13,muted);cat.addSpacer(2);txt(cat,shortTitles[k]||C[k][0],rh<50?9:10,ink,true,2);
       for(let i=0;i<3;i++)largeCell(r,m[i],k,i,cw,rh);
       if(j<ks.length-1)w.addSpacer(gap);
@@ -486,7 +495,7 @@ async function preview(){
   else if(family==='medium')await w.presentMedium();
   else await w.presentLarge();
 }
-async function menu(){const i=await choose('Widget settings',['Browse top 20 by category','Set model access','Edit large categories','Edit existing model access','Set optional feed URL','Refresh published data','Free-tier provider directory','Preview widget']);if(i===0){const k=await pickCategory('Browse rankings');if(k)await details(k)}if(i===1){const k=await pickCategory('Set model access');if(k)await accessMenu(k)}if(i===2){const rows=await editRows(keys(settings.large.join(',')));if(rows){settings.large=rows;settings.largeCustomized=true;save('settings',settings)}}if(i===3){const a=Object.keys(settings.registry);if(!a.length){await note('No saved models','Browse a category or add an exact Arena model ID first.');return}const j=await choose('Saved models',a);if(j>=0)await edit(a[j])}if(i===4){const a=new Alert();a.title='Hosted feed';a.addTextField('HTTPS URL',settings.feed||REPO);a.addAction('Save');a.addCancelAction('Cancel');if(await a.presentAlert()>=0){const v=a.textFieldValue(0).trim();if(!v||https(v)){settings.feed=v||REPO;save('settings',settings)}else await note('Invalid URL','Enter an HTTPS feed URL.')}}if(i===5){await refresh(Object.keys(C),true);await note('Refresh',diagnostic||'Published files checked. Ranking collection runs monthly.')}if(i===6){await refresh([]);const p=Array.isArray(access.providers)?access.providers:[];if(!p.length){await note('No registry','Access data not yet available');return}const j=await choose('Free-tier directory',p.map(x=>x.provider+' · '+(x.freeTier||'unverified')));if(j>=0){const x=p[j];await note(x.provider,[...(x.freeModelFamilies||[]),x.notes,'Reviewed '+(x.reviewedAt||access.reviewedAt)].filter(Boolean).join('\\n'));Safari.open(x.url)}}if(i===7)await preview()}
+async function menu(){const i=await choose('Widget settings',['Browse top 20 by category','Set model access','Edit large categories','Edit existing model access','Set optional feed URL','Refresh published data','Free-tier provider directory','Preview widget','Card appearance']);if(i===0){const k=await pickCategory('Browse rankings');if(k)await details(k)}if(i===1){const k=await pickCategory('Set model access');if(k)await accessMenu(k)}if(i===2){const rows=await editRows(keys(settings.large.join(',')));if(rows){settings.large=rows;settings.largeCustomized=true;save('settings',settings)}}if(i===3){const a=Object.keys(settings.registry);if(!a.length){await note('No saved models','Browse a category or add an exact Arena model ID first.');return}const j=await choose('Saved models',a);if(j>=0)await edit(a[j])}if(i===4){const a=new Alert();a.title='Hosted feed';a.addTextField('HTTPS URL',settings.feed||REPO);a.addAction('Save');a.addCancelAction('Cancel');if(await a.presentAlert()>=0){const v=a.textFieldValue(0).trim();if(!v||https(v)){settings.feed=v||REPO;save('settings',settings)}else await note('Invalid URL','Enter an HTTPS feed URL.')}}if(i===5){await refresh(Object.keys(C),true);await note('Refresh',diagnostic||'Published files checked. Ranking collection runs monthly.')}if(i===6){await refresh([]);const p=Array.isArray(access.providers)?access.providers:[];if(!p.length){await note('No registry','Access data not yet available');return}const j=await choose('Free-tier directory',p.map(x=>x.provider+' · '+(x.freeTier||'unverified')));if(j>=0){const x=p[j];await note(x.provider,[...(x.freeModelFamilies||[]),x.notes,'Reviewed '+(x.reviewedAt||access.reviewedAt)].filter(Boolean).join('\\n'));Safari.open(x.url)}}if(i===7)await preview();if(i===8){const j=await choose('Card appearance',['Glass-safe (Clear / Tinted)','Graphite cards (Light / Dark)']);if(j>=0){settings.cardAppearance=j===0?'glass':'graphite';save('settings',settings);await note('Appearance saved',j===0?'No solid internal backgrounds. Compatible layout for Clear and Tinted Home Screens.':'Use with Light or Dark Home Screen appearance. Clear or Tinted may turn cards white.')}}}
 async function main(){if(config.runsInWidget){const family=['small','medium','large'].includes(config.widgetFamily)?config.widgetFamily:'small';let ks=keys(args.widgetParameter||'');if(family==='large'){
     const prior=ks.join(',');
     if(settings.largeCustomized||ks.length<=1||prior===oldDefaults.join(','))ks=keys(settings.large.join(','));
