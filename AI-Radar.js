@@ -15,7 +15,7 @@ let settings=read('settings',{});if(!record(settings))settings={};
 if(!record(settings.registry))settings.registry={};if(!Array.isArray(settings.large)||settings.large.join(',')===oldDefaults.join(',')&&!settings.largeCustomized)settings.large=defaults.slice();if(!https(settings.feed)||settings.feed===OLD_FEED)settings.feed=REPO;
 let cache=read('monthly-cache',{});if(!record(cache))cache={};
 let access=read('access',{});if(!record(access))access={};
-let sync=read('monthly-sync',{});if(!record(sync))sync={};
+let sync=read('monthly-sync',{});if(!record(sync)||sync.version!=='0.9')sync={version:'0.9'};
 const id=s=>String(s||'').trim().toLowerCase();
 const own=(o,k)=>Object.prototype.hasOwnProperty.call(o,k);
 const category=k=>typeof k==='string'&&own(C,k);
@@ -222,12 +222,13 @@ function header(w,k,large,width){
   return gear;
 }
 function smallCard(parent,m,k,i,width,height){
-  const p=panel(parent,width,height,i,4);p.centerAlignContent();
+  const compact=height<36;
+  const p=panel(parent,width,height,i,compact?3:4);p.centerAlignContent();
   symbol(p,tierSymbols[i],12,colors[i]);p.addSpacer(4);
   const body=p.addStack();body.size=new Size(width-24,0);body.layoutVertically();body.spacing=1;
   const line=body.addStack();line.size=new Size(width-24,0);line.centerAlignContent();
-  txt(line,labels[i],8,colors[i],true);line.addSpacer();txt(line,rank(m),12,colors[i],true);
-  txt(body,modelName(m)||'–',10,ink,true,1);
+  txt(line,labels[i],compact?7:8,colors[i],true);line.addSpacer();txt(line,rank(m),compact?10:12,colors[i],true);
+  txt(body,modelName(m)||'–',compact?9:10,ink,true,1);
 }
 function mediumCard(parent,m,k,i,width,height){
   const p=panel(parent,width,height,i,7);p.layoutVertically();p.url=modelLink(m,k);
@@ -248,9 +249,10 @@ function mediumCard(parent,m,k,i,width,height){
   }
 }
 function largeCell(parent,m,k,i,width,height){
-  const p=panel(parent,width,height,i,5);p.layoutVertically();p.url=modelLink(m,k);
-  txt(p,rank(m),13,colors[i],true);p.addSpacer(1);
-  txt(p,modelName(m)||'–',9.5,ink,true,2);
+  const compact=height<50;
+  const p=panel(parent,width,height,i,compact?3:5);p.layoutVertically();p.url=modelLink(m,k);
+  txt(p,rank(m),compact?11:13,colors[i],true);p.addSpacer(1);
+  txt(p,modelName(m)||'–',compact?8.5:9.5,ink,true,2);
 }
 function widget(ks,family){
   const [width,height]=widgetSize(family);
@@ -276,8 +278,8 @@ function widget(ks,family){
     const rh=Math.min(66,Math.floor((height-2*pad-18-19-2*gap-(ks.length-1)*gap)/ks.length));
     for(let j=0;j<ks.length;j++){
       const k=ks[j],m=winners(get(k),k),r=w.addStack();r.spacing=gap;r.centerAlignContent();
-      const cat=r.addStack();cat.size=new Size(catW,rh);cat.cornerRadius=9;cat.backgroundColor=new Color('#242932');cat.setPadding(5,5,5,5);cat.layoutVertically();cat.url=link(k);
-      symbol(cat,categorySymbols[k]||'circle',13,muted);cat.addSpacer(3);txt(cat,shortTitles[k]||C[k][0],10,ink,true,2);
+      const cat=r.addStack();cat.size=new Size(catW,rh);cat.cornerRadius=9;cat.backgroundColor=new Color('#242932');cat.setPadding(rh<50?3:5,4,rh<50?3:5,4);cat.layoutVertically();cat.url=link(k);
+      symbol(cat,categorySymbols[k]||'circle',rh<50?11:13,muted);cat.addSpacer(2);txt(cat,shortTitles[k]||C[k][0],rh<50?9:10,ink,true,2);
       for(let i=0;i<3;i++)largeCell(r,m[i],k,i,cw,rh);
       if(j<ks.length-1)w.addSpacer(gap);
     }
