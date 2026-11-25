@@ -1,6 +1,7 @@
 """Collect public Arena data; publish only validated, complete snapshots."""
 import datetime as dt
 import json
+import io
 import pathlib
 import re
 import time
@@ -13,8 +14,8 @@ DATASET = 'lmarena-ai/leaderboard-dataset'
 API = 'https://datasets-server.huggingface.co/'
 OUT = pathlib.Path(__file__).parent / 'data' / 'latest.json'
 SUBSETS = {s: ('overall',) for s in ('search', 'search_style_control', 'vision_style_control',
-    'document_style_control', 'webdev', 'text_to_image', 'image_edit', 'text_to_video', 'agent')}
-SUBSETS['text_style_control'] = ('overall', 'hard_6', 'hard_prompts', 'creative_writing')
+    'document_style_control', 'webdev', 'text_to_image', 'image_edit', 'text_to_video', 'image_to_video', 'video_edit', 'agent', 'agent_index', 'work', 'alignment')}
+SUBSETS['text_style_control'] = ('overall', 'hard_6', 'hard_prompts', 'creative_writing', 'instruction_following')
 
 def norm(s):
     return re.sub(r'[^a-z0-9]+', '_', str(s).strip().lower()).strip('_')
@@ -54,7 +55,12 @@ def group(rows, previous, observed):
         if cat not in groups or date > groups[cat]['date']:
             groups[cat] = {'date':date,'models':[]}
         if date == groups[cat]['date']:
-            groups[cat]['models'].append({'id':name.strip(),'rank':rank})
+            model = {'id':name.strip(),'rank':rank}
+            for field in ('rating','score','organization','license','num_votes','votes','observation_count','session_count'):
+                val = row.get(field)
+                if isinstance(val, (str,int,float)) and (not isinstance(val,float) or __import__('math').isfinite(val)):
+                    model[field] = val
+            groups[cat]['models'].append(model)
     cutoff = (dt.date.fromisoformat(observed)-dt.timedelta(days=14)).isoformat()
     for cat, g in list(groups.items()):
         old = previous.get(cat,{})
@@ -92,21 +98,48 @@ def fetch(subset, old, observed):
         raise ValueError('No complete overall ranking')
     return {'checked':observed,'groups':{**old.get('groups',{}),**groups}}
 
+def parquet_rows(subset):
+    """Read the original published artifact rather than the filtered viewer API."""
+    from huggingface_hub import HfApi, hf_hub_download
+    import pyarrow.parquet as pq
+    files = HfApi().list_repo_files(DATASET, repo_type='dataset')
+    paths = sorted(p for p in files if p.startswith(subset + '/latest-') and p.endswith('.parquet'))
+    if not paths:
+        raise ValueError('No official latest Parquet split: '+subset)
+    rows = []
+    for p in paths:
+        path = hf_hub_download(DATASET, p, repo_type='dataset')
+        rows.extend(pq.read_table(path).to_pylist())
+    return rows
+
+def collect_parquet(subset, old, observed):
+    rows = parquet_rows(subset)
+    groups = group(rows,old.get('groups',{}),observed)
+    if not groups:
+        raise ValueError('No valid ranking groups')
+    for k,g in groups.items():
+        if g.get('observed') == observed and not g.get('partial'):
+            g['source'] = 'https://huggingface.co/datasets/'+DATASET
+            g['partial'] = False
+            g['totalModels'] = len(g['models'])
+    return {'checked':observed,'groups':{**old.get('groups',{}),**groups}}
+
 def main():
     previous = json.loads(OUT.read_text()) if OUT.exists() else {'subsets':{}}
     subsets = dict(previous.get('subsets',{}))
     now = dt.datetime.now(dt.timezone.utc)
     observed = now.date().isoformat()
     errors = {}
-    available = {s['config'] for s in get('splits')['splits'] if s['split']=='latest'}
-    selected = [s for s in SUBSETS if s in available]
-    if not selected:
-        raise RuntimeError('No supported latest splits')
-    for s in set(SUBSETS)-set(selected):
-        errors[s] = 'Source subset unavailable'
     successes = 0
-    with ThreadPoolExecutor(max_workers=3) as pool:
-        jobs = {pool.submit(fetch,s,subsets.get(s,{}),observed):s for s in selected}
+    # Discover official subsets through the repository itself, not the viewer.
+    from huggingface_hub import HfApi
+    files = HfApi().list_repo_files(DATASET, repo_type='dataset')
+    available = {p.split('/')[0] for p in files if '/latest-' in p and p.endswith('.parquet')}
+    selected = sorted(s for s in available if s in SUBSETS or s.startswith('agent_'))
+    if not selected:
+        raise RuntimeError('No official latest splits')
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        jobs = {pool.submit(collect_parquet,s,subsets.get(s,{}),observed):s for s in selected}
         for job in as_completed(jobs):
             s = jobs[job]
             try:
@@ -115,12 +148,15 @@ def main():
             except Exception as exc:
                 errors[s] = str(exc)
                 print(s, exc)
+    for required in ('search','text_style_control','vision_style_control','document_style_control','work'):
+        if required not in selected:
+            errors[required] = 'No matching official Parquet split; any earlier snapshot retained'
     if not successes:
-        raise RuntimeError('Every request failed; previous feed unchanged')
+        raise RuntimeError('All official file requests failed; prior feed unchanged')
     data = {'source':DATASET,'generatedAt':now.isoformat(),'subsets':subsets,'errors':errors}
     OUT.parent.mkdir(exist_ok=True)
     temp = OUT.with_suffix('.tmp')
-    temp.write_text(json.dumps(data,ensure_ascii=False,separators=(',',':')))
+    temp.write_text(json.dumps(data,ensure_ascii=False,separators=(',',':'),allow_nan=False))
     temp.replace(OUT)
 if __name__ == '__main__':
     main()
