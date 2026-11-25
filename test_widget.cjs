@@ -26,7 +26,7 @@ async function run({family='small',param='search',feed=fixture,registry=reg,stor
 }
 (async()=>{
   for(const family of ['small','medium','large']){
-    const r=await run({family,stored:{'/d/AI-Radar/settings.json':JSON.stringify({large:['search'],largeCustomized:true,registry:{b:{plus:true,url:'https://example.com/b'},c:{free:true,url:'https://example.com/c'}}})}});
+    const r=await run({family,stored:{'/d/AI-Radar/settings.json':JSON.stringify({cardAppearance:'graphite',large:['search'],largeCustomized:true,registry:{b:{plus:true,url:'https://example.com/b'},c:{free:true,url:'https://example.com/c'}}})}});
     check(r.completed&&r.result,family+' render');check(r.requests===2,'bounded requests');
     const cells=flat(r.result);
     for(const name of ['A','B','C'])check(cells.some(x=>x.value===name),'winner '+name);
@@ -181,5 +181,25 @@ async function run({family='small',param='search',feed=fixture,registry=reg,stor
     const r=await run({app:true,query:{category},selection:1,feed:production,registry:productionRegistry});
     check(r.opened[0]===url,'exact leaderboard link '+category);
   }
+  // Accented iOS rendering can replace opaque internal backgrounds with white.
+  // Check the tree for the offending fills, not just the presence of text nodes.
+  for(const family of ['small','medium','large']){
+    const safe=await run({family,param:'search',feed:production,registry:productionRegistry});
+    check(safe.completed&&safe.result,'glass-safe default renders '+family);
+    check(flat(safe.result).slice(1).every(n=>!n.backgroundColor&&!n.borderColor&&!n.backgroundImage&&!n.backgroundGradient),'no opaque internal fills '+family);
+    check(flat(safe.result).some(n=>n.value==='#1'),'ranking retained '+family);
+    check(!flat(safe.result).some(n=>n.image?.chart),'no opaque chart risk '+family);
+    const full=await run({family,param:'search',feed:production,registry:productionRegistry,stored:{'/d/AI-Radar/settings.json':JSON.stringify({cardAppearance:'graphite'})}});
+    check(flat(full.result).slice(1).some(n=>n.backgroundColor),'opt-in original cards '+family);
+    check(flat(full.result).some(n=>n.value==='#1'),'full-colour rank retained '+family);
+    check(JSON.stringify(flat(safe.result).filter(n=>n.url).map(n=>n.url))===JSON.stringify(flat(full.result).filter(n=>n.url).map(n=>n.url)),'tap targets unchanged '+family);
+  }
+  const graphite=await run({app:true,choices:[8,1],stored:reordered.files});
+  const gs=JSON.parse(graphite.files['/d/AI-Radar/settings.json']);
+  check(gs.cardAppearance==='graphite'&&gs.large.join(',')==='text,work,documents,search,image','appearance switch preserves preferences');
+  const glass=await run({app:true,choices:[8,0],stored:graphite.files});
+  check(JSON.parse(glass.files['/d/AI-Radar/settings.json']).cardAppearance==='glass','return to glass-safe mode');
+  const noChange=await run({app:true,choices:[8,-1],stored:graphite.files});
+  check(noChange.files['/d/AI-Radar/settings.json']===graphite.files['/d/AI-Radar/settings.json'],'cancel appearance unchanged');
   console.log(count+' assertions passed');
 })().catch(e=>{console.error(e);process.exitCode=1});
