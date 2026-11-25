@@ -1,22 +1,27 @@
-# LLM Arena widget (v0.7)
+# LLM Arena widget (v0.8 audit candidate)
 
-## Install once
-Install Scriptable, replace the existing AI Radar script with [AI-Radar.js](AI-Radar.js) (v0.7), and keep the existing widget attached to that script. Normal monthly data and eligibility updates do not require reinstalling or copying code. Future changes to native UI or script functionality may require a deliberate script upgrade; the widget never executes downloaded JavaScript.
+Configurable Scriptable widgets for iPhone/iPad and compatible Macs. Small and medium show one category without trends; large shows up to five categories with month-on-month movement. The visual layout is unchanged in this functional release.
 
-Set a small/medium widget's Parameter to one category: search, work, text, reasoning, writing, instruction, vision, documents, webdev, agent, chatagent, steering, image, editing, video, imagevideo, videoedit. For large widgets use up to five comma-separated categories, or edit the defaults in Settings. Coding/math are excluded; web development remains separate. Reasoning uses Arena Hard Prompts; Work uses agent capability / work, not a differently scaled index.
+## Install and maintain
+Create a Scriptable script named AI Radar and paste [AI-Radar.js](AI-Radar.js) once for this release. Add a Scriptable widget using the script. Set Parameter to one of search, work, text, reasoning, writing, vision, documents, webdev, image, editing, video, agent, imagevideo, videoedit, steering, instruction, chatagent. Large accepts up to five comma-separated categories or saved defaults. Coding and mathematics are excluded; Web Development remains separate.
 
-## Monthly architecture
-- GitHub Actions collects official Arena data on day 1 of each month at 05:17 UTC (06:17 CET / 07:17 CEST), or on an explicit manual run. Source-code and access-registry pushes run CI only; they do not collect rankings.
-- The collector publishes [data/latest.json](data/latest.json) and [data/widget.json](data/widget.json). The latter is the compact, ranked dataset read by the widget. It keeps category publication dates, completeness flags and a rolling 100-day history for prior-month comparisons.
-- [data/access.json](data/access.json) is a separately maintained, sourced consumer access registry with schemaVersion 1, review dates, provider URLs, exact model IDs, scope and expiry dates. Review monthly; update this JSON without changing the script. A free chatbot or downloadable model does not establish that every ranked model or effort is free. API-only credits, trials, and open weights are not consumer free access.
-- Scriptable checks the published JSON files on its next system-scheduled refresh, at most once per day after a successful check of each file, and caches both locally. It does not scrape Arena. A manual "Refresh published data" action checks the published files without triggering collection. No personal settings are uploaded. Native widget refresh timing is controlled by Apple.
-- If a fetch fails, use cached validated data; show cached/partial status rather than invent data. Provider access may expire between reviews. A stale registry (>62 days) or expired entry does not qualify automatically.
+The data and model-access files update independently from the installed code. The widget checks both published files once per UTC day following successful checks, or immediately via Settings > Refresh published data. Apple controls widget refresh timing. Code changes still require deliberate installation; remote code is never executed.
 
-## Widget
-Small and medium show one category. Large shows up to five; arrows compare the most recent recorded observation in the previous calendar month, with a gray dash when equal. No trend when history is missing. No branding or refresh footer. Tap a model to open its provider website; unknown destinations fall back to Arena. Small widgets open the category model list because Apple supports only one tap target. Settings includes a top-20 browser, model-access overrides and a free-tier provider directory. Access labels marked ? / verify are candidates, not guaranteed entitlements; confirmed options take priority. Exact benchmark configuration may differ from the consumer chat product. Check applicable age, region, account, and usage restrictions. 
+Medium/large model taps open provider chat sites. Small widgets open category details because iOS permits one tap destination. Tap Settings to browse top 20, edit category selection or override access. Unknown models fall back to Arena. Opening a provider does not guarantee access to the exact benchmark configuration.
 
-## Validation
-`python -m unittest -v test_logic.py` and `node test_widget.cjs` run before publication. The v0.7 mocked-runtime regression suite passed 57 assertions, including ranking and access JSON updates with unchanged script, cache reuse and month-on-month movement. Native device rendering and the next scheduled run still need verification. The existing Search feed is a dated partial snapshot; it must not be presented as a complete official dataset.
+## Data and provenance
+- [Official Arena dataset](https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset) (CC BY 4.0) supplies ranks. Monthly collector pins a single upstream revision, discovers complete latest Parquet shards and validates rows. `data/latest.json` preserves full collected groups; `data/widget.json` contains the widget's 17 groups and full available ranks. Search's current partial snapshot is retained until an official replacement passes validation.
+- Work capability uses `agent_capability:work`, not the separate website Work Index. Reasoning uses `text_style_control:hard_prompts`, a proxy rather than a dedicated reasoning score.
+- `data/access.json` is the separately reviewed consumer entitlement registry. Exact Arena model/effort and chat/work scope must match. Expired, stale and unconfirmed access is not presented as confirmed; candidates carry a verification marker. Local overrides stay on the device. A free provider plan is not proof of access to every model.
+- GitHub Actions collects on the first day of each month, 05:17 UTC, or manual dispatch. Code pushes and pull requests run checks without collecting rankings. Failed groups retain prior valid data with their original observation date. The workflow requires every widget group to be present and valid before publishing both JSON files together.
+- Weekly arrows were replaced with month-on-month movement, based on the last observed ranking in the previous calendar month; no history means no marker.
 
-Official ranking source: https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset
-Scriptable documentation: https://docs.scriptable.app/widgetstack/
+## Engineering checks
+Follow [AGENTS.md](AGENTS.md) and the [adapted Ponytail skill](.agents/skills/ponytail/SKILL.md). Run:
+```sh
+python -m unittest -v test_logic.py
+node test_widget.cjs
+```
+The JS suite uses simulated Scriptable APIs plus the real checked-in ranking and access files. It is not native iOS testing. Native navigation, rendering and scheduled live collection of the new collector must still be validated before declaring the release production-ready.
+
+Sources: https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset ; https://docs.scriptable.app/widgetstack/
