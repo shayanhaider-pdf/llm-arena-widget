@@ -201,5 +201,48 @@ async function run({family='small',param='search',feed=fixture,registry=reg,stor
   check(JSON.parse(glass.files['/d/AI-Radar/settings.json']).cardAppearance==='glass','return to glass-safe mode');
   const noChange=await run({app:true,choices:[8,-1],stored:graphite.files});
   check(noChange.files['/d/AI-Radar/settings.json']===graphite.files['/d/AI-Radar/settings.json'],'cancel appearance unchanged');
+  // Category selection has a distinct persisted profile for each size and slot.
+  const prefs='/d/AI-Radar/widget-categories.json';
+  const q=(family,slot,mode='settings')=>({family,slot,mode,category:'search'});
+  const pickSmall=await run({app:true,query:q('small','default'),choices:[9,0,2],feed:production,registry:productionRegistry,stored:graphite.files});
+  check(JSON.parse(pickSmall.files[prefs]).small.default==='work','small picker saves work');
+  check(pickSmall.files['/d/AI-Radar/settings.json']===graphite.files['/d/AI-Radar/settings.json'],'picker preserves existing settings');
+  const smallSelected=await run({family:'small',param:'',stored:pickSmall.files,feed:production,registry:productionRegistry});
+  check(flat(smallSelected.result).some(x=>x.value==='Work'),'blank small uses saved category');
+  check(smallSelected.result.url.includes('family=small&slot=default'),'small deep link carries profile');
+  const mediumUnchanged=await run({family:'medium',param:'',stored:pickSmall.files,feed:production,registry:productionRegistry});
+  check(flat(mediumUnchanged.result).some(x=>x.value==='Search'),'medium independent from small');
+  const pickMedium=await run({app:true,choices:[9,1,0,1,3],stored:pickSmall.files});
+  check(JSON.parse(pickMedium.files[prefs]).medium.default==='documents','standalone settings selects medium');
+  const mediumSelected=await run({family:'medium',param:'',stored:pickMedium.files,feed:production,registry:productionRegistry});
+  check(flat(mediumSelected.result).some(x=>x.value==='Documents'),'medium saved category');
+  check(flat(mediumSelected.result).some(x=>x.url?.includes('mode=settings&family=medium&slot=default')),'medium gear carries profile');
+  const slot2=await run({app:true,query:q('small','slot:2'),choices:[9,3,0],stored:pickMedium.files});
+  const selectedSlot=await run({family:'small',param:'slot:2',stored:slot2.files,feed:production,registry:productionRegistry});
+  check(flat(selectedSlot.result).some(x=>x.value==='Text to image'),'named slot category');
+  check(selectedSlot.result.url.includes('slot=slot%3A2'),'named slot identity encoded');
+  const originalSlot=await run({family:'small',param:'',stored:slot2.files,feed:production,registry:productionRegistry});
+  check(flat(originalSlot.result).some(x=>x.value==='Work'),'slot does not change default');
+  const pinned=await run({family:'small',param:'vision',stored:slot2.files,feed:production,registry:productionRegistry});
+  check(flat(pinned.result).some(x=>x.value==='Vision'),'legacy parameter remains pinned');
+  const fixed=await run({app:true,query:q('small','fixed:vision'),choices:[9],stored:slot2.files});
+  check(fixed.alerts.includes('Fixed widget parameter')&&fixed.files[prefs]===slot2.files[prefs],'fixed parameter explains migration without changing settings');
+  const cancelPicker=await run({app:true,query:q('small','default'),choices:[9,-1],stored:slot2.files});
+  check(cancelPicker.files[prefs]===slot2.files[prefs],'cancel does not overwrite selection');
+  const tappedPicker=await run({app:true,query:q('small','default','details'),selection:3,choices:[1,2],stored:slot2.files,feed:production,registry:productionRegistry});
+  check(JSON.parse(tappedPicker.files[prefs]).small.default==='vision','small detail change-category action saves selected category');
+  const staleLink=await run({app:true,query:q('small','default','details'),stored:tappedPicker.files,feed:production,registry:productionRegistry});
+  check(staleLink.tableRows[0]?.title.startsWith('Vision · Top '),'stale widget link resolves current category');
+  const corrupted=await run({family:'small',param:'',stored:{[prefs]:'{"small":{"default":"constructor"}}'},feed:production,registry:productionRegistry});
+  check(flat(corrupted.result).some(x=>x.value==='Search'),'corrupted category preference safely falls back');
+  const malicious=await run({app:true,query:q('large','__proto__'),choices:[9,-1],stored:slot2.files});
+  check(malicious.files[prefs]===slot2.files[prefs],'invalid profile cannot overwrite preferences');
+  for(const family of ['small','medium'])for(let i=0;i<sectionKeys.length;i++)for(let j=0;j<sectionKeys[i].length;j++){
+    const k=sectionKeys[i][j];
+    const saved=await run({app:true,query:q(family,'default'),choices:[9,i,j]});
+    check(JSON.parse(saved.files[prefs])[family].default===k,'picker supports '+family+' '+k);
+    const rendered=await run({family,param:'',stored:saved.files,feed:production,registry:productionRegistry});
+    check(rendered.completed&&flat(rendered.result).some(x=>x.value==='#1'),'saved category renders '+family+' '+k);
+  }
   console.log(count+' assertions passed');
 })().catch(e=>{console.error(e);process.exitCode=1});
