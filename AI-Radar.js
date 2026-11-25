@@ -1,7 +1,8 @@
 // AI Radar v0.6 — Scriptable
-const REPO='https://raw.githubusercontent.com/shayanhaider-pdf/llm-arena-widget/main/data/latest.json';
+const REPO='https://raw.githubusercontent.com/shayanhaider-pdf/llm-arena-widget/main/data/widget.json';
+const OLD_FEED='https://raw.githubusercontent.com/shayanhaider-pdf/llm-arena-widget/main/data/latest.json';
 const DATASET='lmarena-ai/leaderboard-dataset';
-const C={work:['Work','work:overall'],search:['Search','search:overall'],reasoning:['Reasoning','text_style_control:hard_6'],writing:['Creative writing','text_style_control:creative_writing'],vision:['Vision','vision_style_control:overall'],documents:['Documents','document_style_control:overall'],text:['Overall text','text_style_control:overall'],webdev:['Web development','webdev:overall'],image:['Image generation','text_to_image:overall'],editing:['Image editing','image_edit:overall'],video:['Video generation','text_to_video:overall'],agent:['Agent Index','agent_index:overall'],imagevideo:['Image to video','image_to_video:overall'],videoedit:['Video editing','video_edit:overall'],alignment:['Alignment','alignment:overall']};
+const C={work:['Work','agent_capability:work'],search:['Search','search:overall'],reasoning:['Reasoning','text_style_control:hard_prompts'],writing:['Creative writing','text_style_control:creative_writing'],vision:['Vision','vision_style_control:overall'],documents:['Documents','document_style_control:overall'],text:['Overall text','text_style_control:overall'],webdev:['Web development','webdev:overall'],image:['Image generation','text_to_image:overall'],editing:['Image editing','image_edit:overall'],video:['Video generation','text_to_video:overall'],agent:['Agent capability','agent_capability:overall'],imagevideo:['Image to video','image_to_video:overall'],videoedit:['Video editing','video_edit:overall'],steering:['Steering','agent_steerability:overall'],instruction:['Instruction following','text_style_control:instruction_following'],chatagent:['Agent chat','agent_capability:chat']};
 const defaults=['search','work','text','vision','documents'];
 const fm=FileManager.local(),dir=fm.joinPath(fm.documentsDirectory(),'AI-Radar');
 if(!fm.fileExists(dir))fm.createDirectory(dir,true);
@@ -10,7 +11,7 @@ function read(n,d){try{return JSON.parse(fm.readString(path(n)))}catch{return d}
 function save(n,v){fm.writeString(path(n),JSON.stringify(v))}
 const record=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 let settings=read('settings',{});if(!record(settings))settings={};
-if(!record(settings.registry))settings.registry={};if(!Array.isArray(settings.large))settings.large=defaults;if(typeof settings.feed!=='string'||!settings.feed)settings.feed=REPO;
+if(!record(settings.registry))settings.registry={};if(!Array.isArray(settings.large))settings.large=defaults;if(typeof settings.feed!=='string'||!settings.feed||settings.feed===OLD_FEED)settings.feed=REPO;
 let cache=read('cache',{});if(!record(cache))cache={};
 const  id=s=>String(s||'').trim().toLowerCase(), norm=s=>id(s).replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
 const today=()=>new Date().toISOString().slice(0,10);
@@ -117,7 +118,7 @@ async function refresh(ks,allowDirect=false){
   }
   try{save('cache',cache)}catch(e){console.log('Cache write: '+e)}
 }
-function get(k){if(!C[k])return null;const [sub,cat]=C[k][1].split(':');const groups=cache[sub]?.groups||{};const aliases=k==='reasoning'?[cat,'hard_prompts','hard']: [cat];for(const key of aliases)if(validGroup(groups[key]))return groups[key];return null}
+function get(k){if(!C[k])return null;const [sub,cat]=C[k][1].split(':');const groups=cache[sub]?.groups||{};const aliases=k==='reasoning'?[cat,'hard_6','hard']: [cat];for(const key of aliases)if(validGroup(groups[key]))return groups[key];return null}
 const link=(k,mode='details')=>'scriptable:///run/'+encodeURIComponent(Script.name())+'?category='+encodeURIComponent(k)+'&mode='+encodeURIComponent(mode);
 const ink='#E8EEF7',muted='#9CA3AF',labels=['FRONTIER','CHATGPT PLUS','FREE'],colors=['#F5C76B','#65D6A8','#8AB4F8'];
 function txt(s,v,size=10,c=ink,bold=false){const t=s.addText(String(v));t.font=bold?Font.semiboldSystemFont(size):Font.systemFont(size);t.textColor=new Color(c);t.lineLimit=1;t.minimumScaleFactor=.6;return t}
@@ -175,7 +176,7 @@ async function details(k){
   row('Open complete Arena leaderboard','See full rankings on Arena',()=>Safari.open(boardURLs[k]||'https://arena.ai/leaderboard'));
   row('Settings','Choose categories and model access',async()=>await menu());
   const leaders=winners(g);for(let i=0;i<3;i++){const m=leaders[i];if(m)row(labels[i]+' · #'+m.rank+' '+m.name,m.unconfirmed?'OpenAI candidate — Plus availability unverified':'Open provider',()=>Safari.open(destination(m.id)))}
-  for(const m of top){const metric=m.rating??m.score;row('#'+m.rank+' '+(settings.registry[id(m.id)]?.name||m.id),[m.organization||'',metric!=null?'Score '+metric:''].filter(Boolean).join(' · '),()=>Safari.open(destination(m.id)))}
+  for(const m of top){const metric=m.rating??m.score;row('#'+m.rank+' '+(settings.registry[id(m.id)]?.name||m.id),[m.organization||'',metric!=null?'Score '+(Number.isFinite(metric)?Number(metric.toFixed(2)):metric):''].filter(Boolean).join(' · '),()=>Safari.open(destination(m.id)))}
   await table.present();
 }
 async function menu(){const i=await choose('Widget settings',['Browse top 20 by category','Set model access','Edit large categories','Edit existing model access','Set optional feed URL']);if(i===0){const a=Object.keys(C),j=await choose('Category',a.map(k=>C[k][0]));if(j>=0)await details(a[j])}if(i===1){const a=Object.keys(C),j=await choose('Set model access',a.map(k=>C[k][0]));if(j>=0)await accessMenu(a[j])}if(i===2){const a=new Alert();a.title='Large categories';a.message=Object.keys(C).join(', ');a.addTextField('Up to five',keys(settings.large.join(',')).join(','));a.addAction('Save');a.addCancelAction('Cancel');if(await a.presentAlert()>=0){const v=keys(a.textFieldValue(0)).slice(0,5);if(v.length){settings.large=v;save('settings',settings)}}}if(i===3){const a=Object.keys(settings.registry);if(!a.length){await note('No saved models','Browse a category or add an exact Arena model ID first.');return}const j=await choose('Saved models',a);if(j>=0)await edit(a[j])}if(i===4){const a=new Alert();a.title='Hosted feed';a.addTextField('HTTPS URL',settings.feed||REPO);a.addAction('Save');a.addCancelAction('Cancel');if(await a.presentAlert()>=0){const v=a.textFieldValue(0).trim();if(!v||https(v)){settings.feed=v||REPO;save('settings',settings)}}}}
