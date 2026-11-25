@@ -1,9 +1,9 @@
 {
-  "source": "Arena official leaderboard, dated starter snapshot; not a complete feed",
-  "generatedAt": "2026-11-25T00:00:00Z",
+  "source": "Dated Arena rankings; Search and Text extended from attributed Cherry Studio snapshot; Work and Agent Index are official visible top 15. Partial, not live.",
+  "generatedAt": "2026-11-25T12:28:00Z",
   "subsets": {
     "search": {
-      "checked": "2026-11-20",
+      "checked": "2026-11-25",
       "groups": {
         "overall": {
           "date": "2026-11-20",
@@ -11,69 +11,159 @@
           "models": [
             {
               "id": "Amazon-Web-Search-Agent",
-              "rank": 1
+              "rank": 1,
+              "rating": 1266
             },
             {
               "id": "Qwen3.8-Max",
-              "rank": 2
+              "rank": 2,
+              "rating": 1261
             },
             {
               "id": "GPT-5.6 Sol (xHigh)",
-              "rank": 3
+              "rank": 3,
+              "rating": 1256
             },
             {
               "id": "Claude Opus 4.6 (Search)",
-              "rank": 4
+              "rank": 4,
+              "rating": 1252
             },
             {
               "id": "GPT-5.5 (Search)",
-              "rank": 5
+              "rank": 5,
+              "rating": 1246
             },
             {
               "id": "Claude Opus 5 (High)",
-              "rank": 6
+              "rank": 6,
+              "rating": 1238
             },
             {
               "id": "Claude Fable 5.1 (High)",
-              "rank": 7
+              "rank": 7,
+              "rating": 1237
             },
             {
               "id": "GPT-6 Astra (Max)",
-              "rank": 8
+              "rank": 8,
+              "rating": 1231
             },
             {
               "id": "Claude Opus 4.7",
-              "rank": 9
+              "rank": 9,
+              "rating": 1230
             },
             {
               "id": "GPT-6.1 Sol (Max)",
-              "rank": 10
+              "rank": 10,
+              "rating": 1230
             },
             {
               "id": "Claude Fable 5 (High)",
-              "rank": 11
+              "rank": 11,
+              "rating": 1228
             },
             {
               "id": "ERNIE 5.1",
-              "rank": 12
+              "rank": 12,
+              "rating": 1227
             },
             {
               "id": "Claude Sonnet 4.6 (Search)",
-              "rank": 13
+              "rank": 13,
+              "rating": 1220
             },
             {
               "id": "Grok 4.5",
-              "rank": 14
+              "rank": 14,
+              "rating": 1216
             },
             {
               "id": "Claude Opus 5.5 (Medium)",
-              "rank": 15
+              "rank": 15,
+              "rating": 1214
+            },
+            {
+              "id": "Gemini 3.1 Pro (Grounding)",
+              "rank": 16,
+              "rating": 1211
+            },
+            {
+              "id": "Gemini 3 Pro (Grounding)",
+              "rank": 17,
+              "rating": 1207
+            },
+            {
+              "id": "GPT-5.2 (Search)",
+              "rank": 18,
+              "rating": 1207
+            },
+            {
+              "id": "Grok 4.20 Multi-Agent Beta (0309)",
+              "rank": 19,
+              "rating": 1205
+            },
+            {
+              "id": "Claude Opus 4.8",
+              "rank": 20,
+              "rating": 1202
+            },
+            {
+              "id": "GPT-5.1 (Search)",
+              "rank": 21,
+              "rating": 1199
+            },
+            {
+              "id": "GPT-5.4 (Search)",
+              "rank": 22,
+              "rating": 1198
+            },
+            {
+              "id": "Gemini 3 Flash (Grounding)",
+              "rank": 23,
+              "rating": 1195
+            },
+            {
+              "id": "GPT-6.2 Astra (Max)",
+              "rank": 24,
+              "rating": 1191
+            },
+            {
+              "id": "Grok 4.20 Beta 1",
+              "rank": 25,
+              "rating": 1191
+            },
+            {
+              "id": "Claude Sonnet 5 (Search)",
+              "rank": 26,
+              "rating": 1187
+            },
+            {
+              "id": "Claude Opus 4.5 (Search)",
+              "rank": 27,
+              "rating": 1179
+            },
+            {
+              "id": "GPT-6.2 Sol (Max)",
+              "rank": 28,
+              "rating": 1179
+            },
+            {
+              "id": "GPT-6 Sol (Max)",
+              "rank": 29,
+              "rating": 1174
+            },
+            {
+              "id": "GPT-5.2 (Search, Non-Reasoning)",
+              "rank": 30,
+              "rating": 1172
             }
           ],
           "history": {},
           "partial": true,
-          "totalModels": 45,
-          "source": "https://arena.ai/leaderboard/chat/search?rankBy=models"
+          "source": "https://arena.ai/leaderboard/chat/search",
+          "secondarySource": "https://cherryai.com/docs/en/other/model_rank/search/"
         }
       }
     },
@@ -151,9 +241,311 @@
           "source": "https://arena.ai/leaderboard/chat/search?scoring=style-control"
         }
       }
+    },
+    "text_style_control": {
+      "checked": "2026-11-25",
+      "groups": {
+        "overall": {
+          "date": "2026-11-22",
+          "observed": "2026-11-25",
+          "models": [
+            {
+              "id": "Gemini 4 Carbon (High)",
+              "rank": 1
+            },
+            {
+              "id": "Gemini 4 Argon (High)",
+              "rank": 2
+            },
+            {
+              "id": "Gemini 4 Neon (High)",
+              "rank": 3
+            },
+            {
+              "id": "Muse Wonder (Max)",
+              "rank": 4
+            },
+            {
+              "id": "Claude Opus 5.5 (High)",
+              "rank": 5
+            },
+            {
+              "id": "Claude Fable 5 (High)",
+              "rank": 6
+            },
+            {
+              "id": "Claude Opus 4.6 (High)",
+              "rank": 7
+            },
+            {
+              "id": "Claude Fable 5.2 (Max)",
+              "rank": 8
+            },
+            {
+              "id": "Claude Fable 5.1 (Max)",
+              "rank": 9
+            },
+            {
+              "id": "Claude Opus 4.7 (High)",
+              "rank": 10
+            },
+            {
+              "id": "Gemini 3.8 Flash (High)",
+              "rank": 11
+            },
+            {
+              "id": "Muse Spark 1.3 (Max)",
+              "rank": 12
+            },
+            {
+              "id": "Claude Opus 4.6",
+              "rank": 13
+            },
+            {
+              "id": "Claude Opus 4.7",
+              "rank": 14
+            },
+            {
+              "id": "Muse Spark 1.2 (xHigh)",
+              "rank": 15
+            },
+            {
+              "id": "Muse Spark 1.1",
+              "rank": 16
+            },
+            {
+              "id": "Gemini 4 Hydrogen (xHigh)",
+              "rank": 17
+            },
+            {
+              "id": "Gemini 3.7 Flash (High)",
+              "rank": 18
+            },
+            {
+              "id": "Claude Opus 5 (High)",
+              "rank": 19
+            },
+            {
+              "id": "Muse Spark",
+              "rank": 20
+            },
+            {
+              "id": "Claude Opus 5 (Max)",
+              "rank": 21
+            },
+            {
+              "id": "Kimi K3 (Max)",
+              "rank": 22
+            },
+            {
+              "id": "Gemini 3.1 Pro Preview",
+              "rank": 23
+            },
+            {
+              "id": "Gemini 3 Pro",
+              "rank": 24
+            },
+            {
+              "id": "GPT-5.6 Sol (xHigh)",
+              "rank": 25
+            },
+            {
+              "id": "Qwen3.8-Max",
+              "rank": 26
+            },
+            {
+              "id": "Kimi K3.1 Pro (Max)",
+              "rank": 27
+            },
+            {
+              "id": "Gemini 3.6 Flash (High)",
+              "rank": 28
+            },
+            {
+              "id": "GPT-6.1 Sol (Max)",
+              "rank": 29
+            },
+            {
+              "id": "Claude Opus 4.8 (High)",
+              "rank": 30
+            }
+          ],
+          "history": {},
+          "partial": true,
+          "source": "https://arena.ai/leaderboard/chat/text?rankBy=models",
+          "secondarySource": "https://www.cherryai.com/docs/en/other/model_rank/text/"
+        }
+      }
+    },
+    "work": {
+      "checked": "2026-11-25",
+      "groups": {
+        "overall": {
+          "date": "2026-11-22",
+          "observed": "2026-11-25",
+          "models": [
+            {
+              "id": "Claude Fable 5.2 (Max)",
+              "rank": 1,
+              "rating": 1450
+            },
+            {
+              "id": "Claude Opus 5.5 (Max)",
+              "rank": 2,
+              "rating": 1321
+            },
+            {
+              "id": "Gemini 4 Neon (xHigh)",
+              "rank": 3
+            },
+            {
+              "id": "Claude Sonnet 5.5 (Max)",
+              "rank": 4
+            },
+            {
+              "id": "Gemini 4 Carbon (High)",
+              "rank": 5
+            },
+            {
+              "id": "Claude Opus 5.5 (High)",
+              "rank": 6
+            },
+            {
+              "id": "Claude Fable 5.1 (Max)",
+              "rank": 7
+            },
+            {
+              "id": "GPT-6.2 Astra (Max)",
+              "rank": 8
+            },
+            {
+              "id": "GPT-6 Astra (Max)",
+              "rank": 9
+            },
+            {
+              "id": "GPT-6.1 Terra (Max)",
+              "rank": 10
+            },
+            {
+              "id": "Gemini 4 Hydrogen (xHigh)",
+              "rank": 11
+            },
+            {
+              "id": "GPT-6.1 Sol (Max)",
+              "rank": 12
+            },
+            {
+              "id": "GPT-6.2 Sol (Max)",
+              "rank": 13
+            },
+            {
+              "id": "Gemini 4 Argon (High)",
+              "rank": 14
+            },
+            {
+              "id": "Claude Sonnet 5.5 (High)",
+              "rank": 15
+            }
+          ],
+          "history": {},
+          "partial": true,
+          "source": "https://arena.ai/leaderboard/agent/work",
+          "secondarySource": null
+        }
+      }
+    },
+    "agent_index": {
+      "checked": "2026-11-25",
+      "groups": {
+        "overall": {
+          "date": "2026-11-22",
+          "observed": "2026-11-25",
+          "models": [
+            {
+              "id": "Claude Fable 5.2 (Max)",
+              "rank": 1,
+              "rating": 1449
+            },
+            {
+              "id": "Claude Opus 5.5 (Max)",
+              "rank": 2,
+              "rating": 1342
+            },
+            {
+              "id": "Gemini 4 Neon (xHigh)",
+              "rank": 3,
+              "rating": 1331
+            },
+            {
+              "id": "Gemini 4 Carbon (High)",
+              "rank": 4,
+              "rating": 1304
+            },
+            {
+              "id": "Claude Sonnet 5.5 (Max)",
+              "rank": 5,
+              "rating": 1292
+            },
+            {
+              "id": "GPT-6 Astra (Max)",
+              "rank": 6,
+              "rating": 1284
+            },
+            {
+              "id": "Claude Opus 5.5 (High)",
+              "rank": 7,
+              "rating": 1275
+            },
+            {
+              "id": "GPT-6.2 Astra (Max)",
+              "rank": 8,
+              "rating": 1275
+            },
+            {
+              "id": "Gemini 4 Hydrogen (xHigh)",
+              "rank": 9,
+              "rating": 1272
+            },
+            {
+              "id": "Claude Fable 5.1 (Max)",
+              "rank": 10,
+              "rating": 1265
+            },
+            {
+              "id": "GPT-6.2 Sol (Max)",
+              "rank": 11,
+              "rating": 1241
+            },
+            {
+              "id": "GPT-6.1 Sol (Max)",
+              "rank": 12,
+              "rating": 1237
+            },
+            {
+              "id": "GPT-6.1 Terra (Max)",
+              "rank": 13,
+              "rating": 1230
+            },
+            {
+              "id": "Gemini 4 Argon (High)",
+              "rank": 14,
+              "rating": 1229
+            },
+            {
+              "id": "Claude Sonnet 5.5 (High)",
+              "rank": 15,
+              "rating": 1202
+            }
+          ],
+          "history": {},
+          "partial": true,
+          "source": "https://arena.ai/leaderboard",
+          "secondarySource": null
+        }
+      }
     }
   },
   "errors": {
-    "bootstrap": "Only the verified top 15 Search models in each view are included. Automatic collection must replace these partial snapshots."
+    "bootstrap": "Search and Text: 30 observed rows each. Work and Agent Index: 15 official visible rows each. Other categories require automated ingestion; do not infer missing ranks."
   }
 }
