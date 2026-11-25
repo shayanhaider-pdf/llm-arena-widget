@@ -35,8 +35,8 @@ const providerLinks=[
   [/^(?:grok|xai[\s/:_-]|x\.ai)/i,'https://grok.com/'],
   [/^(?:mistral|mixtral|magistral|ministral|devstral|pixtral|codestral)/i,'https://chat.mistral.ai/'],
   [/^(?:kimi|moonshot)/i,'https://www.kimi.com/'],
-  [/^(?:glm(?:[-\s\d]|$)|zai[\s/:_-]|z\.ai|zhipu|chatglm)/i,'https://z.ai/chat'],
-  [/^(?:llama|meta[\s/:_-])/, 'https://www.meta.ai/'],
+  [/^(?:glm(?:[-\s\d]|$)|zai[\s/:_-]|z\.ai|zhipu|chatglm)/i,'https://chat.z.ai/'],
+  [/^(?:llama|muse|meta[\s/:_-])/, 'https://www.meta.ai/'],
   [/^(?:perplexity|sonar)/i,'https://www.perplexity.ai/'],
   [/^(?:ideogram)/i,'https://ideogram.ai/'],
   [/^(?:midjourney)/i,'https://www.midjourney.com/'],
@@ -146,7 +146,7 @@ function validAccess(j){
 async function refresh(ks,force=false){
   const tasks=[],errors=[],day=today();
   const feedURL=settings.feed||REPO;
-  if(force||sync.feed!==day||sync.feedURL!==feedURL||!Object.keys(cache).length)tasks.push((async()=>{
+  if(force||sync.feed!==day||sync.feedURL!==feedURL||!Object.values(cache).some(s=>record(s)&&record(s.groups)&&Object.values(s.groups).some(validGroup)))tasks.push((async()=>{
     try{mergeFeed(await request(feedURL));sync.feed=day;sync.feedURL=feedURL}
     catch(e){errors.push('Rankings: '+String(e))}
   })());
@@ -168,7 +168,7 @@ const link=(k,mode='details')=>'scriptable:///run/'+encodeURIComponent(Script.na
 const ink='#E8EEF7',muted='#9CA3AF',labels=['FRONTIER','CHATGPT PLUS','FREE'],colors=['#F5C76B','#65D6A8','#8AB4F8'];
 function txt(s,v,size=10,c=ink,bold=false){const t=s.addText(String(v));t.font=bold?Font.semiboldSystemFont(size):Font.systemFont(size);t.textColor=new Color(c);t.lineLimit=1;t.minimumScaleFactor=.6;return t}
 function cell(s,m,i,small=false,large=false,k='search'){const c=s.addStack();c.layoutVertically();if(!small)c.url=m?.url||link(k,'settings');if(small){txt(c,labels[i],8,colors[i],true)}const row=c.addStack();row.centerAlignContent();txt(row,m?.name||(i===0?'No rankings':'Access unknown'),small?9:10);if(small){row.addSpacer(3);if(m)txt(row,'#'+m.rank+(m.unconfirmed?'?':''),8,muted)}else{const r=c.addStack();if(m)txt(r,'#'+m.rank+(m.unconfirmed?' · verify':''),9,muted);if(large&&m?.delta!=null){r.addSpacer(3);txt(r,m.delta>0?'↑':m.delta<0?'↓':'−',10,m.delta>0?'#34D399':m.delta<0?'#F87171':muted)}}return c}
-function widget(ks,family){const small=family==='small',large=family==='large';const w=new ListWidget();w.backgroundColor=new Color('#121821');w.setPadding(12,12,12,12);w.refreshAfterDate=new Date(Date.now()+6*3600000);w.url=link(ks[0]);const h=w.addStack();h.centerAlignContent();if(!large)txt(h,C[ks[0]][0],15,ink,true);if(ks.some(k=>get(k)?.partial)){h.addSpacer(4);txt(h,'Snapshot',8,muted)}else if(ks.some(k=>get(k)&&(String(get(k).observed||get(k).date).slice(0,7)!==today().slice(0,7)))){h.addSpacer(4);txt(h,'Cached',8,muted)}h.addSpacer();const gear=h.addStack();txt(gear,'⚙',15,muted);if(!small)gear.url=link(ks[0],'settings');w.addSpacer(large?4:8);
+function widget(ks,family){const small=family==='small',large=family==='large';const w=new ListWidget();w.backgroundColor=new Color('#121821');w.setPadding(12,12,12,12);w.refreshAfterDate=new Date(Date.now()+6*3600000);w.url=link(ks[0]);const h=w.addStack();h.centerAlignContent();if(!large)txt(h,C[ks[0]][0],15,ink,true);if(ks.some(k=>get(k)&&(String(get(k).observed||get(k).date).slice(0,7)!==today().slice(0,7)))){h.addSpacer(4);txt(h,'Cached',8,muted)}else if(ks.some(k=>get(k)?.partial)){h.addSpacer(4);txt(h,'Snapshot',8,muted)}h.addSpacer();const gear=h.addStack();txt(gear,'⚙',15,muted);if(!small)gear.url=link(ks[0],'settings');w.addSpacer(large?4:8);
 if(!small){const r=w.addStack();if(large)r.addSpacer(60);for(let i=0;i<3;i++){const c=r.addStack();c.size=new Size(large?76:90,0);txt(c,labels[i],8,colors[i],true);if(i<2)r.addSpacer(4)}w.addSpacer(7)}
 for(const k of ks){const g=get(k),m=winners(g,k);const r=w.addStack();if(small){r.layoutVertically();for(let i=0;i<3;i++){cell(r,m[i],i,true,false,k);if(i!==2)r.addSpacer(4)}}else{r.centerAlignContent();if(large){const c=r.addStack();c.size=new Size(60,0);txt(c,C[k][0],9,muted,true)}for(let i=0;i<3;i++){const c=cell(r,m[i],i,false,large,k);c.size=new Size(large?76:90,0);if(i<2)r.addSpacer(4)}}if(!g)txt(w,'Data unavailable · open settings',8,muted);if(large)w.addSpacer(12)}
 return w}
@@ -181,10 +181,10 @@ async function edit(model){
   a.title=model;
   a.message='Choose which access you have. The chat website is selected automatically.';
   a.addTextField('Display name',x.name||model);
-  ['ChatGPT Plus','Free','Both','Clear access'].forEach(v=>a.addAction(v));
+  ['ChatGPT Plus','Free','Both','Neither','Reset override'].forEach(v=>a.addAction(v));
   a.addCancelAction('Cancel');
   const i=await a.presentAlert();if(i<0)return;
-  if(i===3)delete settings.registry[k];
+  if(i===4)delete settings.registry[k];
   else settings.registry[k]={name:a.textFieldValue(0).trim()||model,plus:i===0||i===2,free:i===1||i===2};
   save('settings',settings)
 }
@@ -213,13 +213,15 @@ async function details(k){
   const models=g.models.slice().sort((a,b)=>a.rank-b.rank||a.id.localeCompare(b.id));
   const top=models.slice(0,20);
   const table=new UITable();table.showSeparators=true;
-  function row(title,subtitle,action){const r=new UITableRow();r.height=action?54:70;r.addText(title,subtitle||'');if(action){r.dismissOnSelect=true;r.onSelect=action}table.addRow(r)}
+  let selected=null;
+  function row(title,subtitle,action){const r=new UITableRow();r.height=action?54:70;r.addText(title,subtitle||'');if(action){r.dismissOnSelect=true;r.onSelect=()=>{selected=action}}table.addRow(r)}
   row(C[k][0]+' · Top '+top.length,g.date+(g.partial?' · Partial snapshot':' · Official dataset'));
   row('Open Arena leaderboard','Compare with the public leaderboard',()=>Safari.open(boardURLs[k]||'https://arena.ai/leaderboard'));
   row('Settings','Choose categories and model access',async()=>await menu());
   const leaders=winners(g,k);for(let i=0;i<3;i++){const m=leaders[i];if(m)row(labels[i]+' · #'+m.rank+' '+m.name,m.unconfirmed?'Access not independently confirmed':'Open provider',()=>Safari.open(destination(m.id)))}
   for(const m of top){const metric=m.rating??m.score;const e=accessEntry(m.id,k);const availability=e.free?'Free':e.plus?'Plus':e.reportedFree?'Free?':e.plusCandidate?'Plus?':'';row('#'+m.rank+' '+(settings.registry[id(m.id)]?.name||m.id),[availability,m.organization||'',metric!=null?'Score '+(Number.isFinite(metric)?Number(metric.toFixed(2)):metric):''].filter(Boolean).join(' · '),()=>Safari.open(destination(m.id)))}
   await table.present();
+  if(selected)await selected();
 }
 async function menu(){const i=await choose('Widget settings',['Browse top 20 by category','Set model access','Edit large categories','Edit existing model access','Set optional feed URL','Refresh published data','Free-tier provider directory']);if(i===0){const a=Object.keys(C),j=await choose('Category',a.map(k=>C[k][0]));if(j>=0)await details(a[j])}if(i===1){const a=Object.keys(C),j=await choose('Set model access',a.map(k=>C[k][0]));if(j>=0)await accessMenu(a[j])}if(i===2){const a=new Alert();a.title='Large categories';a.message=Object.keys(C).join(', ');a.addTextField('Up to five',keys(settings.large.join(',')).join(','));a.addAction('Save');a.addCancelAction('Cancel');if(await a.presentAlert()>=0){const v=keys(a.textFieldValue(0)).slice(0,5);if(v.length){settings.large=v;save('settings',settings)}}}if(i===3){const a=Object.keys(settings.registry);if(!a.length){await note('No saved models','Browse a category or add an exact Arena model ID first.');return}const j=await choose('Saved models',a);if(j>=0)await edit(a[j])}if(i===4){const a=new Alert();a.title='Hosted feed';a.addTextField('HTTPS URL',settings.feed||REPO);a.addAction('Save');a.addCancelAction('Cancel');if(await a.presentAlert()>=0){const v=a.textFieldValue(0).trim();if(!v||https(v)){settings.feed=v||REPO;save('settings',settings)}else await note('Invalid URL','Enter an HTTPS feed URL.')}}if(i===5){await refresh(Object.keys(C),true);await note('Refresh',diagnostic||'Published files checked. Ranking collection runs monthly.')}if(i===6){await refresh([]);const p=Array.isArray(access.providers)?access.providers:[];if(!p.length){await note('No registry','Access data not yet available');return}const j=await choose('Free-tier directory',p.map(x=>x.provider+' · '+(x.freeTier||'unverified')));if(j>=0){const x=p[j];await note(x.provider,[...(x.freeModelFamilies||[]),x.notes,'Reviewed '+(x.reviewedAt||access.reviewedAt)].filter(Boolean).join('\\n'));Safari.open(x.url)}}}
 async function main(){if(config.runsInWidget){const family=['small','medium','large'].includes(config.widgetFamily)?config.widgetFamily:'small';let ks=keys(args.widgetParameter||'');if(!ks.length)ks=family==='large'?keys(settings.large.join(',')):['search'];if(!ks.length)ks=defaults;ks=ks.slice(0,family==='large'?5:1);await refresh(ks);Script.setWidget(widget(ks,family))}else{const k=args.queryParameters?.category;if(args.queryParameters?.mode==='settings'||!category(k))await menu();else await details(k)}}
