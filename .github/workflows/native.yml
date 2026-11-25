@@ -17,15 +17,22 @@ jobs:
   simulator:
     runs-on: macos-15
     timeout-minutes: 25
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
     steps:
       - uses: actions/checkout@v4
-      - name: Test the app and embedded widget on an iPhone simulator
+      - name: Build the app, embedded widget, and test bundle
         shell: bash
-        env:
-          DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
         run: |
           set -euo pipefail
           xcodebuild -version
+          xcodebuild -project native/AIRadar.xcodeproj -scheme AIRadar \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath "$RUNNER_TEMP/airadar-build" CODE_SIGNING_ALLOWED=NO build-for-testing
+      - name: Run the native tests on an iPhone simulator
+        shell: bash
+        run: |
+          set -euo pipefail
           sdk=$(xcrun --sdk iphonesimulator --show-sdk-version)
           device=$(xcrun simctl list devices available --json | python3 -c '
           import json
@@ -46,8 +53,7 @@ jobs:
                       sys.exit(0)
           sys.exit(f"No available iPhone simulator for iOS {major}.")
           ' "$sdk")
-          xcrun simctl boot "$device" || true
-          xcrun simctl bootstatus "$device" -b
           xcodebuild -project native/AIRadar.xcodeproj -scheme AIRadar \
             -destination "platform=iOS Simulator,id=$device" \
-            -parallel-testing-enabled NO CODE_SIGNING_ALLOWED=NO test
+            -derivedDataPath "$RUNNER_TEMP/airadar-build" \
+            -parallel-testing-enabled NO CODE_SIGNING_ALLOWED=NO test-without-building
