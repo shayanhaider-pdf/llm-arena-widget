@@ -67,7 +67,8 @@ function accessEntry(model,k){
   let entry=null,provider=null;
   if(access.schemaVersion===1&&freshDate(access.reviewedAt)&&Array.isArray(access.providers))for(const p of access.providers){
     if(!freshDate(p.reviewedAt||access.reviewedAt))continue;
-    const match=p.models.find(m=>id(m.id)===key&&(!m.expiresAt||m.expiresAt>today())&&(m.scope||'chat')===scope);
+    const entries=scope==='code'?(p.codeModels||[]):p.models;
+    const match=entries.find(m=>id(m.id)===key&&(!m.expiresAt||m.expiresAt>today())&&(m.scope||'chat')===scope);
     if(match){entry=match;provider=p;break}
   }
   const status=entry?.status||'unknown';
@@ -95,7 +96,7 @@ function winners(g,k){
   return [ranked[0],plus||plusCandidate,free||freeCandidate].map((m,i)=>{
     if(!m)return null;
     const x=settings.registry[id(m.id)]||{},prior=previousMonthRank(g,m);
-    return {...m,name:x.name||m.id,url:destination(m.id,k),unconfirmed:(i===1&&!plus)||(i===2&&!free),delta:prior==null?null:prior-m.rank}
+    return {...m,name:x.name||m.id,url:destination(m.id,k),unconfirmed:(i===1&&!plus)||(i===2&&!free),delta:prior==null?null:prior-m.rank,history:Object.keys(g.history||{}).filter(validDate).sort().map(d=>g.history[d]?.[id(m.id)]).filter(r=>Number.isInteger(r)&&r>0).slice(-6)}
   })
 }
 let diagnostic='';
@@ -144,7 +145,7 @@ function validAccess(j){
   const statuses=['free','plus','reported_free','plus_candidate','unverified','paid'];
   if(!record(j)||j.schemaVersion!==1||!validDate(j.reviewedAt)||j.reviewedAt>today()||!Array.isArray(j.providers)||!j.providers.length)return false;
   const ids=new Set();
-  return j.providers.every(p=>record(p)&&typeof p.provider==='string'&&p.provider.trim()&&https(p.url)&&https(p.source)&&(!p.reviewedAt||validDate(p.reviewedAt)&&p.reviewedAt<=j.reviewedAt)&&Array.isArray(p.models)&&p.models.every(m=>{
+  return j.providers.every(p=>record(p)&&typeof p.provider==='string'&&p.provider.trim()&&https(p.url)&&https(p.source)&&(!p.reviewedAt||validDate(p.reviewedAt)&&p.reviewedAt<=j.reviewedAt)&&Array.isArray(p.models)&&(!p.codeModels||Array.isArray(p.codeModels))&&[...p.models,...(p.codeModels||[])].every(m=>{
     if(!record(m)||typeof m.id!=='string'||!m.id.trim()||!safeKey(id(m.id))||!statuses.includes(m.status)||!['chat','work','code'].includes(m.scope||'chat')||(m.expiresAt&&!validDate(m.expiresAt)))return false;
     const key=id(m.id)+':'+(m.scope||'chat');
     if(ids.has(key))return false;ids.add(key);return true;
@@ -181,7 +182,7 @@ const surfaces=['#292439','#21332E','#202D40'];
 const edges=['#594873','#38594B','#3C5875'];
 const tierSymbols=['crown.fill','bolt.fill','square.stack.3d.up'];
 const categorySymbols={search:'magnifyingglass',work:'briefcase',text:'text.alignleft',documents:'doc.text',vision:'photo',reasoning:'brain',writing:'pencil',image:'photo.artframe',editing:'wand.and.stars',video:'video',webdev:'chevron.left.forwardslash.chevron.right',agent:'cpu',imagevideo:'film',videoedit:'film',steering:'slider.horizontal.3',instruction:'list.bullet',chatagent:'bubble.left.and.bubble.right'};
-const shortTitles={work:'Work',text:'Text',documents:'Docs',reasoning:'Reasoning',writing:'Writing',image:'Images',editing:'Edit image',video:'Video',webdev:'Web dev',agent:'Agent',imagevideo:'Img → video',videoedit:'Edit video',steering:'Steering',instruction:'Instruction',chatagent:'Agent chat'};
+const shortTitles={work:'Work capability',text:'Overall text',documents:'Documents',reasoning:'Reasoning',writing:'Writing',image:'Images',editing:'Edit image',video:'Video',webdev:'Web dev',agent:'Agent',imagevideo:'Img → video',videoedit:'Edit video',steering:'Steering',instruction:'Instruction',chatagent:'Agent chat'};
 function txt(s,v,size=10,c=ink,bold=false,lines=1){
   const t=s.addText(String(v));
   t.font=bold?Font.semiboldSystemFont(size):Font.systemFont(size);
@@ -223,8 +224,8 @@ function header(w,k,large,width){
 function smallCard(parent,m,k,i,width,height){
   const p=panel(parent,width,height,i,4);p.centerAlignContent();
   symbol(p,tierSymbols[i],12,colors[i]);p.addSpacer(4);
-  const body=p.addStack();body.layoutVertically();body.spacing=1;
-  const line=body.addStack();line.centerAlignContent();
+  const body=p.addStack();body.size=new Size(width-24,0);body.layoutVertically();body.spacing=1;
+  const line=body.addStack();line.size=new Size(width-24,0);line.centerAlignContent();
   txt(line,labels[i],8,colors[i],true);line.addSpacer();txt(line,rank(m),12,colors[i],true);
   txt(body,modelName(m)||'–',10,ink,true,1);
 }
@@ -234,9 +235,17 @@ function mediumCard(parent,m,k,i,width,height){
   txt(h,labels[i],8,colors[i],true);p.addSpacer(4);
   txt(p,rank(m),27,colors[i],true);p.addSpacer(3);
   txt(p,modelName(m)||'–',11,ink,true,2);p.addSpacer();
-  // A restrained accent stripe, not fabricated historical data.
-  const accent=p.addStack();accent.size=new Size(Math.max(12,width-14),3);
-  accent.cornerRadius=1.5;accent.backgroundColor=new Color(edges[i]);
+  // Draw only observed history. Until two real observations exist, use a non-data accent stripe.
+  const chartWidth=Math.max(12,width-14),values=m?.history||[];
+  if(values.length>=2&&typeof DrawContext!=='undefined'){
+    const d=new DrawContext();d.size=new Size(chartWidth,12);d.opaque=false;d.respectScreenScale=true;
+    const min=Math.min(...values),range=Math.max(1,Math.max(...values)-min),path=new Path();
+    values.forEach((value,j)=>{const point=new Point(1+j*(chartWidth-2)/(values.length-1),2+8*(value-min)/range);if(j===0)path.move(point);else path.addLine(point)});
+    d.addPath(path);d.setStrokeColor(new Color(colors[i]));d.setLineWidth(1.4);d.strokePath();
+    const image=p.addImage(d.getImage());image.imageSize=new Size(chartWidth,12);
+  }else{
+    const accent=p.addStack();accent.size=new Size(chartWidth,3);accent.cornerRadius=1.5;accent.backgroundColor=new Color(edges[i]);
+  }
 }
 function largeCell(parent,m,k,i,width,height){
   const p=panel(parent,width,height,i,5);p.layoutVertically();p.url=modelLink(m,k);
@@ -280,7 +289,7 @@ async function choose(title,items){const a=new Alert();a.title=title;for(const s
 async function note(title,message){const a=new Alert();a.title=title;a.message=message;a.addAction('OK');await a.presentAlert()}
 async function edit(model){
   const k=id(model);if(!k||!safeKey(k))return;
-  const x=own(settings.registry,k)?settings.registry[k]:{};
+  const x=own(settings.registry,k)&&record(settings.registry[k])?settings.registry[k]:{};
   const a=new Alert();
   a.title=model;
   a.message='Choose which access you have. The chat website is selected automatically.';
@@ -328,7 +337,7 @@ async function details(k){
   if(selected)await selected();
 }
 async function editRows(current){
-  let rows=current.slice(0,5);
+  let rows=(current.length?current:defaults).slice(0,5);
   while(true){
     const actions=rows.map((k,i)=>(i+1)+'. '+C[k][0]).concat(['Add row','Reset default order','Save order']);
     const i=await choose('Large widget rows',actions);
@@ -348,5 +357,8 @@ async function editRows(current){
   }
 }
 async function menu(){const i=await choose('Widget settings',['Browse top 20 by category','Set model access','Edit large categories','Edit existing model access','Set optional feed URL','Refresh published data','Free-tier provider directory']);if(i===0){const a=Object.keys(C),j=await choose('Category',a.map(k=>C[k][0]));if(j>=0)await details(a[j])}if(i===1){const a=Object.keys(C),j=await choose('Set model access',a.map(k=>C[k][0]));if(j>=0)await accessMenu(a[j])}if(i===2){const rows=await editRows(keys(settings.large.join(',')));if(rows){settings.large=rows;settings.largeCustomized=true;save('settings',settings)}}if(i===3){const a=Object.keys(settings.registry);if(!a.length){await note('No saved models','Browse a category or add an exact Arena model ID first.');return}const j=await choose('Saved models',a);if(j>=0)await edit(a[j])}if(i===4){const a=new Alert();a.title='Hosted feed';a.addTextField('HTTPS URL',settings.feed||REPO);a.addAction('Save');a.addCancelAction('Cancel');if(await a.presentAlert()>=0){const v=a.textFieldValue(0).trim();if(!v||https(v)){settings.feed=v||REPO;save('settings',settings)}else await note('Invalid URL','Enter an HTTPS feed URL.')}}if(i===5){await refresh(Object.keys(C),true);await note('Refresh',diagnostic||'Published files checked. Ranking collection runs monthly.')}if(i===6){await refresh([]);const p=Array.isArray(access.providers)?access.providers:[];if(!p.length){await note('No registry','Access data not yet available');return}const j=await choose('Free-tier directory',p.map(x=>x.provider+' · '+(x.freeTier||'unverified')));if(j>=0){const x=p[j];await note(x.provider,[...(x.freeModelFamilies||[]),x.notes,'Reviewed '+(x.reviewedAt||access.reviewedAt)].filter(Boolean).join('\\n'));Safari.open(x.url)}}}
-async function main(){if(config.runsInWidget){const family=['small','medium','large'].includes(config.widgetFamily)?config.widgetFamily:'small';let ks=keys(args.widgetParameter||'');if(family==='large')ks=keys(settings.large.join(','));else if(!ks.length)ks=['search'];if(!ks.length)ks=defaults;ks=ks.slice(0,family==='large'?5:1);await refresh(ks);Script.setWidget(widget(ks,family))}else{const k=args.queryParameters?.category;if(args.queryParameters?.mode==='settings'||!category(k))await menu();else await details(k)}}
+async function main(){if(config.runsInWidget){const family=['small','medium','large'].includes(config.widgetFamily)?config.widgetFamily:'small';let ks=keys(args.widgetParameter||'');if(family==='large'){
+    const prior=ks.join(',');
+    if(settings.largeCustomized||ks.length<=1||prior===oldDefaults.join(','))ks=keys(settings.large.join(','));
+  }else if(!ks.length)ks=['search'];if(!ks.length)ks=family==='large'?defaults:['search'];ks=ks.slice(0,family==='large'?5:1);await refresh(ks);Script.setWidget(widget(ks,family))}else{const k=args.queryParameters?.category;if(args.queryParameters?.mode==='settings'||!category(k))await menu();else await details(k)}}
 try{await main()}catch(e){console.log('AI Radar error: '+String(e));if(config.runsInWidget){const w=new ListWidget();w.backgroundColor=new Color('#121821');w.setPadding(12,12,12,12);txt(w,'Rankings unavailable',13,ink,true);txt(w,'Open settings to troubleshoot',9,muted);w.url=link('search','settings');Script.setWidget(w)}else await note('AI Radar error',String(e))}finally{Script.complete()}
