@@ -1,11 +1,11 @@
-# AI Radar v0.10 — Graphite
+# AI Radar v0.11 — Graphite
 
 Configurable Scriptable widgets for iPhone and compatible Apple devices. The Graphite theme uses purple Frontier, mint ChatGPT Plus and blue Free cards. Small and medium show one category; large shows up to five ordered rows, without branding, charts, or footer text. Medium draws rank history only when at least two observations fit the available space; otherwise it shows a decorative accent stripe.
 
 ## Install and configure
 Paste [AI-Radar.js](AI-Radar.js) into your existing Scriptable script, preserving its name. Run it and choose Refresh published data. Small/medium accept one category parameter: agent, alignment, work, coding, chatagent, taskoutcome, steering, tooluse, text, search, vision, documents, webdev, imagewebdev, image, editing, multiedit, video, imagevideo, videoedit, reasoning, writing, instruction.
 
-The default large order is Work capability, Overall text, Documents, Search, Images. From Settings > Edit large categories, choose a row to move up/down, replace or remove it. Add a row when fewer than five are present. Save order or cancel without saving. A saved order takes precedence over an old widget parameter; other existing custom orders are preserved before editing. Agent Coding and Web Development are available independently. Mathematics remains excluded.
+Settings groups categories under Agent, Chat, Code, Image, Video, and Text specialties. Choose Preview widget to open Scriptable's native Small, Medium or Large preview without changing saved settings. The default large order is Work capability, Overall text, Documents, Search, Images. From Settings > Edit large categories, choose a row to move up/down, replace or remove it. Add a row when fewer than five are present. Save order or cancel without saving. A saved order takes precedence over an old widget parameter; other existing custom orders are preserved before editing. Agent Coding and Web Development are available independently. Mathematics remains excluded.
 
 Medium and large model cards open provider websites; Work/Codex OpenAI entries route to the respective product pages. Small widgets have one tap target and open the category details. A category label on large opens its rankings. Provider links do not preselect every exact model or mode, and access may depend on account, region and limits.
 
@@ -23,6 +23,6 @@ Follow [AGENTS.md](AGENTS.md) and the [adapted Ponytail skill](.agents/skills/po
 python -m unittest -v test_logic.py
 node test_widget.cjs
 ```
-JavaScript tests simulate Scriptable APIs and exercise production feed categories, provider routes, saved row order, compact layout budgets, validation and offline recovery. Native Apple rendering, hit targets and live collection must still be tested on the actual device/workflow.
+JavaScript tests simulate Scriptable APIs and exercise all 23 production feed categories on three representative iPhone screen sizes, nested horizontal and vertical layout budgets, grouped navigation, native preview routes, provider routes, saved row order, validation and offline recovery. The test harness does not measure native font glyphs, truncation, or actual Apple rendering. Native Apple rendering, hit targets and live collection must still be tested on the actual device/workflow.
 
 Sources: https://developer.apple.com/design/human-interface-guidelines/widgets ; https://docs.scriptable.app/widgetstack/ ; https://docs.scriptable.app/urlscheme/

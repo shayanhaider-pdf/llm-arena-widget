@@ -12,6 +12,9 @@ on:
       - 'test_widget.cjs'
       - '.github/workflows/refresh.yml'
       - 'data/access.json'
+      - 'data/widget.json'
+      - 'data/latest.json'
+      - 'data/alignment.json'
   schedule:
     - cron: '17 5 1 * *'
 permissions:
