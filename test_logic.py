@@ -27,8 +27,10 @@ class TestRankings(unittest.TestCase):
         self.assertEqual(group([row('A',2),row('B',1)],second,D2),second)
         self.assertEqual(group([row('A',1,D1)],second,'2026-11-26'),second)
 
-    def test_exclusions(self):
-        self.assertEqual(group([row('A',1,cat=c) for c in ('math','mathematics')],{},D2),{})
+    def test_math_alias(self):
+        g = group([row('A',1,cat=c) for c in ('math','mathematics')],{},D2)
+        self.assertEqual(list(g), ['math'])
+        self.assertEqual(g['math']['models'], [{'id':'A','rank':1}])
         self.assertIn('code',group([row('A',1,cat='code')],{},D2))
 
     def test_duplicates(self):
@@ -101,6 +103,16 @@ class TestRankings(unittest.TestCase):
             g=compact['subsets'][s]['groups'][k]
             self.assertTrue(valid_group(g),(s,k))
             self.assertEqual(g['models'],checked['subsets'][s]['groups'][k]['models'],(s,k))
+
+    def test_math_uses_exact_official_snapshot(self):
+        data=dataset()
+        data['subsets']['text_style_control']['groups'].pop('math',None)
+        math=widget_feed(data)['subsets']['text_style_control']['groups']['math']
+        self.assertEqual(math['totalModels'],len(math['models']))
+        self.assertEqual(math['models'][0]['rank'],1)
+        self.assertFalse(math['partial'])
+        self.assertTrue(math['sourceRevision'])
+        self.assertNotEqual(math['models'],data['subsets']['text_style_control']['groups']['overall']['models'])
 
     def test_alignment_uses_own_source(self):
         data=dataset()

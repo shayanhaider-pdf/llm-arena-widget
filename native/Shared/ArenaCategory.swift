@@ -9,7 +9,7 @@ enum ArenaCategory: String, CaseIterable, Identifiable, Sendable {
     case webdev, imagewebdev
     case image, editing, multiedit
     case video, imagevideo, videoedit
-    case reasoning, writing, instruction
+    case reasoning, writing, instruction, math
 
     enum Section: String, CaseIterable, Identifiable, Sendable {
         case agent = "Agent"
@@ -42,7 +42,7 @@ enum ArenaCategory: String, CaseIterable, Identifiable, Sendable {
         case .webdev, .imagewebdev: .code
         case .image, .editing, .multiedit: .image
         case .video, .imagevideo, .videoedit: .video
-        case .reasoning, .writing, .instruction: .specialties
+        case .reasoning, .writing, .instruction, .math: .specialties
         }
     }
 
@@ -68,6 +68,7 @@ enum ArenaCategory: String, CaseIterable, Identifiable, Sendable {
         case .video: "Video Generation"
         case .imagevideo: "Image-to-Video"
         case .videoedit: "Video Editing"
+        case .math: "Mathematics"
         case .reasoning: "Reasoning"
         case .writing: "Creative Writing"
         case .instruction: "Instruction Following"
@@ -109,6 +110,7 @@ enum ArenaCategory: String, CaseIterable, Identifiable, Sendable {
         case .video: "text_to_video:overall"
         case .imagevideo: "image_to_video:overall"
         case .videoedit: "video_edit:overall"
+        case .math: "text_style_control:math"
         case .reasoning: "text_style_control:hard_prompts"
         case .writing: "text_style_control:creative_writing"
         case .instruction: "text_style_control:instruction_following"
@@ -138,6 +140,7 @@ enum ArenaCategory: String, CaseIterable, Identifiable, Sendable {
         case .video: path = "video/text-to-video"
         case .imagevideo: path = "video/image-to-video"
         case .videoedit: path = "video/video-edit"
+        case .math: path = "chat/text/math"
         case .reasoning: path = "chat/text/hard-prompts"
         case .writing: path = "chat/text/creative-writing"
         case .instruction: path = "chat/text/instruction-following"
@@ -220,6 +223,7 @@ extension ArenaCategory: AppEnum {
         .video: "Video Generation",
         .imagevideo: "Image-to-Video",
         .videoedit: "Video Editing",
+        .math: "Mathematics",
         .reasoning: "Reasoning",
         .writing: "Creative Writing",
         .instruction: "Instruction Following"

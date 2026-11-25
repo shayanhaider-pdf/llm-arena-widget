@@ -39,7 +39,7 @@ async function run({family='small',param='search',feed=fixture,registry=reg,stor
   const broken=await run({feed:{subsets:null},stored:{'/d/AI-Radar/settings.json':'null','/d/AI-Radar/monthly-cache.json':'[]'}});check(broken.completed&&broken.result,'corrupt settings');
   const reason=await run({param:'reasoning'});check(flat(reason.result).some(x=>x.value==='A'),'hard_6 resolves');
   const app=await run({app:true});check(app.completed,'first app launch');
-  const invalid=await run({param:'math,invalid'});check(flat(invalid.result).some(x=>x.value==='Search'),'invalid category fallback');
+  const invalid=await run({param:'unknown,invalid'});check(flat(invalid.result).some(x=>x.value==='Search'),'invalid category fallback');
   const unconfirmed=await run();check(flat(unconfirmed.result).filter(x=>x.value==='–').length===4,'no invented access');
   const offline2=await run({feed:null,registry:null,stored:good.files});check(offline2.requests===0,'no unnecessary same-day requests');
   const changed=await run({family:'medium',feed:{subsets:{search:{checked:today,groups:{overall:{...group,models:[{id:'New monthly model',rank:1}]}}}}},stored:{...good.files,'/d/AI-Radar/monthly-sync.json':'{}'}});check(flat(changed.result).some(x=>x.value==='New monthly model'),'data update with unchanged code');
@@ -95,7 +95,7 @@ async function run({family='small',param='search',feed=fixture,registry=reg,stor
   check(repaired.requests===1&&flat(repaired.result).some(x=>x.value==='A'),'corrupt same-day cache refetched');
   const production=JSON.parse(fs.readFileSync(__dirname+'/data/widget.json','utf8'));
   const productionRegistry=JSON.parse(fs.readFileSync(__dirname+'/data/access.json','utf8'));
-  const categories=['agent','alignment','work','coding','chatagent','taskoutcome','steering','tooluse','text','search','vision','documents','webdev','imagewebdev','image','editing','multiedit','video','imagevideo','videoedit','reasoning','writing','instruction'];
+  const categories=['agent','alignment','work','coding','chatagent','taskoutcome','steering','tooluse','text','search','vision','documents','webdev','imagewebdev','image','editing','multiedit','video','imagevideo','videoedit','reasoning','writing','instruction','math'];
   for(const param of categories){
     const r=await run({family:'medium',param,feed:production,registry:productionRegistry});
     check(r.completed&&r.result&&flat(r.result).some(x=>x.value==='#1')&&!flat(r.result).some(x=>x.value==='Rankings unavailable'),'production group '+param);
@@ -138,7 +138,7 @@ async function run({family='small',param='search',feed=fixture,registry=reg,stor
   // Verify every category on each tested device width, not just the default Search row.
   const configured=source.slice(source.indexOf('const C=')+8,source.indexOf('const categorySections=')).trim().replace(/;$/,'');
   const mapping=JSON.parse(configured);
-  check(Object.keys(mapping).length===23,'exact 23 configured categories');
+  check(Object.keys(mapping).length===24,'exact 24 configured categories');
   const sections=new Set();
   const rootBudget=(w,width,height,pad)=>{
     const nodes=flat(w),innerWidth=width-pad*2,innerHeight=height-pad*2;
@@ -176,13 +176,13 @@ async function run({family='small',param='search',feed=fixture,registry=reg,stor
     }
   }
   // Browse and choose across every section; verify each detail screen uses its selected category.
-  const sectionKeys=[['agent','alignment','work','coding','chatagent','taskoutcome','steering','tooluse'],['text','search','vision','documents'],['webdev','imagewebdev'],['image','editing','multiedit'],['video','imagevideo','videoedit'],['reasoning','writing','instruction']];
+  const sectionKeys=[['agent','alignment','work','coding','chatagent','taskoutcome','steering','tooluse'],['text','search','vision','documents'],['webdev','imagewebdev'],['image','editing','multiedit'],['video','imagevideo','videoedit'],['reasoning','writing','instruction','math']];
   for(let i=0;i<sectionKeys.length;i++)for(let j=0;j<sectionKeys[i].length;j++){
     const k=sectionKeys[i][j];sections.add(k);
     const r=await run({app:true,choices:[0,i,j],feed:production,registry:productionRegistry});
     check(r.tableRows[0]?.title.startsWith(mapping[k][0]+' · Top '),'grouped picker '+k);
   }
-  check(sections.size===23,'all categories reachable through grouped settings');
+  check(sections.size===24,'all categories reachable through grouped settings');
   for(const [family,i] of [['small',0],['medium',1],['large',2]]){
     const r=await run({app:true,choices:family==='large'?[7,i]:[7,i,1,1],feed:production,registry:productionRegistry});
     check(r.completed&&r.previews.some(w=>w.presented===family),'native preview route '+family);
@@ -272,5 +272,12 @@ async function run({family='small',param='search',feed=fixture,registry=reg,stor
   check(settingsFromQuick.menus[1]?.title==='Widget settings','settings still accessible');
   const cancelQuick=await run({app:true,query:tapQuery,choices:[-1],stored:pickSmall.files});
   check(cancelQuick.files[prefs]===pickSmall.files[prefs]&&cancelQuick.tableRows.length===0,'cancel quick menu no side effects');
+  const mathWidget=await run({param:'math',feed:production,registry:productionRegistry});
+  const mathematicsWidget=await run({param:'Mathematics',feed:production,registry:productionRegistry});
+  check(flat(mathWidget.result).some(x=>x.value==='Mathematics'),'math parameter renders own title');
+  check(JSON.stringify(flat(mathWidget.result).map(x=>x.value))===JSON.stringify(flat(mathematicsWidget.result).map(x=>x.value)),'mathematics alias same rankings');
+  const independentSearch=await run({param:'search',stored:mathWidget.files,feed:production,registry:productionRegistry});
+  const independentText=await run({param:'text',stored:mathWidget.files,feed:production,registry:productionRegistry});
+  check(flat(independentSearch.result).some(x=>x.value==='Search')&&flat(independentText.result).some(x=>x.value==='Overall text'),'separate fixed parameters override shared settings');
   console.log(count+' assertions passed');
 })().catch(e=>{console.error(e);process.exitCode=1});

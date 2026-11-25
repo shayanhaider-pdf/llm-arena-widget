@@ -15,6 +15,7 @@ on:
       - 'data/widget.json'
       - 'data/latest.json'
       - 'data/alignment.json'
+      - 'data/math.json'
   schedule:
     - cron: '17 5 1 * *'
 permissions:
