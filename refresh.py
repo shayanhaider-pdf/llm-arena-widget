@@ -12,7 +12,7 @@ OUT = pathlib.Path(__file__).parent / 'data' / 'latest.json'
 
 WIDGET_GROUPS = {
     'search': ('overall',),
-    'text_style_control': ('overall','hard_prompts','creative_writing','instruction_following'),
+    'text_style_control': ('overall','hard_prompts','creative_writing','instruction_following','math'),
     'agent_capability': ('overall','work','code','chat'),
     'agent_task_outcome': ('overall',),
     'agent_tool_efficiency': ('overall',),
@@ -50,8 +50,8 @@ def group(rows, previous, observed):
         except (KeyError, TypeError, ValueError, OverflowError) as exc:
             raise ValueError('Invalid ranked row') from exc
         cat = norm(row.get('category') or 'overall')
-        if cat in {'math', 'mathematics'}:
-            continue
+        if cat == 'mathematics':
+            cat = 'math'
         if cat not in groups or date > groups[cat]['date']:
             groups[cat] = {'date':date,'models':[]}
         if date == groups[cat]['date']:
@@ -177,11 +177,28 @@ def alignment_snapshot():
     path = pathlib.Path(__file__).parent / 'data' / 'alignment.json'
     return json.loads(path.read_text(encoding='utf-8')) if path.exists() else {}
 
+def math_snapshot():
+    """Initial pinned official Math dataset, retained if collection is unavailable."""
+    path = pathlib.Path(__file__).parent / 'data' / 'math.json'
+    return json.loads(path.read_text(encoding='utf-8')) if path.exists() else {}
+
+def with_math_snapshot(current):
+    current = {**current, 'groups': dict(current.get('groups', {}))}
+    snapshot = math_snapshot()
+    candidate = snapshot.get('groups', {}).get('math', {})
+    official = current['groups'].get('math', {})
+    if not valid_group(official) and valid_group(candidate, snapshot.get('checked')):
+        current['groups']['math'] = candidate
+        current['checked'] = max(current.get('checked', ''), snapshot['checked'])
+    return current
+
 def widget_feed(data):
     compact = {k:data[k] for k in ('source','generatedAt','errors')}
     compact['subsets'] = {}
     for subset,categories in WIDGET_GROUPS.items():
         current = data['subsets'].get(subset,{})
+        if subset == 'text_style_control':
+            current = with_math_snapshot(current)
         if subset == 'agent_alignment':
             fallback = alignment_snapshot()
             official = current.get('groups',{}).get('overall',{})
@@ -213,6 +230,7 @@ def publish(data):
 def main():
     previous = json.loads(OUT.read_text(encoding='utf-8')) if OUT.exists() else {'subsets':{}}
     subsets = dict(previous['subsets'])
+    subsets['text_style_control'] = with_math_snapshot(subsets.get('text_style_control', {}))
     fallback = alignment_snapshot()
     if 'agent_alignment' not in subsets and fallback:
         subsets['agent_alignment'] = fallback
