@@ -103,12 +103,12 @@ class TestRankings(unittest.TestCase):
         for p in reg['providers']:
             self.assertTrue(p['source'].startswith('https://'))
             self.assertTrue(p['url'].startswith('https://'))
-            for m in p['models']:
+            for m in p['models'] + p.get('codeModels',[]):
                 key=(m['id'].strip().lower(),m.get('scope','chat'))
                 self.assertNotIn(key,seen)
                 seen.add(key)
                 self.assertIn(m['status'],{'free','plus','reported_free','plus_candidate','unverified','paid'})
-                self.assertIn(key[1],{'chat','work'})
+                self.assertIn(key[1],{'chat','work','code'})
                 if m.get('expiresAt'):
                     dt.date.fromisoformat(m['expiresAt'])
 
