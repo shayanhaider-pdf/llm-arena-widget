@@ -61,6 +61,32 @@ class TestRankings(unittest.TestCase):
         self.assertEqual(result['groups']['hard_prompts'],old['groups']['hard_prompts'])
         self.assertIn('hard_prompts',errors)
 
+    def test_complete_search_extends_matching_partial_snapshot(self):
+        published = '2026-11-20'
+        partial = group([row('A', 1, published)], {}, D2)['overall']
+        partial['partial'] = True
+        old = {'checked': D2, 'groups': {'overall': partial}}
+        official_date = '2026-11-19'
+        official = [row('A', 1, official_date), row('B', 2, official_date)]
+        with patch('refresh.parquet_rows', return_value=official):
+            result, errors = collect_parquet('search', [], 'revision', old, D2)
+        complete = result['groups']['overall']
+        self.assertEqual(complete['date'], official_date)
+        self.assertEqual(complete['sourceRevision'], 'revision')
+        self.assertFalse(complete['partial'])
+        self.assertEqual(complete['totalModels'], 2)
+        self.assertEqual(errors, {})
+
+        for incompatible in (
+            [row('B', 1, official_date), row('A', 2, official_date)],
+            [row('A', 1, '2026-11-18'), row('B', 2, '2026-11-18')],
+            official[:1],
+        ):
+            with self.subTest(official=incompatible), patch('refresh.parquet_rows', return_value=incompatible):
+                result, errors = collect_parquet('search', [], 'revision', old, D2)
+                self.assertEqual(result['groups']['overall'], partial)
+                self.assertIn('overall', errors)
+
     def test_empty_source_rejected(self):
         with patch('refresh.parquet_rows',return_value=[]), self.assertRaises(ValueError):
             collect_parquet('search',[],'revision',{},D2)
@@ -78,11 +104,20 @@ class TestRankings(unittest.TestCase):
 
     def test_alignment_uses_own_source(self):
         data=dataset()
-        data['subsets'].pop('agent_alignment',None)
+        published = data['subsets'].pop('agent_alignment')['groups']['overall']
         g=widget_feed(data)['subsets']['agent_alignment']['groups']['overall']
-        self.assertTrue(g['partial'])
+        self.assertFalse(g['partial'])
         self.assertEqual(g['source'],'https://arena.ai/leaderboard/agent/alignment')
+        self.assertNotIn('sourceRevision', g)
+        self.assertEqual(g['totalModels'], 68)
+        self.assertEqual([m['rank'] for m in g['models']], list(range(1, 69)))
+        self.assertEqual(len({m['id'].casefold() for m in g['models']}), 68)
+        self.assertEqual(published, g)
         self.assertNotEqual(g['models'],data['subsets']['agent_capability']['groups']['overall']['models'])
+
+        pinned = {**g, 'source': 'https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset', 'sourceRevision': 'revision'}
+        data['subsets']['agent_alignment'] = {'checked': g['observed'], 'groups': {'overall': pinned}}
+        self.assertEqual(widget_feed(data)['subsets']['agent_alignment']['groups']['overall'], pinned)
 
     def test_published_group_validation_matches_widget(self):
         g=group([row('A',1)],{},D2)['overall']

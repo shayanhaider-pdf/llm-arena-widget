@@ -1,0 +1,325 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A10000000000000000000001 /* AIRadarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000001 /* AIRadarApp.swift */; };
+		A10000000000000000000002 /* ArenaCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* ArenaCategory.swift */; };
+		A10000000000000000000003 /* ArenaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* ArenaStore.swift */; };
+		A10000000000000000000004 /* ArenaCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* ArenaCategory.swift */; };
+		A10000000000000000000005 /* ArenaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* ArenaStore.swift */; };
+		A10000000000000000000006 /* AIRadarWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000004 /* AIRadarWidget.swift */; };
+		A10000000000000000000007 /* RadarWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000005 /* RadarWidgetView.swift */; };
+		A10000000000000000000008 /* ArenaStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000006 /* ArenaStoreTests.swift */; };
+		A10000000000000000000009 /* widget.json in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000007 /* widget.json */; };
+		A1000000000000000000000A /* access.json in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000008 /* access.json */; };
+		A1000000000000000000000B /* widget.json in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000007 /* widget.json */; };
+		A1000000000000000000000C /* access.json in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000008 /* access.json */; };
+		A1000000000000000000000D /* AIRadarWidget.appex in Embed Extensions */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000E /* AIRadarWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, CodeSignOnCopy, ); }; };
+		A1000000000000000000000E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000010 /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A30000000000000000000001 /* Widget target proxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A60000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A50000000000000000000002;
+			remoteInfo = AIRadarWidget;
+		};
+		A30000000000000000000002 /* App target proxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A60000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A50000000000000000000001;
+			remoteInfo = AIRadar;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A40000000000000000000007 /* Embed Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (A1000000000000000000000D /* AIRadarWidget.appex in Embed Extensions */, );
+			name = "Embed Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		A20000000000000000000001 /* AIRadarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIRadarApp.swift; sourceTree = "<group>"; };
+		A20000000000000000000002 /* ArenaCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArenaCategory.swift; sourceTree = "<group>"; };
+		A20000000000000000000003 /* ArenaStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArenaStore.swift; sourceTree = "<group>"; };
+		A20000000000000000000004 /* AIRadarWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIRadarWidget.swift; sourceTree = "<group>"; };
+		A20000000000000000000005 /* RadarWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadarWidgetView.swift; sourceTree = "<group>"; };
+		A20000000000000000000006 /* ArenaStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArenaStoreTests.swift; sourceTree = "<group>"; };
+		A20000000000000000000007 /* widget.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = widget.json; sourceTree = "<group>"; };
+		A20000000000000000000008 /* access.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = access.json; sourceTree = "<group>"; };
+		A20000000000000000000009 /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
+		A2000000000000000000000A /* App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "App-Info.plist"; sourceTree = "<group>"; };
+		A2000000000000000000000B /* Widget-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Widget-Info.plist"; sourceTree = "<group>"; };
+		A2000000000000000000000C /* AppGroup.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AppGroup.entitlements; sourceTree = "<group>"; };
+		A2000000000000000000000D /* AIRadar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AIRadar.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2000000000000000000000E /* AIRadarWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AIRadarWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2000000000000000000000F /* AIRadarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AIRadarTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20000000000000000000010 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A40000000000000000000008 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		A40000000000000000000009 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		A4000000000000000000000A /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A70000000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				A70000000000000000000002 /* App */,
+				A70000000000000000000003 /* Widget */,
+				A70000000000000000000004 /* Shared */,
+				A70000000000000000000005 /* Tests */,
+				A70000000000000000000006 /* Configuration */,
+				A70000000000000000000007 /* Data */,
+				A70000000000000000000008 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A70000000000000000000002 /* App */ = {isa = PBXGroup; children = (A20000000000000000000001 /* AIRadarApp.swift */, A20000000000000000000010 /* Assets.xcassets */, ); path = App; sourceTree = "<group>"; };
+		A70000000000000000000003 /* Widget */ = {isa = PBXGroup; children = (A20000000000000000000004 /* AIRadarWidget.swift */, A20000000000000000000005 /* RadarWidgetView.swift */, ); path = Widget; sourceTree = "<group>"; };
+		A70000000000000000000004 /* Shared */ = {isa = PBXGroup; children = (A20000000000000000000002 /* ArenaCategory.swift */, A20000000000000000000003 /* ArenaStore.swift */, ); path = Shared; sourceTree = "<group>"; };
+		A70000000000000000000005 /* Tests */ = {isa = PBXGroup; children = (A20000000000000000000006 /* ArenaStoreTests.swift */, ); path = Tests; sourceTree = "<group>"; };
+		A70000000000000000000006 /* Configuration */ = {isa = PBXGroup; children = (A20000000000000000000009 /* Base.xcconfig */, A2000000000000000000000A /* App-Info.plist */, A2000000000000000000000B /* Widget-Info.plist */, A2000000000000000000000C /* AppGroup.entitlements */, ); path = Configuration; sourceTree = "<group>"; };
+		A70000000000000000000007 /* Data */ = {isa = PBXGroup; children = (A20000000000000000000007 /* widget.json */, A20000000000000000000008 /* access.json */, ); name = Data; path = ../data; sourceTree = "<group>"; };
+		A70000000000000000000008 /* Products */ = {isa = PBXGroup; children = (A2000000000000000000000D /* AIRadar.app */, A2000000000000000000000E /* AIRadarWidget.appex */, A2000000000000000000000F /* AIRadarTests.xctest */, ); name = Products; sourceTree = "<group>"; };
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A50000000000000000000001 /* AIRadar */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A90000000000000000000002 /* Build configuration list for AIRadar */;
+			buildPhases = (
+				A40000000000000000000001 /* Sources */,
+				A40000000000000000000008 /* Frameworks */,
+				A40000000000000000000004 /* Resources */,
+				A40000000000000000000007 /* Embed Extensions */,
+			);
+			buildRules = ();
+			dependencies = (AA0000000000000000000001 /* AIRadarWidget */, );
+			name = AIRadar;
+			productName = AIRadar;
+			productReference = A2000000000000000000000D /* AIRadar.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A50000000000000000000002 /* AIRadarWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A90000000000000000000003 /* Build configuration list for AIRadarWidget */;
+			buildPhases = (A40000000000000000000002 /* Sources */, A40000000000000000000009 /* Frameworks */, A40000000000000000000005 /* Resources */, );
+			buildRules = ();
+			dependencies = ();
+			name = AIRadarWidget;
+			productName = AIRadarWidget;
+			productReference = A2000000000000000000000E /* AIRadarWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		A50000000000000000000003 /* AIRadarTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A90000000000000000000004 /* Build configuration list for AIRadarTests */;
+			buildPhases = (A40000000000000000000003 /* Sources */, A4000000000000000000000A /* Frameworks */, A40000000000000000000006 /* Resources */, );
+			buildRules = ();
+			dependencies = (AA0000000000000000000002 /* AIRadar */, );
+			name = AIRadarTests;
+			productName = AIRadarTests;
+			productReference = A2000000000000000000000F /* AIRadarTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A60000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1640;
+				TargetAttributes = {
+					A50000000000000000000001 = {
+						CreatedOnToolsVersion = 16.4;
+						SystemCapabilities = {com.apple.ApplicationGroups.iOS = {enabled = 1; }; };
+					};
+					A50000000000000000000002 = {
+						CreatedOnToolsVersion = 16.4;
+						SystemCapabilities = {com.apple.ApplicationGroups.iOS = {enabled = 1; }; };
+					};
+					A50000000000000000000003 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = A50000000000000000000001;
+					};
+				};
+			};
+			buildConfigurationList = A90000000000000000000001 /* Build configuration list for project */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (en, Base, );
+			mainGroup = A70000000000000000000001;
+			productRefGroup = A70000000000000000000008 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (A50000000000000000000001 /* AIRadar */, A50000000000000000000002 /* AIRadarWidget */, A50000000000000000000003 /* AIRadarTests */, );
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A40000000000000000000004 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (A10000000000000000000009 /* widget.json in Resources */, A1000000000000000000000A /* access.json in Resources */, A1000000000000000000000E /* Assets.xcassets in Resources */, );
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A40000000000000000000005 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (A1000000000000000000000B /* widget.json in Resources */, A1000000000000000000000C /* access.json in Resources */, );
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A40000000000000000000006 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A40000000000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (A10000000000000000000001 /* AIRadarApp.swift in Sources */, A10000000000000000000002 /* ArenaCategory.swift in Sources */, A10000000000000000000003 /* ArenaStore.swift in Sources */, );
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A40000000000000000000002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (A10000000000000000000004 /* ArenaCategory.swift in Sources */, A10000000000000000000005 /* ArenaStore.swift in Sources */, A10000000000000000000006 /* AIRadarWidget.swift in Sources */, A10000000000000000000007 /* RadarWidgetView.swift in Sources */, );
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A40000000000000000000003 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (A10000000000000000000008 /* ArenaStoreTests.swift in Sources */, );
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AA0000000000000000000001 /* AIRadarWidget */ = {isa = PBXTargetDependency; target = A50000000000000000000002 /* AIRadarWidget */; targetProxy = A30000000000000000000001 /* Widget target proxy */; };
+		AA0000000000000000000002 /* AIRadar */ = {isa = PBXTargetDependency; target = A50000000000000000000001 /* AIRadar */; targetProxy = A30000000000000000000002 /* App target proxy */; };
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		A80000000000000000000001 /* Project Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A20000000000000000000009 /* Base.xcconfig */;
+			buildSettings = {
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A80000000000000000000002 /* Project Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A20000000000000000000009 /* Base.xcconfig */;
+			buildSettings = {
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		A80000000000000000000003 /* App Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Configuration/AppGroup.entitlements;
+				INFOPLIST_FILE = "Configuration/App-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", );
+				PRODUCT_BUNDLE_IDENTIFIER = "$(AIRADAR_BUNDLE_ID)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		A80000000000000000000004 /* App Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Configuration/AppGroup.entitlements;
+				INFOPLIST_FILE = "Configuration/App-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", );
+				PRODUCT_BUNDLE_IDENTIFIER = "$(AIRADAR_BUNDLE_ID)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		A80000000000000000000005 /* Widget Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = Configuration/AppGroup.entitlements;
+				INFOPLIST_FILE = "Configuration/Widget-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@executable_path/../../Frameworks", );
+				PRODUCT_BUNDLE_IDENTIFIER = "$(AIRADAR_BUNDLE_ID).widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		A80000000000000000000006 /* Widget Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = Configuration/AppGroup.entitlements;
+				INFOPLIST_FILE = "Configuration/Widget-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@executable_path/../../Frameworks", );
+				PRODUCT_BUNDLE_IDENTIFIER = "$(AIRADAR_BUNDLE_ID).widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		A80000000000000000000007 /* Tests Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(AIRADAR_BUNDLE_ID).tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AIRadar.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AIRadar";
+			};
+			name = Debug;
+		};
+		A80000000000000000000008 /* Tests Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(AIRADAR_BUNDLE_ID).tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AIRadar.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AIRadar";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A90000000000000000000001 /* Build configuration list for project */ = {isa = XCConfigurationList; buildConfigurations = (A80000000000000000000001 /* Project Debug */, A80000000000000000000002 /* Project Release */, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A90000000000000000000002 /* Build configuration list for AIRadar */ = {isa = XCConfigurationList; buildConfigurations = (A80000000000000000000003 /* App Debug */, A80000000000000000000004 /* App Release */, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A90000000000000000000003 /* Build configuration list for AIRadarWidget */ = {isa = XCConfigurationList; buildConfigurations = (A80000000000000000000005 /* Widget Debug */, A80000000000000000000006 /* Widget Release */, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A90000000000000000000004 /* Build configuration list for AIRadarTests */ = {isa = XCConfigurationList; buildConfigurations = (A80000000000000000000007 /* Tests Debug */, A80000000000000000000008 /* Tests Release */, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+/* End XCConfigurationList section */
+
+	};
+	rootObject = A60000000000000000000001 /* Project object */;
+}

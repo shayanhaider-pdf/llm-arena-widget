@@ -64,7 +64,8 @@ def group(rows, previous, observed):
     cutoff = (dt.date.fromisoformat(observed)-dt.timedelta(days=100)).isoformat()
     for cat, g in list(groups.items()):
         old = previous.get(cat,{})
-        if old.get('date','') > g['date']:
+        older = old.get('date', '') > g['date']
+        if older and old.get('partial') is not True:
             groups[cat] = old
             continue
         # Duplicate model IDs must not produce multiple ranking entries.
@@ -77,8 +78,19 @@ def group(rows, previous, observed):
         g['models'] = list(unique.values())
         if g['models'][0]['rank'] != 1:
             raise ValueError('Missing rank one in '+cat)
+        ranks = {key: model['rank'] for key, model in unique.items()}
+        if older:
+            # The Search page and the downloadable release can date the same ranking one day apart.
+            next_day = (dt.date.fromisoformat(g['date']) + dt.timedelta(days=1)).isoformat()
+            prior_models = old.get('models', [])
+            extends_partial = 0 < len(prior_models) < len(ranks) and all(
+                ranks.get(model['id'].lower()) == model['rank'] for model in prior_models
+            )
+            if old['date'] != next_day or not extends_partial:
+                groups[cat] = old
+                continue
         history = {d:r for d,r in old.get('history',{}).items() if d >= cutoff}
-        history[observed] = {m['id'].lower():m['rank'] for m in g['models']}
+        history[observed] = ranks
         g['history'], g['observed'] = history, observed
     return groups
 
@@ -119,7 +131,8 @@ def collect_parquet(subset, paths, revision, old, observed):
     required = WIDGET_GROUPS.get(subset,())
     errors = {}
     for k in required:
-        if k not in groups or groups[k].get('observed') != observed:
+        g = groups.get(k, {})
+        if g.get('observed') != observed or g.get('partial'):
             errors[k] = 'Missing or older official group; retained previous snapshot'
     for g in groups.values():
         if g.get('observed') == observed and not g.get('partial'):
